@@ -1,9 +1,9 @@
 {
-  "name": "GS Diagnósticos",
-  "short_name": "GS Dx",
-  "start_url": "./index.html",
+  "name": "GSOCIAL – Gestión Social",
+  "short_name": "GSOCIAL",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#f5f5f5",
+  "background_color": "#d40000",
   "theme_color": "#d40000",
   "icons": [
     {
