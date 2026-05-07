@@ -6,7 +6,7 @@
   <link rel="icon" href="icon-192.png">
 
   <meta charset="UTF-8" />
-  <title>GS – Formulario maestro ESPT</title>
+  <title>GS_Documentos – Formulario maestro ESPT</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- JSZip, PDF-LIB, XLSX -->
@@ -366,15 +366,94 @@
       font-size: 12px;
       padding: 4px;
     }
+
+
+    /* ===== GS_Documentos v2: selección documental y flujo limpio ===== */
+    .doc-home{
+      background:#fff;
+      border:1px solid #dedede;
+      border-left:6px solid var(--rojo);
+      border-radius:12px;
+      padding:14px;
+      margin-bottom:14px;
+      box-shadow:0 8px 18px rgba(0,0,0,.05);
+    }
+    .doc-home h2{margin:0 0 6px;font-size:18px;color:#242424;}
+    .doc-home p{margin:0 0 12px;color:#666;font-size:13px;line-height:1.45;}
+    .doc-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+    @media(max-width:700px){.doc-options{grid-template-columns:1fr;}}
+    .doc-option{
+      border:1px solid #ddd;
+      background:#fafafa;
+      border-radius:10px;
+      padding:12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      cursor:pointer;
+      min-height:58px;
+    }
+    .doc-option input{width:auto;margin-top:3px;transform:scale(1.2);}
+    .doc-option strong{display:block;color:#2b2b2b;font-size:14px;}
+    .doc-option span{display:block;color:#777;font-size:12px;margin-top:2px;}
+    .doc-option:has(input:checked){background:#fff5f5;border-color:#d40000;box-shadow:0 0 0 3px rgba(212,0,0,.08);}
+    .doc-current{
+      display:inline-flex;
+      margin-top:10px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#f3f4f6;
+      color:#555;
+      font-size:12px;
+      font-weight:700;
+    }
+    .doc-actions-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+    .hidden-by-doc{display:none!important;}
+    .retie-minimal-hide{display:none!important;}
+    .panel.pdf .field-row:first-of-type{display:none!important;}
+    #btnALL{font-size:16px;min-height:46px;border-radius:22px;}
+    .ec-library-box{
+      margin-top:25px;
+      background:#f8f8f8;
+      border:1px solid #ddd;
+      border-left:5px solid var(--rojo);
+      padding:15px;
+      border-radius:8px;
+    }
+    .ec-library-box h3{margin:0 0 8px;color:#444;font-size:18px;}
+    .ec-preview{
+      min-height:110px;
+      border:1px dashed #bbb;
+      border-radius:8px;
+      background:#fff;
+      padding:14px;
+      color:#777;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      font-size:13px;
+    }
+    .load-summary{
+      background:#fff;
+      border:1px solid #e5e5e5;
+      border-radius:8px;
+      padding:10px;
+      margin-top:10px;
+      font-size:13px;
+      color:#444;
+    }
+    .modal-firma-content{border-radius:0;}
+    .modal-firma-footer .btn{min-width:120px;}
   </style>
 </head>
 
 <body>
 <header>
-  <div class="logo-gs">GS</div>
+  <div class="logo-gs">GD</div>
   <div class="title-block">
-    <div class="title-main">Gestión Social – Control de pérdidas</div>
-    <div class="title-sub">Formatos de solicitud para legalización de medida</div>
+    <div class="title-main">GS_Documentos</div>
+    <div class="title-sub">Generador documental ESPT / CUND100</div>
   </div>
 </header>
 
@@ -383,6 +462,26 @@
     <!-- ========== FORMULARIO MAESTRO ========== -->
     <div class="panel form">
       <form id="formMaestro" novalidate>
+
+        <!-- ========== PANTALLA INICIAL: SELECCIÓN DE DOCUMENTOS ========== -->
+        <section class="doc-home" id="pantallaDocumentos">
+          <h2>¿Qué documentos desea generar?</h2>
+          <p>Seleccione uno o varios formatos. La app mostrará únicamente los campos necesarios para esos documentos.</p>
+          <div class="doc-options">
+            <label class="doc-option"><input type="checkbox" name="docSelect" value="ALL" id="docTodos"><div><strong>Todos los documentos</strong><span>E1, E6, AR, DJ, RETIE y EC</span></div></label>
+            <label class="doc-option"><input type="checkbox" name="docSelect" value="E1"><div><strong>Formato de solicitud E1</strong><span>Datos generales + solicitud de servicio</span></div></label>
+            <label class="doc-option"><input type="checkbox" name="docSelect" value="E6"><div><strong>Recibo técnico E6</strong><span>Datos generales + nombre del técnico</span></div></label>
+            <label class="doc-option"><input type="checkbox" name="docSelect" value="AR"><div><strong>Aceptación de requisitos AR</strong><span>Datos generales del solicitante</span></div></label>
+            <label class="doc-option"><input type="checkbox" name="docSelect" value="DJ"><div><strong>Declaración juramentada DJ</strong><span>Datos generales + declaración</span></div></label>
+            <label class="doc-option"><input type="checkbox" name="docSelect" value="RETIE"><div><strong>Declaración RETIE</strong><span>Datos generales + técnico/constructor</span></div></label>
+            <label class="doc-option"><input type="checkbox" name="docSelect" value="EC"><div><strong>Esquema constructivo EC</strong><span>Datos generales + técnico + plano/cargas</span></div></label>
+          </div>
+          <div class="doc-actions-row">
+            <button type="button" class="btn" id="btnAplicarDocs">Continuar</button>
+            <button type="button" class="btn btn-outline" id="btnCambiarDocs">Cambiar selección</button>
+          </div>
+          <div class="doc-current" id="docCurrentLabel">Sin selección documental</div>
+        </section>
         <!-- CAMPOS COMUNES -->
         <div class="section-title">DATOS GENERALES/PREDIO</div>
 
@@ -681,6 +780,46 @@
           <div id="contenedorFotos" class="preview-grid"></div>
         </div>
 
+
+        <!-- ========== BIBLIOTECA DE PLANOS Y CUADRO DE CARGAS EC ========== -->
+        <div id="bloqueECPlanos" class="ec-library-box">
+          <h3>Biblioteca de planos internos y cuadro de cargas (EC)</h3>
+          <p class="hint">Base preparada para embeber planos en imágenes Base64. Por ahora permite clasificar el predio y calcular una carga estimada para usarla como soporte del EC.</p>
+          <div class="field-row">
+            <div class="field">
+              <label for="ec_filtro_pisos">Tipo de predio</label>
+              <select id="ec_filtro_pisos">
+                <option value="">Seleccione...</option>
+                <option>Predio 1 piso</option>
+                <option>Predio 2 pisos</option>
+                <option>Predio 3 pisos</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ec_filtro_habitaciones">Habitaciones</label>
+              <select id="ec_filtro_habitaciones">
+                <option value="">Seleccione...</option>
+                <option>1 Habitación</option><option>2 Habitaciones</option><option>3 Habitaciones</option><option>4 Habitaciones o más</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ec_filtro_banos">Baños</label>
+              <select id="ec_filtro_banos">
+                <option value="">Seleccione...</option>
+                <option>1 Baño</option><option>2 Baños</option><option>3 Baños o más</option>
+              </select>
+            </div>
+          </div>
+          <div class="ec-preview" id="ecPlanoPreview">Seleccione filtros para sugerir el plano interno correspondiente.</div>
+          <div class="field-row" style="margin-top:10px;">
+            <div class="field"><label for="ec_bombillos">Bombillos</label><input type="number" id="ec_bombillos" min="0" value="0"></div>
+            <div class="field"><label for="ec_tomas">Tomacorrientes</label><input type="number" id="ec_tomas" min="0" value="0"></div>
+            <div class="field"><label for="ec_electrodomesticos">Electrodomésticos básicos</label><input type="number" id="ec_electrodomesticos" min="0" value="0"></div>
+            <div class="field"><label for="ec_carga_estimada">Carga estimada W</label><input type="number" id="ec_carga_estimada" readonly></div>
+          </div>
+          <div class="load-summary" id="ecCargaResumen">Cuadro de cargas pendiente por diligenciar.</div>
+        </div>
+
         <!-- ========== FIRMAS DIBUJADAS ========== -->
         <div class="section-title">I. Firmas dibujadas (OBLIGATORIAS)</div>
 
@@ -725,8 +864,8 @@
 
     <!-- ========== PANEL PDF ========== -->
     <div class="panel pdf">
-      <h2 class="panel-title">Generación de formatos PDF</h2>
-      <span class="tag">Usa los datos del formulario maestro</span>
+      <h2 class="panel-title">Generación de documentos</h2>
+      <span class="tag">Se generarán solo los documentos seleccionados</span>
 
       <div class="field-row" style="margin-top:8px; flex-direction:column;">
         <button class="btn btn-block" type="button" id="btnE1">Generar E1</button>
@@ -739,15 +878,33 @@
 
       <!-- BOTÓN 7: GENERA TODO + ZIP (PDFs + Excel + Fotos) -->
       <div class="field-row" style="margin-top:10px;">
-        <button class="btn btn-block" type="button" id="btnALL">Generar TODOS los archivos (ZIP)</button>
+        <button class="btn btn-block" type="button" id="btnALL">Generar documentos</button>
       </div>
 
     </div>
   </div>
 </main>
 
+
+<!-- MODAL FIRMA FULLSCREEN -->
+<div class="modal-firma" id="modalFirmaFull">
+  <div class="modal-firma-content">
+    <div class="modal-firma-header">
+      <span id="modalFirmaTitulo">Firma</span>
+      <button type="button" class="btn-cerrar-modal" id="btnCerrarFirmaFull">✕</button>
+    </div>
+    <div class="modal-firma-body">
+      <canvas id="canvasFirmaModal"></canvas>
+    </div>
+    <div class="modal-firma-footer">
+      <button type="button" class="btn btn-outline" id="btnBorrarFirmaFull">Borrar</button>
+      <button type="button" class="btn" id="btnGuardarFirmaFull">Guardar firma</button>
+    </div>
+  </div>
+</div>
+
 <footer>
-  Creado por <strong>Heidi Díaz</strong> para el proceso de Gestión Social.
+  GS_Documentos · Creado por <strong>Heidi Díaz</strong> para el proceso de Gestión Social.
 </footer>
 
 <script>
@@ -840,6 +997,140 @@
     if (dptoSel) dptoSel.addEventListener("change", llenarMunicipios);
   });
 
+
+  /* ====== GS_Documentos v2: selección documental inteligente ====== */
+  const DOCS_ALL = ["E1", "E6", "AR", "DJ", "RETIE", "EC"];
+  let documentosSeleccionados = [];
+
+  function getDocsSeleccionados(){
+    const todos = document.getElementById("docTodos")?.checked;
+    if (todos) return [...DOCS_ALL];
+    return Array.from(document.querySelectorAll('input[name="docSelect"]:checked'))
+      .map(x => x.value)
+      .filter(x => x !== "ALL");
+  }
+
+  function setDisabledIn(el, disabled){
+    if (!el) return;
+    el.querySelectorAll("input, select, textarea, button").forEach(ctrl => {
+      if (["btnAplicarDocs","btnCambiarDocs","btnALL"].includes(ctrl.id)) return;
+      ctrl.disabled = disabled;
+    });
+  }
+
+  function seccionPorTitulo(texto){
+    return Array.from(document.querySelectorAll(".section-title")).find(el => (el.textContent||"").toUpperCase().includes(texto));
+  }
+
+  function bloqueDesdeTitulo(titleEl){
+    if (!titleEl) return [];
+    const nodos = [titleEl];
+    let n = titleEl.nextElementSibling;
+    while(n && !n.classList.contains("section-title")){
+      nodos.push(n);
+      n = n.nextElementSibling;
+    }
+    return nodos;
+  }
+
+  function mostrarBloque(nodos, show){
+    nodos.forEach(n => {
+      n.classList.toggle("hidden-by-doc", !show);
+      if (n !== nodos[0]) setDisabledIn(n, !show);
+    });
+  }
+
+  function configurarRETIE(e6Minimal){
+    const idsPermitidos = new Set(["cm_retie_constructor"]);
+    const title = seccionPorTitulo("RETIE");
+    const nodos = bloqueDesdeTitulo(title);
+    nodos.forEach(n => {
+      n.querySelectorAll(".field").forEach(field => {
+        const control = field.querySelector("input,select,textarea");
+        if (!control) return;
+        const visible = !e6Minimal || idsPermitidos.has(control.id);
+        field.classList.toggle("retie-minimal-hide", !visible);
+        control.disabled = !visible;
+      });
+    });
+  }
+
+  function aplicarSeleccionDocumental(){
+    documentosSeleccionados = getDocsSeleccionados();
+    const label = document.getElementById("docCurrentLabel");
+    if (!documentosSeleccionados.length){
+      if(label) label.textContent = "Seleccione al menos un documento";
+      return false;
+    }
+    if(label) label.textContent = "Documentos seleccionados: " + documentosSeleccionados.join(", ");
+
+    const requiereE1 = documentosSeleccionados.includes("E1");
+    const requiereDJ = documentosSeleccionados.includes("DJ");
+    const requiereRETIECompleto = documentosSeleccionados.includes("RETIE") || documentosSeleccionados.includes("EC") || documentosSeleccionados.length === DOCS_ALL.length;
+    const requiereRETIEBasico = requiereRETIECompleto || documentosSeleccionados.includes("E6");
+    const e6Minimal = documentosSeleccionados.length === 1 && documentosSeleccionados[0] === "E6";
+    const requiereEC = documentosSeleccionados.includes("EC") || documentosSeleccionados.length === DOCS_ALL.length;
+
+    mostrarBloque(bloqueDesdeTitulo(seccionPorTitulo("SOLICITUD DE SERVICIO")), requiereE1 || documentosSeleccionados.length === DOCS_ALL.length);
+    mostrarBloque(bloqueDesdeTitulo(seccionPorTitulo("DECLARACIÓN JURAMENTADA")), requiereDJ || documentosSeleccionados.length === DOCS_ALL.length);
+    mostrarBloque(bloqueDesdeTitulo(seccionPorTitulo("RETIE")), requiereRETIEBasico);
+    configurarRETIE(e6Minimal);
+
+    const bloqueEC = document.getElementById("bloqueECPlanos");
+    if (bloqueEC){ bloqueEC.classList.toggle("hidden-by-doc", !requiereEC); setDisabledIn(bloqueEC, !requiereEC); }
+
+    const bloqueMat = document.getElementById("bloqueMateriales");
+    if (bloqueMat){ bloqueMat.classList.toggle("hidden-by-doc", !requiereE1 && documentosSeleccionados.length !== DOCS_ALL.length); setDisabledIn(bloqueMat, !requiereE1 && documentosSeleccionados.length !== DOCS_ALL.length); }
+
+    document.querySelector(".panel.pdf")?.classList.remove("hidden-by-doc");
+    return true;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const btnAplicar = document.getElementById("btnAplicarDocs");
+    const btnCambiar = document.getElementById("btnCambiarDocs");
+    const docTodos = document.getElementById("docTodos");
+    document.querySelector(".panel.pdf")?.classList.add("hidden-by-doc");
+    ["SOLICITUD DE SERVICIO", "DECLARACIÓN JURAMENTADA", "RETIE"].forEach(t => mostrarBloque(bloqueDesdeTitulo(seccionPorTitulo(t)), false));
+    const bloqueEC = document.getElementById("bloqueECPlanos"); if (bloqueEC) { bloqueEC.classList.add("hidden-by-doc"); setDisabledIn(bloqueEC, true); }
+
+    document.querySelectorAll('input[name="docSelect"]').forEach(chk => {
+      chk.addEventListener("change", () => {
+        if(chk.value === "ALL" && chk.checked){
+          document.querySelectorAll('input[name="docSelect"]').forEach(x => { if(x.value !== "ALL") x.checked = false; });
+        } else if (chk.value !== "ALL" && chk.checked && docTodos){
+          docTodos.checked = false;
+        }
+      });
+    });
+    if(btnAplicar) btnAplicar.addEventListener("click", aplicarSeleccionDocumental);
+    if(btnCambiar) btnCambiar.addEventListener("click", () => document.getElementById("pantallaDocumentos")?.scrollIntoView({behavior:"smooth"}));
+  });
+
+  function calcularCargaEC(){
+    const bombillos = Number(document.getElementById("ec_bombillos")?.value || 0);
+    const tomas = Number(document.getElementById("ec_tomas")?.value || 0);
+    const electro = Number(document.getElementById("ec_electrodomesticos")?.value || 0);
+    const total = (bombillos * 60) + (tomas * 180) + (electro * 600);
+    const out = document.getElementById("ec_carga_estimada");
+    if(out) out.value = total;
+    const res = document.getElementById("ecCargaResumen");
+    if(res) res.textContent = `Carga estimada: ${total} W. Bombillos: ${bombillos}, tomacorrientes: ${tomas}, electrodomésticos básicos: ${electro}.`;
+  }
+
+  function sugerirPlanoEC(){
+    const p = document.getElementById("ec_filtro_pisos")?.value || "";
+    const h = document.getElementById("ec_filtro_habitaciones")?.value || "";
+    const b = document.getElementById("ec_filtro_banos")?.value || "";
+    const prev = document.getElementById("ecPlanoPreview");
+    if(prev) prev.textContent = (p || h || b) ? `Plano sugerido: ${[p,h,b].filter(Boolean).join(" / ")}. Pendiente asociar imagen Base64 del plano.` : "Seleccione filtros para sugerir el plano interno correspondiente.";
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    ["ec_bombillos","ec_tomas","ec_electrodomesticos"].forEach(id => document.getElementById(id)?.addEventListener("input", calcularCargaEC));
+    ["ec_filtro_pisos","ec_filtro_habitaciones","ec_filtro_banos"].forEach(id => document.getElementById(id)?.addEventListener("change", sugerirPlanoEC));
+  });
+
   /* ====== RECOGER DATOS ====== */
   function recogerDatos() {
     const sol_fecha    = gv("cm_fecha_solicitud");
@@ -883,6 +1174,16 @@
       e1_estrato          : gvr("e1_estrato"),
       e1_no_solicitud     : gv("e1_no_solicitud"),
       e1_red_cercana      : gvr("e1_red_cercana"),
+
+
+      // EC / plano interno
+      ec_filtro_pisos     : gv("ec_filtro_pisos"),
+      ec_filtro_habitaciones: gv("ec_filtro_habitaciones"),
+      ec_filtro_banos     : gv("ec_filtro_banos"),
+      ec_bombillos        : gv("ec_bombillos"),
+      ec_tomas            : gv("ec_tomas"),
+      ec_electrodomesticos: gv("ec_electrodomesticos"),
+      ec_carga_estimada   : gv("ec_carga_estimada"),
 
       // DJ
       dj_descripcion        : gv("dj_descripcion"),
@@ -1530,6 +1831,66 @@ function descargarExcelMateriales() {
   prepararCanvasFirma("canvasFirmaUsuario","firmaUsuario","btnGuardar_firmaUsuario","btnBorrar_firmaUsuario");
   prepararCanvasFirma("canvasFirmaTecnico","firmaTecnico","btnGuardar_firmaTecnico","btnBorrar_firmaTecnico");
 
+  /* ====== FIRMA FULLSCREEN AUTOMÁTICA EN CELULAR ====== */
+  const firmaModalState = { storageKey:null, previewCanvasId:null };
+
+  function prepararCanvasModalFirma(){
+    const modal = document.getElementById("modalFirmaFull");
+    const canvas = document.getElementById("canvasFirmaModal");
+    if(!modal || !canvas) return;
+    const ctx = canvas.getContext("2d");
+    let dibujando = false;
+
+    function resize(){
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width || window.innerWidth;
+      canvas.height = rect.height || (window.innerHeight - 96);
+      ctx.lineWidth = 2.4;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "#111";
+    }
+    function pos(evt){ const r=canvas.getBoundingClientRect(); const e=evt.touches?evt.touches[0]:evt; return {x:e.clientX-r.left,y:e.clientY-r.top}; }
+    function start(e){ e.preventDefault(); dibujando=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); }
+    function move(e){ if(!dibujando) return; e.preventDefault(); const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); }
+    function end(e){ if(e) e.preventDefault(); dibujando=false; }
+
+    canvas.addEventListener("mousedown", start); canvas.addEventListener("mousemove", move); canvas.addEventListener("mouseup", end); canvas.addEventListener("mouseleave", end);
+    canvas.addEventListener("touchstart", start, {passive:false}); canvas.addEventListener("touchmove", move, {passive:false}); canvas.addEventListener("touchend", end, {passive:false}); canvas.addEventListener("touchcancel", end, {passive:false});
+
+    document.getElementById("btnCerrarFirmaFull")?.addEventListener("click", () => modal.style.display="none");
+    document.getElementById("btnBorrarFirmaFull")?.addEventListener("click", () => { ctx.clearRect(0,0,canvas.width,canvas.height); if(firmaModalState.storageKey) localStorage.removeItem(firmaModalState.storageKey); });
+    document.getElementById("btnGuardarFirmaFull")?.addEventListener("click", () => {
+      const dataURL = canvas.toDataURL("image/png");
+      if(firmaModalState.storageKey) localStorage.setItem(firmaModalState.storageKey, dataURL);
+      const preview = document.getElementById(firmaModalState.previewCanvasId);
+      if(preview){
+        const pctx = preview.getContext("2d");
+        const img = new Image();
+        img.onload = () => { pctx.clearRect(0,0,preview.width,preview.height); pctx.drawImage(img,0,0,preview.width,preview.height); };
+        img.src = dataURL;
+      }
+      modal.style.display="none";
+      alert("Firma guardada.");
+    });
+
+    window.abrirFirmaFull = function(canvasId, storageKey, titulo){
+      firmaModalState.previewCanvasId = canvasId;
+      firmaModalState.storageKey = storageKey;
+      document.getElementById("modalFirmaTitulo").textContent = titulo || "Firma";
+      modal.style.display="flex";
+      setTimeout(() => { resize(); ctx.clearRect(0,0,canvas.width,canvas.height); }, 60);
+    };
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    prepararCanvasModalFirma();
+    document.getElementById("canvasFirmaUsuario")?.addEventListener("click", () => abrirFirmaFull("canvasFirmaUsuario","firmaUsuario","Firma del solicitante"));
+    document.getElementById("canvasFirmaUsuario")?.addEventListener("touchstart", () => abrirFirmaFull("canvasFirmaUsuario","firmaUsuario","Firma del solicitante"), {passive:true});
+    document.getElementById("canvasFirmaTecnico")?.addEventListener("click", () => abrirFirmaFull("canvasFirmaTecnico","firmaTecnico","Firma del técnico"));
+    document.getElementById("canvasFirmaTecnico")?.addEventListener("touchstart", () => abrirFirmaFull("canvasFirmaTecnico","firmaTecnico","Firma del técnico"), {passive:true});
+  });
+
+
   /* ====== LISTAR CAMPOS PDF (DEPURACIÓN) ====== */
   async function listarCamposPDF(base64, nombre) {
     try {
@@ -1548,23 +1909,22 @@ function descargarExcelMateriales() {
 
   /* ====== ZIP COMPLETO (botón 7) ====== */
   document.getElementById("btnALL").addEventListener("click", async () => {
+    if (!documentosSeleccionados.length && !aplicarSeleccionDocumental()) return;
+    const docs = documentosSeleccionados.length ? documentosSeleccionados : getDocsSeleccionados();
+    if (!docs.length) { alert("Selecciona al menos un documento para generar."); return; }
+
     const datos = recogerDatos();
     const nombre = (datos.cm_nombre || "SOLICITANTE").replace(/[\\/:*?"<>|]+/g, "_");
-
     const zip = new JSZip();
 
-    const tipos = ["E1", "E6", "AR", "DJ", "RETIE", "EC"];
-
-    for (const tipo of tipos) {
+    for (const tipo of docs) {
       const bytes = await generarPDF(tipo, false);
-      if (bytes) {
-        zip.file(`${tipo}_${nombre}.pdf`, bytes);
-      }
+      if (bytes) zip.file(`${tipo}_${nombre}.pdf`, bytes);
     }
 
-    const excelBytes = generarExcelMateriales_bytes();
-    if (excelBytes) {
-      zip.file(`Materiales_${nombre}.xlsx`, excelBytes);
+    if (docs.includes("E1")) {
+      const excelBytes = generarExcelMateriales_bytes();
+      if (excelBytes) zip.file(`Materiales_${nombre}.xlsx`, excelBytes);
     }
 
     fotosGuardadas.forEach((foto, index) => {
@@ -1576,7 +1936,7 @@ function descargarExcelMateriales() {
     const contenido = await zip.generateAsync({ type: "blob" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(contenido);
-    a.download = `${nombre}.zip`;
+    a.download = `${nombre}_GS_Documentos.zip`;
     a.click();
   });
 
