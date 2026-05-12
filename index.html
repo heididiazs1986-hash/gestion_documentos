@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link rel="manifest" href="./manifest.json?v=gsdoc-v4">
+  <link rel="manifest" href="./manifest.json?v=gsdoc-v7">
 <meta name="theme-color" content="#d40000">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=gsdoc-v4">
-<link rel="shortcut icon" href="./icon-192.png?v=gsdoc-v4">
-<link rel="apple-touch-icon" href="./icon-180.png?v=gsdoc-v4">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=gsdoc-v7">
+<link rel="shortcut icon" href="./icon-192.png?v=gsdoc-v7">
+<link rel="apple-touch-icon" href="./icon-180.png?v=gsdoc-v7">
 
   <meta charset="UTF-8" />
-  <title>GS_Documentos – Formulario maestro ESPT</title>
+  <title>GS Documentos PRO – Formularios ESPT</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- JSZip, PDF-LIB, XLSX -->
@@ -447,15 +447,127 @@
     }
     .modal-firma-content{border-radius:0;}
     .modal-firma-footer .btn{min-width:120px;}
+  
+
+/* =====================================================
+   GS DOCUMENTOS PRO v7 · Rediseño tipo GS Diagnósticos
+   ===================================================== */
+:root{
+  --gs-red:#d40000;
+  --gs-red-dark:#9f0000;
+  --gs-ink:#1f2933;
+  --gs-muted:#6b7280;
+  --gs-soft:#f6f7f9;
+  --gs-card:#ffffff;
+  --gs-line:#e4e7ec;
+  --gs-shadow:0 14px 34px rgba(20,20,20,.10);
+}
+body{font-size:17px;background:linear-gradient(180deg,#f4f5f7 0%,#ffffff 38%,#f4f5f7 100%);}
+header{position:sticky;top:0;z-index:500;background:linear-gradient(135deg,var(--gs-red),#a90000);padding:18px 18px 20px;box-shadow:0 8px 24px rgba(120,0,0,.22);}
+.logo-gs{width:54px;height:54px;border-radius:16px;background:#b00000;border:1px solid rgba(255,255,255,.28);box-shadow:inset 0 -10px 22px rgba(0,0,0,.12), 0 10px 20px rgba(0,0,0,.16);font-size:25px;}
+header .title-main{font-size:24px;letter-spacing:-.3px;}
+header .title-sub{font-size:15px;opacity:.96;}
+main{max-width:1120px;padding:16px;}
+.layout{display:block;}
+.panel{border:1px solid var(--gs-line);border-radius:22px;background:rgba(255,255,255,.96);box-shadow:var(--gs-shadow);padding:18px;margin-bottom:18px;}
+.panel.form{width:100%;}
+.panel.pdf{width:100%;max-width:none;}
+.section-title{font-size:18px;letter-spacing:.2px;border-radius:14px;background:linear-gradient(135deg,var(--gs-red),#a90000);padding:14px 16px;margin:18px 0 12px;box-shadow:0 10px 18px rgba(212,0,0,.14);}
+.field-row{gap:14px;}
+.field{min-width:240px;}
+.field label{font-size:17px;font-weight:700;color:#26313d;margin-bottom:7px;}
+input,select,textarea{font-size:18px!important;padding:13px 14px!important;min-height:50px;border-radius:12px!important;border:1.5px solid #cfd5dd!important;background:#fff;}
+textarea{min-height:96px;}
+input:focus,select:focus,textarea:focus{outline:3px solid rgba(212,0,0,.14)!important;border-color:var(--gs-red)!important;}
+.btn{border-radius:999px!important;padding:13px 18px!important;font-size:17px!important;font-weight:800;box-shadow:0 8px 18px rgba(212,0,0,.18);}
+.btn-outline{background:#fff!important;color:var(--gs-red)!important;border:1.5px solid var(--gs-red)!important;box-shadow:none;}
+.btn-block{width:100%;margin:6px 0;}
+.doc-home{border:1px solid var(--gs-line);border-left:8px solid var(--gs-red);border-radius:24px;padding:22px;background:#fff;box-shadow:var(--gs-shadow);}
+.doc-home h2{font-size:26px;line-height:1.15;margin-bottom:8px;color:#20252c;}
+.doc-home p{font-size:17px;line-height:1.45;color:#656d78;}
+.doc-options{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
+.doc-option{position:relative;min-height:118px;border-radius:22px;border:1.5px solid #e2e5e9;background:linear-gradient(180deg,#fff,#fafbfc);padding:18px 16px 16px 18px;align-items:center;box-shadow:0 8px 20px rgba(0,0,0,.05);transition:.18s ease;}
+.doc-option input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.doc-option:before{content:'📄';display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;border-radius:16px;background:#fff3f3;color:var(--gs-red);font-size:24px;border:1px solid #ffd8d8;}
+.doc-option strong{font-size:18px;line-height:1.16;color:#242a32;display:block;margin-bottom:4px;}
+.doc-option span{font-size:14px;color:#707984;line-height:1.2;}
+.doc-option:hover{transform:translateY(-2px);border-color:#f2aaaa;box-shadow:0 12px 26px rgba(120,0,0,.10);}
+.doc-option:has(input:checked){background:linear-gradient(135deg,#fff7f7,#ffffff);border-color:var(--gs-red);box-shadow:0 14px 30px rgba(212,0,0,.16);}
+.doc-option:has(input:checked):after{content:'✓';position:absolute;right:14px;top:14px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--gs-red);color:#fff;font-weight:900;}
+.doc-actions-row{display:none!important;}
+.doc-current{font-size:14px;border-radius:13px;margin-top:13px;background:#fff7f7;border:1px solid #ffdada;color:#7b0000;}
+.pro-dashboard{display:none;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0 18px;}
+.pro-dashboard.visible{display:grid;}
+.pro-nav-card{border:1px solid var(--gs-line);background:#fff;border-radius:18px;padding:14px 12px;text-align:left;min-height:78px;box-shadow:0 8px 18px rgba(0,0,0,.05);cursor:pointer;transition:.18s ease;color:#27313d;}
+.pro-nav-card .ico{font-size:24px;display:block;margin-bottom:5px;}
+.pro-nav-card strong{display:block;font-size:15px;line-height:1.13;}
+.pro-nav-card span{display:block;font-size:12px;color:#707984;margin-top:2px;}
+.pro-nav-card.active{background:linear-gradient(135deg,var(--gs-red),#a90000);color:#fff;border-color:transparent;box-shadow:0 14px 28px rgba(212,0,0,.22);}
+.pro-nav-card.active span{color:#fff;opacity:.86;}
+.pro-screen-hidden{display:none!important;}
+.hidden-by-doc{display:none!important;}
+.materiales-box,.photos-box,.ec-library-box{border:1px solid var(--gs-line)!important;border-left:8px solid var(--gs-red)!important;border-radius:22px!important;background:#fff!important;padding:18px!important;box-shadow:var(--gs-shadow);}
+.materiales-box h3,.photos-box h3,.ec-library-box h3{font-size:23px!important;color:#20252c!important;margin-bottom:8px!important;}
+.radio-group-materiales{gap:18px;}
+.radio-group-materiales label{border:1px solid var(--gs-line);border-radius:16px;padding:12px 18px;background:#fff;}
+.tabla-materiales{font-size:14px;border-radius:14px;overflow:hidden;border-collapse:separate!important;border-spacing:0;}
+.tabla-materiales th{background:linear-gradient(135deg,#ffe8e8,#fff4f4)!important;color:#5b0000;padding:10px!important;}
+.tabla-materiales td{padding:8px!important;background:#fff;}
+.cantidadMaterial{max-width:96px;min-height:40px!important;font-size:16px!important;padding:8px!important;}
+.preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;}
+.foto-item{border:1px solid var(--gs-line);background:#fff;border-radius:18px;padding:10px;box-shadow:0 8px 16px rgba(0,0,0,.04);}
+.preview-grid img{width:100%;height:132px;border-radius:14px;}
+.ec-preview{min-height:110px;border-radius:20px!important;background:#fafafa!important;border:1.5px dashed #c9ced6!important;font-size:17px!important;}
+.load-summary{font-size:16px!important;border-radius:16px!important;border:1px solid #ffe0e0!important;background:#fffafa!important;}
+.ec-load-builder{margin-top:14px;border:1px solid var(--gs-line);border-radius:20px;background:#fff;padding:14px;box-shadow:0 8px 18px rgba(0,0,0,.04);}
+.ec-load-builder h4{margin:0 0 10px;font-size:20px;color:#20252c;}
+.ec-load-row{display:grid;grid-template-columns:1fr 100px auto;gap:10px;align-items:end;}
+.ec-load-table-wrap{overflow:auto;margin-top:12px;border-radius:16px;border:1px solid var(--gs-line);}
+.ec-load-table{width:100%;border-collapse:collapse;min-width:780px;font-size:14px;background:#fff;}
+.ec-load-table th,.ec-load-table td{border:1px solid #d7dce3;padding:8px;text-align:center;}
+.ec-load-table th{background:#f9eded;color:#3b1111;font-weight:800;}
+.ec-load-table tfoot td{font-weight:900;background:#fafafa;}
+.canvas-box{border:2px dashed #ccd2da;border-radius:18px;background:#fff;min-height:132px;display:grid;place-items:center;overflow:hidden;}
+.canvas-box canvas{width:100%;height:128px;background:#fff;}
+.signature-status{font-size:14px;color:#596272;margin-top:6px;}
+.modal-firma{background:rgba(15,23,42,.72)!important;z-index:999999!important;}
+.modal-firma-content{width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;border-radius:0!important;background:#fff!important;}
+.modal-firma-header{min-height:58px;padding:12px 16px!important;background:#fff!important;border-bottom:1px solid var(--gs-line);}
+.modal-firma-header span{font-size:20px!important;color:#20252c;}
+.btn-cerrar-modal{font-size:32px!important;line-height:1;color:#222;}
+.modal-firma-body{height:calc(100dvh - 140px)!important;min-height:0;padding:10px!important;background:#fff;}
+#canvasFirmaModal{height:100%!important;border:2px dashed #aeb5bf!important;border-radius:18px;}
+.modal-firma-footer{position:sticky;bottom:0;min-height:82px;background:#fff!important;border-top:1px solid var(--gs-line);padding:12px 14px!important;}
+.modal-firma-footer .btn{min-width:46%;font-size:18px!important;}
+footer{font-size:13px;color:#6b7280;padding-bottom:22px;}
+@media(max-width:900px){.doc-options,.pro-dashboard{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:640px){
+  main{padding:10px;}
+  header{padding:16px 14px;}
+  header .title-main{font-size:22px;}
+  header .title-sub{font-size:14px;}
+  .panel{border-radius:20px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.08);}
+  .doc-options{grid-template-columns:1fr;}
+  .doc-option{min-height:96px;padding:16px;}
+  .pro-dashboard{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:sticky;top:90px;z-index:350;background:rgba(246,247,249,.92);backdrop-filter:blur(8px);padding:8px;border-radius:18px;border:1px solid rgba(220,224,230,.75);}
+  .pro-nav-card{min-height:68px;padding:10px;}
+  .pro-nav-card .ico{font-size:20px;margin-bottom:3px;}
+  .pro-nav-card strong{font-size:13px;}
+  .pro-nav-card span{display:none;}
+  .field{min-width:100%;}
+  input,select,textarea{font-size:18px!important;}
+  .ec-load-row{grid-template-columns:1fr;}
+}
+
   </style>
 </head>
 
 <body>
 <header>
-  <div class="logo-gs">GD</div>
+  <div class="logo-gs">GS</div>
   <div class="title-block">
-    <div class="title-main">GS_Documentos v3</div>
-    <div class="title-sub">Generador documental ESPT / CUND100</div>
+    <div class="title-main">GS Documentos PRO v6</div>
+    <div class="title-sub">Gestión Social · Documentos ESPT/CUND100</div>
   </div>
 </header>
 
@@ -786,7 +898,7 @@
         <!-- ========== BIBLIOTECA DE PLANOS Y CUADRO DE CARGAS EC ========== -->
         <div id="bloqueECPlanos" class="ec-library-box">
           <h3>Biblioteca de planos internos y cuadro de cargas (EC)</h3>
-          <p class="hint">Base preparada para embeber planos en imágenes Base64. Por ahora permite clasificar el predio y calcular una carga estimada para usarla como soporte del EC.</p>
+          <p class="hint">Base preparada para embeber planos en imágenes Base64. Se mantiene la clasificación del predio y además se incluye el catálogo del cuadro de cargas según la tabla de referencia suministrada. Solo diligencie las cantidades requeridas y la app calculará la carga instalada automáticamente.</p>
           <div class="field-row">
             <div class="field">
               <label for="ec_filtro_pisos">Tipo de predio</label>
@@ -814,10 +926,10 @@
           </div>
           <div class="ec-preview" id="ecPlanoPreview">Seleccione filtros para sugerir el plano interno correspondiente.</div>
           <div class="field-row" style="margin-top:10px;">
-            <div class="field"><label for="ec_bombillos">Bombillos</label><input type="number" id="ec_bombillos" min="0" value="0"></div>
-            <div class="field"><label for="ec_tomas">Tomacorrientes</label><input type="number" id="ec_tomas" min="0" value="0"></div>
-            <div class="field"><label for="ec_electrodomesticos">Electrodomésticos básicos</label><input type="number" id="ec_electrodomesticos" min="0" value="0"></div>
-            <div class="field"><label for="ec_carga_estimada">Carga estimada W</label><input type="number" id="ec_carga_estimada" readonly></div>
+            <div class="field"><label for="ec_bombillos">Bombillos</label><input type="number" id="ec_bombillos" min="0" value="0" readonly></div>
+            <div class="field"><label for="ec_tomas">Tomacorrientes</label><input type="number" id="ec_tomas" min="0" value="0" readonly></div>
+            <div class="field"><label for="ec_electrodomesticos">Electrodomésticos / equipos</label><input type="number" id="ec_electrodomesticos" min="0" value="0" readonly></div>
+            <div class="field"><label for="ec_carga_estimada">Carga instalada total (W)</label><input type="number" id="ec_carga_estimada" readonly></div>
           </div>
           <div class="load-summary" id="ecCargaResumen">Cuadro de cargas pendiente por diligenciar.</div>
         </div>
@@ -1942,7 +2054,342 @@ function descargarExcelMateriales() {
     a.click();
   });
 
-  /* ====== SERVICE WORKER PWA · gsdoc-v4 ====== */
+
+
+  /* =====================================================
+     GS DOCUMENTOS PRO v7 · UX, pantallas, firmas, EC
+     ===================================================== */
+  const GS_PRO_VERSION = "gsdoc-v7";
+  const GS_PRO_SCREENS = {};
+  let GS_PRO_ACTIVE_SCREEN = "docs";
+
+  function gsProNodesCommon(){
+    const firstTitle = Array.from(document.querySelectorAll(".section-title")).find(el => (el.textContent||"").toUpperCase().includes("DATOS GENERALES/PREDIO"));
+    return bloqueDesdeTitulo(firstTitle);
+  }
+
+  function gsProPhotosBox(){
+    const box = document.querySelector(".photos-box");
+    if (box && !box.id) box.id = "bloqueFotosDocumentos";
+    return box;
+  }
+
+  function gsProDebugBox(){ return document.querySelector("details.debug"); }
+
+  function gsProBuildScreenMap(){
+    GS_PRO_SCREENS.docs = [document.getElementById("pantallaDocumentos")].filter(Boolean);
+    GS_PRO_SCREENS.common = gsProNodesCommon();
+    GS_PRO_SCREENS.e1 = bloqueDesdeTitulo(seccionPorTitulo("SOLICITUD DE SERVICIO"));
+    GS_PRO_SCREENS.dj = bloqueDesdeTitulo(seccionPorTitulo("DECLARACIÓN JURAMENTADA"));
+    GS_PRO_SCREENS.retie = bloqueDesdeTitulo(seccionPorTitulo("RETIE"));
+    GS_PRO_SCREENS.materiales = [document.getElementById("bloqueMateriales")].filter(Boolean);
+    GS_PRO_SCREENS.fotos = [gsProPhotosBox()].filter(Boolean);
+    GS_PRO_SCREENS.ec = [document.getElementById("bloqueECPlanos")].filter(Boolean);
+    GS_PRO_SCREENS.firmas = bloqueDesdeTitulo(seccionPorTitulo("FIRMAS DIBUJADAS"));
+    const limpiar = document.getElementById("btnLimpiarForm")?.closest(".field-row");
+    const debug = gsProDebugBox();
+    if (limpiar) GS_PRO_SCREENS.firmas.push(limpiar);
+    if (debug) GS_PRO_SCREENS.firmas.push(debug);
+    GS_PRO_SCREENS.generar = [document.querySelector(".panel.pdf")].filter(Boolean);
+  }
+
+  function gsProCreateDashboard(){
+    const home = document.getElementById("pantallaDocumentos");
+    if(!home || document.getElementById("gsProDashboard")) return;
+    const dash = document.createElement("div");
+    dash.id = "gsProDashboard";
+    dash.className = "pro-dashboard";
+    dash.innerHTML = `
+      <button type="button" class="pro-nav-card" data-screen="docs"><span class="ico">📚</span><strong>Documentos</strong><span>Elegir formato</span></button>
+      <button type="button" class="pro-nav-card" data-screen="common"><span class="ico">🏠</span><strong>Datos predio</strong><span>Información base</span></button>
+      <button type="button" class="pro-nav-card" data-screen="e1"><span class="ico">📝</span><strong>Solicitud E1</strong><span>Servicio</span></button>
+      <button type="button" class="pro-nav-card" data-screen="retie"><span class="ico">⚡</span><strong>RETIE / E6</strong><span>Técnico</span></button>
+      <button type="button" class="pro-nav-card" data-screen="materiales"><span class="ico">🧰</span><strong>Materiales</strong><span>Solicitud</span></button>
+      <button type="button" class="pro-nav-card" data-screen="fotos"><span class="ico">📷</span><strong>Documentos</strong><span>Fotos/soportes</span></button>
+      <button type="button" class="pro-nav-card" data-screen="ec"><span class="ico">📐</span><strong>EC / Cargas</strong><span>Plano y cuadro</span></button>
+      <button type="button" class="pro-nav-card" data-screen="firmas"><span class="ico">✍️</span><strong>Firmas</strong><span>Solicitante/técnico</span></button>
+      <button type="button" class="pro-nav-card" data-screen="generar"><span class="ico">📦</span><strong>Generar</strong><span>PDF + ZIP</span></button>
+    `;
+    home.insertAdjacentElement("afterend", dash);
+    dash.addEventListener("click", (ev)=>{
+      const btn = ev.target.closest(".pro-nav-card");
+      if(!btn) return;
+      gsProShowScreen(btn.dataset.screen);
+    });
+  }
+
+  function gsProShowScreen(screen){
+    gsProBuildScreenMap();
+    GS_PRO_ACTIVE_SCREEN = screen || "docs";
+    Object.values(GS_PRO_SCREENS).flat().filter(Boolean).forEach(n => n.classList.add("pro-screen-hidden"));
+    (GS_PRO_SCREENS[GS_PRO_ACTIVE_SCREEN] || []).forEach(n => n.classList.remove("pro-screen-hidden"));
+    document.querySelectorAll(".pro-nav-card").forEach(btn => btn.classList.toggle("active", btn.dataset.screen === GS_PRO_ACTIVE_SCREEN));
+    const dash = document.getElementById("gsProDashboard");
+    if(dash) dash.classList.toggle("visible", GS_PRO_ACTIVE_SCREEN !== "docs" || getDocsSeleccionados().length > 0);
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function gsProDocLabel(){
+    const label = document.getElementById("docCurrentLabel");
+    const docs = getDocsSeleccionados();
+    if(label) label.textContent = docs.length ? `Modo activo: ${docs.join(" · ")}` : "Seleccione un documento para iniciar";
+  }
+
+  const gsProOriginalAplicar = aplicarSeleccionDocumental;
+  aplicarSeleccionDocumental = function(){
+    documentosSeleccionados = getDocsSeleccionados();
+    gsProDocLabel();
+    if(!documentosSeleccionados.length) return false;
+
+    const all = documentosSeleccionados.length === DOCS_ALL.length;
+    const requiereE1 = documentosSeleccionados.includes("E1") || all;
+    const requiereDJ = documentosSeleccionados.includes("DJ") || all;
+    const requiereRETIECompleto = documentosSeleccionados.includes("RETIE") || documentosSeleccionados.includes("EC") || all;
+    const requiereRETIEBasico = requiereRETIECompleto || documentosSeleccionados.includes("E6");
+    const e6Minimal = documentosSeleccionados.length === 1 && documentosSeleccionados[0] === "E6";
+    const requiereEC = documentosSeleccionados.includes("EC") || all;
+
+    mostrarBloque(bloqueDesdeTitulo(seccionPorTitulo("SOLICITUD DE SERVICIO")), requiereE1);
+    mostrarBloque(bloqueDesdeTitulo(seccionPorTitulo("DECLARACIÓN JURAMENTADA")), requiereDJ);
+    mostrarBloque(bloqueDesdeTitulo(seccionPorTitulo("RETIE")), requiereRETIEBasico);
+    configurarRETIE(e6Minimal);
+
+    const bloqueEC = document.getElementById("bloqueECPlanos");
+    if(bloqueEC){ bloqueEC.classList.toggle("hidden-by-doc", !requiereEC); setDisabledIn(bloqueEC, !requiereEC); }
+
+    const bloqueMat = document.getElementById("bloqueMateriales");
+    if(bloqueMat){ bloqueMat.classList.remove("hidden-by-doc"); setDisabledIn(bloqueMat,false); }
+    const bloqueFotos = gsProPhotosBox();
+    if(bloqueFotos){ bloqueFotos.classList.remove("hidden-by-doc"); setDisabledIn(bloqueFotos,false); }
+    document.querySelector(".panel.pdf")?.classList.remove("hidden-by-doc");
+    document.getElementById("gsProDashboard")?.classList.add("visible");
+    return true;
+  };
+
+  function gsProWireDocCards(){
+    const btnAplicar = document.getElementById("btnAplicarDocs");
+    if(btnAplicar) btnAplicar.style.display = "none";
+    const btnCambiar = document.getElementById("btnCambiarDocs");
+    if(btnCambiar) btnCambiar.style.display = "none";
+    document.querySelectorAll('input[name="docSelect"]').forEach(chk => {
+      chk.addEventListener("change", () => {
+        const docTodos = document.getElementById("docTodos");
+        if(chk.value === "ALL" && chk.checked){
+          document.querySelectorAll('input[name="docSelect"]').forEach(x => { if(x.value !== "ALL") x.checked = false; });
+        } else if(chk.value !== "ALL" && chk.checked && docTodos){
+          docTodos.checked = false;
+        }
+        aplicarSeleccionDocumental();
+        if(getDocsSeleccionados().length) gsProShowScreen("common");
+      });
+    });
+  }
+
+  function gsProOpenMateriales(){
+    const si = document.querySelector('input[name="reqMateriales"][value="si"]');
+    if(si) si.checked = true;
+    toggleMateriales(true);
+  }
+
+  function gsProAppendMaterialRow(){
+    const table = document.querySelector("#tablaMateriales table");
+    if(!table) return;
+    const target = "CABLE CONCÉNTRICO 1x8+8 AWG AL/CU";
+    const exists = Array.from(table.querySelectorAll(".materialNombre")).some(x => x.textContent.trim().toUpperCase() === target);
+    if(!exists){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td><span class="matTipo">EXTERNA</span></td><td><span class="materialNombre">${target}</span></td><td><span class="materialUnidad">ML</span></td><td><input type="number" class="cantidadMaterial" min="0" step="any" value="0"></td>`;
+      table.appendChild(tr);
+    }
+    const header = table.querySelector("tr");
+    const rows = Array.from(table.querySelectorAll("tr")).slice(1);
+    rows.sort((a,b)=>{
+      const ta = a.querySelector(".matTipo")?.textContent.trim().toUpperCase() || "";
+      const tb = b.querySelector(".matTipo")?.textContent.trim().toUpperCase() || "";
+      const ma = a.querySelector(".materialNombre")?.textContent.trim().toUpperCase() || "";
+      const mb = b.querySelector(".materialNombre")?.textContent.trim().toUpperCase() || "";
+      return (ta+ma).localeCompare(tb+mb,"es");
+    });
+    rows.forEach(r=>table.appendChild(r));
+  }
+
+  const GS_EC_ITEMS = [
+    {circuitoNo:1, circuito:"ALUMBRADO", nombre:"BOMBILLO AHORRADOR", potencia:25, calibre:"16 mm²", proteccion:"1X20A", descripcion:"ROSETA"},
+    {circuitoNo:1, circuito:"ALUMBRADO", nombre:"BOMBILLO COMÚN", potencia:100, calibre:"16 mm²", proteccion:"1X20A", descripcion:"ROSETA"},
+    {circuitoNo:1, circuito:"ALUMBRADO", nombre:"COMPUTADOR", potencia:180, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:1, circuito:"ALUMBRADO", nombre:"EQUIPO DE SONIDO", potencia:220, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:2, circuito:"ALUMBRADO", nombre:"TELEVISOR", potencia:180, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:2, circuito:"ALUMBRADO", nombre:"TOMA CORRIENTE", potencia:100, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:2, circuito:"CALEFACCIÓN", nombre:"DUCHA ELÉCTRICA", potencia:1200, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:2, circuito:"CALEFACCIÓN", nombre:"ESTUFA ELÉCTRICA 2 PUESTOS", potencia:2000, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:3, circuito:"CALEFACCIÓN", nombre:"HORNO ELÉCTRICO", potencia:1200, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:3, circuito:"CALEFACCIÓN", nombre:"HORNO MICROONDAS", potencia:1000, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:3, circuito:"OPERACIÓN", nombre:"AIRE ACONDICIONADO", potencia:1500, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:4, circuito:"OPERACIÓN", nombre:"LAVADORA", potencia:350, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:4, circuito:"OPERACIÓN", nombre:"NEVERA", potencia:300, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:4, circuito:"OPERACIÓN", nombre:"VENTILADOR", potencia:200, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"}
+  ];
+  let GS_EC_ROWS = GS_EC_ITEMS.map(item => ({...item, cantidad:0}));
+
+  function gsProBuildECBuilder(){
+    const bloque = document.getElementById("bloqueECPlanos");
+    if(!bloque || document.getElementById("ecLoadBuilder")) return;
+    const builder = document.createElement("div");
+    builder.id = "ecLoadBuilder";
+    builder.className = "ec-load-builder";
+    builder.innerHTML = `
+      <h4>Cuadro de cargas automático</h4>
+      <p class="hint" style="margin-top:0">Catálogo base cargado según la tabla enviada. Diligencie solo la columna <strong>Cantidad</strong>; la potencia total y la carga instalada se calculan automáticamente.</p>
+      <div class="ec-load-table-wrap">
+        <table class="ec-load-table" id="ec_load_table">
+          <thead>
+            <tr>
+              <th>No. de circuito</th>
+              <th>Tipo de circuito</th>
+              <th>Carga</th>
+              <th>Potencia (W)</th>
+              <th>Cantidad</th>
+              <th>Potencia total (W)</th>
+              <th>Calibre conductor</th>
+              <th>Protección</th>
+              <th>Descripción</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5">CARGA INSTALADA</td>
+              <td id="ec_total_table">0</td>
+              <td colspan="3"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>`;
+    const summary = document.getElementById("ecCargaResumen");
+    summary?.insertAdjacentElement("beforebegin", builder);
+    gsProRenderECTable();
+  }
+
+  function gsProRenderECTable(){
+    const tbody = document.querySelector("#ec_load_table tbody");
+    if(!tbody) return;
+    tbody.innerHTML = "";
+    let total = 0;
+    GS_EC_ROWS.forEach((r,i)=>{
+      const pt = (Number(r.cantidad)||0) * r.potencia;
+      total += pt;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${r.circuitoNo}</td>
+        <td>${r.circuito}</td>
+        <td style="text-align:left">${r.nombre}</td>
+        <td>${r.potencia.toLocaleString('es-CO')}</td>
+        <td><input type="number" min="0" step="1" value="${Number(r.cantidad)||0}" data-ec-qty="${i}" class="ec-qty-input" style="width:88px;text-align:center"></td>
+        <td>${pt.toLocaleString('es-CO')}</td>
+        <td>${r.calibre}</td>
+        <td>${r.proteccion}</td>
+        <td>${r.descripcion}</td>`;
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll("input[data-ec-qty]").forEach(inp=>inp.addEventListener("input", e=>{
+      const idx = Number(e.target.dataset.ecQty);
+      GS_EC_ROWS[idx].cantidad = Math.max(0, Number(e.target.value || 0));
+      gsProRenderECTable();
+    }));
+    const totalEl = document.getElementById("ec_total_table");
+    if(totalEl) totalEl.textContent = total.toLocaleString('es-CO');
+
+    const bombillos = GS_EC_ROWS.filter(r=>r.nombre.includes("BOMBILLO")).reduce((a,b)=>a+(Number(b.cantidad)||0),0);
+    const tomas = GS_EC_ROWS.filter(r=>r.nombre === "TOMA CORRIENTE").reduce((a,b)=>a+(Number(b.cantidad)||0),0);
+    const electro = GS_EC_ROWS.filter(r=>!r.nombre.includes("BOMBILLO") && r.nombre !== "TOMA CORRIENTE").reduce((a,b)=>a+(Number(b.cantidad)||0),0);
+    const circuitosActivos = GS_EC_ROWS.filter(r=>(Number(r.cantidad)||0)>0).length;
+    const resumenPorTipo = ["ALUMBRADO","CALEFACCIÓN","OPERACIÓN"].map(tipo=>{
+      const qty = GS_EC_ROWS.filter(r=>r.circuito===tipo).reduce((a,b)=>a+(Number(b.cantidad)||0),0);
+      return `${tipo}: ${qty}`;
+    }).join(" · ");
+    const set = (id,val)=>{ const el=document.getElementById(id); if(el) el.value=val; };
+    set("ec_bombillos", bombillos);
+    set("ec_tomas", tomas);
+    set("ec_electrodomesticos", electro);
+    set("ec_carga_estimada", total);
+    const res=document.getElementById("ecCargaResumen");
+    if(res) res.textContent = `Carga instalada calculada: ${total.toLocaleString('es-CO')} W. Ítems con cantidad registrada: ${circuitosActivos}. ${resumenPorTipo}.`;
+  }
+
+  calcularCargaEC = function(){ gsProRenderECTable(); };
+
+  function gsProNormalizeSignature(canvas){
+    const w=canvas.width, h=canvas.height, ctx=canvas.getContext("2d");
+    const img=ctx.getImageData(0,0,w,h), data=img.data;
+    let minX=w,minY=h,maxX=0,maxY=0,found=false;
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      const a=data[(y*w+x)*4+3];
+      const r=data[(y*w+x)*4], g=data[(y*w+x)*4+1], b=data[(y*w+x)*4+2];
+      if(a>10 && (r<245 || g<245 || b<245)){found=true; if(x<minX)minX=x; if(y<minY)minY=y; if(x>maxX)maxX=x; if(y>maxY)maxY=y;}
+    }
+    if(!found) return canvas.toDataURL("image/png");
+    const pad=24; minX=Math.max(0,minX-pad); minY=Math.max(0,minY-pad); maxX=Math.min(w,maxX+pad); maxY=Math.min(h,maxY+pad);
+    const cw=maxX-minX, ch=maxY-minY;
+    const crop=document.createElement("canvas"); crop.width=cw; crop.height=ch; crop.getContext("2d").drawImage(canvas,minX,minY,cw,ch,0,0,cw,ch);
+    let src=crop;
+    if(ch > cw*1.25){
+      const rot=document.createElement("canvas"); rot.width=ch; rot.height=cw;
+      const rctx=rot.getContext("2d"); rctx.translate(rot.width/2,rot.height/2); rctx.rotate(-Math.PI/2); rctx.drawImage(crop,-cw/2,-ch/2); src=rot;
+    }
+    const out=document.createElement("canvas"); out.width=900; out.height=260;
+    const o=out.getContext("2d"); o.fillStyle="#fff"; o.fillRect(0,0,out.width,out.height);
+    const scale=Math.min((out.width-40)/src.width,(out.height-30)/src.height);
+    const dw=src.width*scale, dh=src.height*scale;
+    o.drawImage(src,(out.width-dw)/2,(out.height-dh)/2,dw,dh);
+    return out.toDataURL("image/png");
+  }
+
+  function gsProDrawSignaturePreview(canvasId,dataURL){
+    const preview=document.getElementById(canvasId); if(!preview||!dataURL) return;
+    const pctx=preview.getContext("2d");
+    const rect=preview.getBoundingClientRect();
+    preview.width=Math.max(360,Math.round(rect.width||360)); preview.height=150;
+    const img=new Image();
+    img.onload=()=>{ pctx.fillStyle="#fff"; pctx.fillRect(0,0,preview.width,preview.height); const scale=Math.min((preview.width-20)/img.width,(preview.height-20)/img.height); const dw=img.width*scale, dh=img.height*scale; pctx.drawImage(img,(preview.width-dw)/2,(preview.height-dh)/2,dw,dh); };
+    img.src=dataURL;
+  }
+
+  function gsProSetupSignatureModal(){
+    const modal=document.getElementById("modalFirmaFull"); const canvas=document.getElementById("canvasFirmaModal"); if(!modal||!canvas) return;
+    ["btnGuardarFirmaFull","btnBorrarFirmaFull","btnCerrarFirmaFull"].forEach(id=>{ const old=document.getElementById(id); if(old){ const n=old.cloneNode(true); old.parentNode.replaceChild(n,old); }});
+    const ctx=canvas.getContext("2d");
+    function resizeModalCanvas(){ const body=document.querySelector(".modal-firma-body"); const r=body.getBoundingClientRect(); const ratio=window.devicePixelRatio||1; canvas.width=Math.max(600,Math.floor(r.width*ratio)); canvas.height=Math.max(360,Math.floor(r.height*ratio)); ctx.setTransform(ratio,0,0,ratio,0,0); ctx.lineWidth=3; ctx.lineCap="round"; ctx.lineJoin="round"; ctx.strokeStyle="#111"; }
+    window.abrirFirmaFull=function(canvasId,storageKey,titulo){ firmaModalState.previewCanvasId=canvasId; firmaModalState.storageKey=storageKey; document.getElementById("modalFirmaTitulo").textContent=titulo||"Firma"; modal.style.display="flex"; setTimeout(()=>{ resizeModalCanvas(); const saved=localStorage.getItem(storageKey); if(saved){ const img=new Image(); img.onload=()=>ctx.drawImage(img,20,20,Math.min(canvas.width/2,img.width),Math.min(canvas.height/2,img.height)); img.src=saved; } },80); };
+    document.getElementById("btnCerrarFirmaFull")?.addEventListener("click",()=>modal.style.display="none");
+    document.getElementById("btnBorrarFirmaFull")?.addEventListener("click",()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); if(firmaModalState.storageKey){ localStorage.removeItem(firmaModalState.storageKey); const p=document.getElementById(firmaModalState.previewCanvasId); p?.getContext("2d")?.clearRect(0,0,p.width,p.height); }});
+    document.getElementById("btnGuardarFirmaFull")?.addEventListener("click",()=>{ const dataURL=gsProNormalizeSignature(canvas); if(firmaModalState.storageKey) localStorage.setItem(firmaModalState.storageKey,dataURL); gsProDrawSignaturePreview(firmaModalState.previewCanvasId,dataURL); modal.style.display="none"; });
+    window.addEventListener("resize",()=>{ if(modal.style.display==="flex") resizeModalCanvas(); });
+  }
+
+  function gsProLoadSavedSignatures(){
+    gsProDrawSignaturePreview("canvasFirmaUsuario", localStorage.getItem("firmaUsuario"));
+    gsProDrawSignaturePreview("canvasFirmaTecnico", localStorage.getItem("firmaTecnico"));
+    document.querySelectorAll("#canvasFirmaUsuario,#canvasFirmaTecnico").forEach(c=>{
+      const status=document.createElement("div"); status.className="signature-status"; status.textContent="Toque el recuadro para firmar en pantalla completa.";
+      c.closest(".field")?.appendChild(status);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    gsProBuildScreenMap();
+    gsProCreateDashboard();
+    gsProWireDocCards();
+    gsProBuildECBuilder();
+    gsProSetupSignatureModal();
+    gsProLoadSavedSignatures();
+    gsProOpenMateriales();
+    setTimeout(()=>{ gsProAppendMaterialRow(); gsProOpenMateriales(); },450);
+    setTimeout(gsProAppendMaterialRow,1000);
+    gsProShowScreen("docs");
+  });
+
+
+  /* ====== SERVICE WORKER PWA · gsdoc-v7 ====== */
   if ("serviceWorker" in navigator) {
     let refreshing = false;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
@@ -1953,8 +2400,8 @@ function descargarExcelMateriales() {
 
     window.addEventListener("load", async () => {
       try {
-        const reg = await navigator.serviceWorker.register("./sw.js?v=gsdoc-v4");
-        console.log("SW registrado:", reg.scope, "gsdoc-v4");
+        const reg = await navigator.serviceWorker.register("./sw.js?v=gsdoc-v7");
+        console.log("SW registrado:", reg.scope, "gsdoc-v7");
         await reg.update();
 
         if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
