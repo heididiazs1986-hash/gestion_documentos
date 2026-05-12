@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link rel="manifest" href="./manifest.json?v=gsdoc-v8">
+  <link rel="manifest" href="./manifest.json?v=gsdoc-v9">
 <meta name="theme-color" content="#d40000">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=gsdoc-v8">
-<link rel="shortcut icon" href="./icon-192.png?v=gsdoc-v8">
-<link rel="apple-touch-icon" href="./icon-180.png?v=gsdoc-v8">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=gsdoc-v9">
+<link rel="shortcut icon" href="./icon-192.png?v=gsdoc-v9">
+<link rel="apple-touch-icon" href="./icon-180.png?v=gsdoc-v9">
 
   <meta charset="UTF-8" />
   <title>GS Documentos PRO – Formularios ESPT</title>
@@ -450,7 +450,7 @@
   
 
 /* =====================================================
-   GS DOCUMENTOS PRO v8 · Rediseño tipo GS Diagnósticos
+   GS DOCUMENTOS PRO · Rediseño tipo GS Diagnósticos
    ===================================================== */
 :root{
   --gs-red:#d40000;
@@ -562,70 +562,42 @@ footer{font-size:13px;color:#6b7280;padding-bottom:22px;}
   
 
 /* =====================================================
-   GS DOCUMENTOS PRO v8 · Depuración visual profunda
+   GS DOCUMENTOS PRO · Limpieza visual profunda
    ===================================================== */
-:root{
-  --gs-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  --gs-bg:#f5f6f8;
-  --gs-card:#ffffff;
-  --gs-ink:#1e2834;
-  --gs-muted:#6b7280;
-  --gs-line:#dde3ea;
-  --gs-red:#d40000;
-  --gs-shadow-soft:0 12px 28px rgba(15,23,42,.08);
-}
-html[data-theme="dark"]{
-  --gs-bg:#0f141b;
-  --gs-card:#171f29;
-  --gs-ink:#f2f5f8;
-  --gs-muted:#aab4c2;
-  --gs-line:#2d3847;
-  --gs-shadow-soft:0 12px 32px rgba(0,0,0,.28);
-}
-body{font-family:var(--gs-font)!important;background:var(--gs-bg)!important;color:var(--gs-ink)!important;font-size:16px!important;line-height:1.42!important;}
-header{position:static!important;padding:16px!important;background:linear-gradient(135deg,#d40000,#a90000)!important;box-shadow:0 6px 18px rgba(120,0,0,.20)!important;}
-header .title-main{font-size:23px!important;font-weight:750!important;letter-spacing:-.25px!important;}
-header .title-sub{font-size:14px!important;font-weight:500!important;opacity:.92!important;}
-.logo-gs{border-radius:18px!important;box-shadow:none!important;}
-main{padding:14px!important;background:var(--gs-bg)!important;}
-.panel{background:var(--gs-card)!important;color:var(--gs-ink)!important;border-color:var(--gs-line)!important;box-shadow:var(--gs-shadow-soft)!important;border-radius:24px!important;}
-.panel.pdf{background:var(--gs-card)!important;}
+body{font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif!important;font-size:16px!important;letter-spacing:-.01em;}
+header{position:sticky!important;top:0;z-index:900!important;padding:14px 16px!important;}
+header .title-main{font-size:22px!important;font-weight:750!important;}
+header .title-sub{font-size:13px!important;line-height:1.25!important;}
+.logo-gs{width:48px!important;height:48px!important;font-size:23px!important;border-radius:15px!important;}
+main{padding:12px!important;}
+.panel{border-radius:24px!important;padding:16px!important;box-shadow:0 12px 30px rgba(16,24,40,.08)!important;}
 .section-title{display:none!important;}
-.field label{font-size:15px!important;font-weight:650!important;color:var(--gs-ink)!important;}
-input,select,textarea{background:var(--gs-card)!important;color:var(--gs-ink)!important;border:1px solid var(--gs-line)!important;border-radius:16px!important;font-size:16px!important;min-height:50px!important;box-shadow:none!important;}
+.field label{font-size:15px!important;font-weight:650!important;color:var(--gs-ink)!important;margin-bottom:6px!important;}
+input,select,textarea{font-size:17px!important;min-height:48px!important;border-radius:15px!important;border:1px solid #d8dee7!important;box-shadow:none!important;}
+input[readonly]{background:#f5f7fa!important;color:#53606e!important;}
 textarea{min-height:92px!important;}
-input[readonly]{background:rgba(128,128,128,.08)!important;color:var(--gs-muted)!important;}
-.hint,.doc-home p,.load-summary{color:var(--gs-muted)!important;}
-.doc-home{background:var(--gs-card)!important;border:1px solid var(--gs-line)!important;border-left:0!important;border-radius:24px!important;box-shadow:var(--gs-shadow-soft)!important;padding:18px!important;}
-.doc-home h2{font-size:22px!important;color:var(--gs-ink)!important;margin-bottom:6px!important;}
-.doc-home p{font-size:14px!important;margin-bottom:14px!important;}
-.doc-options{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;}
-.doc-option{min-height:82px!important;border-radius:22px!important;padding:15px!important;align-items:center!important;background:var(--gs-card)!important;border:1px solid var(--gs-line)!important;box-shadow:0 6px 16px rgba(15,23,42,.05)!important;}
+.doc-home{padding:16px!important;border-left:0!important;border-radius:24px!important;margin-bottom:14px!important;}
+.doc-home h2{font-size:24px!important;margin-bottom:6px!important;}
+.doc-home p{font-size:14px!important;line-height:1.35!important;margin-bottom:14px!important;}
+.doc-option{min-height:84px!important;border-radius:22px!important;align-items:center!important;padding:16px!important;box-shadow:0 10px 22px rgba(16,24,40,.05)!important;}
+.doc-option strong{font-size:18px!important;line-height:1.15!important;}
 .doc-option span{display:none!important;}
-.doc-option strong{font-size:16px!important;line-height:1.15!important;color:var(--gs-ink)!important;}
-.doc-option input{width:22px!important;height:22px!important;accent-color:var(--gs-red)!important;}
-.doc-option:has(input:checked){background:linear-gradient(135deg,var(--gs-red),#ad0000)!important;border-color:transparent!important;color:#fff!important;box-shadow:0 12px 24px rgba(212,0,0,.20)!important;}
-.doc-option:has(input:checked) strong{color:#fff!important;}
-.doc-current{background:rgba(212,0,0,.08)!important;color:var(--gs-red)!important;font-size:13px!important;}
-.pro-dashboard{position:static!important;top:auto!important;z-index:auto!important;display:none!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;background:transparent!important;border:0!important;padding:0!important;margin:0 0 14px!important;box-shadow:none!important;backdrop-filter:none!important;}
+.doc-option input{transform:scale(1.35)!important;margin-right:4px;}
+.doc-current{font-size:13px!important;background:#eef2f7!important;color:#354153!important;}
+.pro-dashboard{position:relative!important;top:auto!important;z-index:20!important;display:none!important;margin:0 0 14px!important;padding:10px!important;background:rgba(248,250,252,.86)!important;border-radius:24px!important;border:1px solid #e4e9f0!important;box-shadow:0 12px 28px rgba(16,24,40,.07)!important;backdrop-filter:blur(8px);}
 .pro-dashboard.visible{display:grid!important;}
-.pro-nav-card{min-height:74px!important;border-radius:20px!important;padding:12px 8px!important;background:var(--gs-card)!important;border:1px solid var(--gs-line)!important;color:var(--gs-ink)!important;box-shadow:0 7px 18px rgba(15,23,42,.06)!important;}
-.pro-nav-card .ico{font-size:21px!important;margin:0 0 3px!important;}
-.pro-nav-card strong{font-size:13.5px!important;line-height:1.05!important;}
+.pro-nav-card{min-height:78px!important;border-radius:20px!important;padding:13px!important;background:#fff!important;box-shadow:0 8px 18px rgba(16,24,40,.05)!important;}
 .pro-nav-card span:not(.ico){display:none!important;}
-.pro-nav-card.active{background:linear-gradient(135deg,var(--gs-red),#ad0000)!important;color:#fff!important;border-color:transparent!important;}
+.pro-nav-card strong{font-size:15px!important;font-weight:750!important;}
+.pro-nav-card .ico{font-size:22px!important;margin-bottom:3px!important;}
+.pro-nav-card.hidden-nav{display:none!important;}
+.pro-nav-card.active{background:linear-gradient(135deg,var(--gs-red),#a90000)!important;color:#fff!important;}
 .pro-nav-card.active strong{color:#fff!important;}
-.pro-nav-card.nav-hidden{display:none!important;}
-.materiales-box,.photos-box,.ec-library-box{background:var(--gs-card)!important;border:1px solid var(--gs-line)!important;border-left:0!important;border-radius:24px!important;box-shadow:var(--gs-shadow-soft)!important;padding:16px!important;}
-.materiales-box h3,.photos-box h3,.ec-library-box h3{font-size:20px!important;color:var(--gs-ink)!important;margin-bottom:10px!important;}
-.ec-preview{display:none!important;}
-.ec-load-builder{background:var(--gs-card)!important;border-color:var(--gs-line)!important;border-radius:22px!important;box-shadow:none!important;padding:0!important;}
-.ec-load-builder h4{font-size:18px!important;color:var(--gs-ink)!important;margin:0 0 8px!important;}
-.ec-load-builder .hint{font-size:13px!important;}
-.ec-load-table-wrap{border:0!important;margin-top:10px!important;}
-.ec-load-table{min-width:0!important;width:100%!important;font-size:15px!important;border-collapse:separate!important;border-spacing:0 8px!important;background:transparent!important;}
-.ec-load-table th,.ec-load-table td{border:0!important;padding:10px!important;background:var(--gs-card)!important;color:var(--gs-ink)!important;}
-.ec-load-table th{font-size:13px!important;text-transform:uppercase!important;letter-spacing:.03em!important;background:transparent!important;color:var(--gs-muted)!important;}
+.ec-library-box .field-row:nth-of-type(2){display:none!important;}
+#ecLoadBuilder h4{font-size:18px!important;margin-bottom:4px!important;}
+#ecLoadBuilder .hint{font-size:13px!important;line-height:1.35!important;}
+.ec-load-table{min-width:0!important;font-size:15px!important;}
+.ec-load-table th,.ec-load-table td{padding:10px!important;}
 .ec-load-table th:nth-child(1),.ec-load-table td:nth-child(1),
 .ec-load-table th:nth-child(2),.ec-load-table td:nth-child(2),
 .ec-load-table th:nth-child(4),.ec-load-table td:nth-child(4),
@@ -633,35 +605,133 @@ input[readonly]{background:rgba(128,128,128,.08)!important;color:var(--gs-muted)
 .ec-load-table th:nth-child(7),.ec-load-table td:nth-child(7),
 .ec-load-table th:nth-child(8),.ec-load-table td:nth-child(8),
 .ec-load-table th:nth-child(9),.ec-load-table td:nth-child(9){display:none!important;}
-.ec-load-table th:nth-child(3),.ec-load-table td:nth-child(3){width:68%!important;text-align:left!important;border-radius:16px 0 0 16px!important;}
-.ec-load-table th:nth-child(5),.ec-load-table td:nth-child(5){width:32%!important;border-radius:0 16px 16px 0!important;text-align:center!important;}
-.ec-qty-input{width:92px!important;min-height:44px!important;text-align:center!important;}
-.ec-load-table tfoot td{display:table-cell!important;background:rgba(212,0,0,.08)!important;color:var(--gs-red)!important;font-weight:800!important;border-radius:16px!important;}
-.ec-load-table tfoot td:not(:nth-child(1)):not(:nth-child(2)){display:none!important;}
-.load-summary{background:rgba(128,128,128,.08)!important;border-color:var(--gs-line)!important;border-radius:18px!important;}
-.gs-theme-toggle{position:absolute;right:14px;top:14px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:8px 11px;font-size:14px;font-weight:700;}
-.gs-screen-title{font-size:22px;font-weight:800;margin:0 0 14px;color:var(--gs-ink);letter-spacing:-.2px;}
-.field.gs-field-hidden{display:none!important;}
-.signature-status{color:var(--gs-muted)!important;}
+.ec-load-table th:nth-child(3),.ec-load-table td:nth-child(3){width:70%;}
+.ec-load-table th:nth-child(5),.ec-load-table td:nth-child(5){width:30%;text-align:center!important;}
+.ec-load-table tfoot td{display:none!important;}
+.ec-qty-input{width:94px!important;max-width:100%!important;}
+.panel.pdf .field-row:first-of-type{display:none!important;}
+.panel.pdf .tag{display:none!important;}
+.panel.pdf .panel-title{font-size:22px!important;margin-bottom:10px!important;}
+#btnALL{min-height:54px!important;font-size:18px!important;}
+.gs-theme-toggle{position:fixed;right:14px;bottom:18px;z-index:9999;border:0;border-radius:999px;padding:12px 14px;background:#111827;color:#fff;font-size:17px;box-shadow:0 10px 30px rgba(0,0,0,.22);}
+body.gs-dark{--gs-ink:#edf2f7;--gs-muted:#b6c0cc;--gs-card:#121821;--gs-soft:#0d1117;--gs-line:#263241;background:#0b0f14!important;color:#edf2f7!important;}
+body.gs-dark .panel,body.gs-dark .doc-home,body.gs-dark .ec-load-builder,body.gs-dark .photos-box,body.gs-dark .materiales-box,body.gs-dark .ec-library-box{background:#121821!important;border-color:#263241!important;color:#edf2f7!important;box-shadow:0 12px 30px rgba(0,0,0,.30)!important;}
+body.gs-dark .pro-dashboard{background:rgba(13,17,23,.88)!important;border-color:#263241!important;}
+body.gs-dark .pro-nav-card,body.gs-dark .doc-option{background:#171f2a!important;border-color:#263241!important;color:#edf2f7!important;}
+body.gs-dark .pro-nav-card strong,body.gs-dark .doc-option strong,body.gs-dark .field label{color:#edf2f7!important;}
+body.gs-dark input,body.gs-dark select,body.gs-dark textarea{background:#0d1117!important;color:#edf2f7!important;border-color:#344255!important;}
+body.gs-dark input[readonly]{background:#17202b!important;color:#cbd5e1!important;}
+body.gs-dark .load-summary,body.gs-dark .ec-preview{background:#0d1117!important;color:#cbd5e1!important;border-color:#344255!important;}
+body.gs-dark .ec-load-table{background:#121821!important;color:#edf2f7!important;}
+body.gs-dark .ec-load-table th{background:#1d2734!important;color:#fff!important;}
+body.gs-dark .ec-load-table td{border-color:#344255!important;}
 @media(max-width:640px){
-  body{font-size:15px!important;}
-  .doc-options{grid-template-columns:1fr!important;}
-  .pro-dashboard.visible{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
-  .pro-nav-card{min-height:66px!important;border-radius:18px!important;}
-  .pro-nav-card strong{font-size:12.5px!important;}
-  .panel{padding:14px!important;border-radius:22px!important;}
-  header .title-main{font-size:21px!important;}
-  input,select,textarea{font-size:16px!important;}
+  .pro-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;}
+  .pro-nav-card{min-height:74px!important;}
+  .doc-option{min-height:78px!important;}
+  .doc-home h2{font-size:22px!important;}
+  input,select,textarea{font-size:17px!important;}
 }
 
-  </style>
+
+
+/* =====================================================
+   GS DOCUMENTOS PRO v9 · Reestructura limpia tipo GS Diagnósticos
+   ===================================================== */
+:root{--gs-font:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;}
+html,body{font-family:var(--gs-font)!important;background:#f4f6f8!important;color:#111827!important;}
+body{font-size:15.5px!important;letter-spacing:-.015em!important;}
+header{padding:14px 16px!important;min-height:96px!important;display:flex!important;align-items:center!important;gap:14px!important;}
+.logo-gs{width:58px!important;height:58px!important;border-radius:18px!important;font-size:27px!important;flex:0 0 58px!important;}
+header .title-main{font-size:24px!important;line-height:1.04!important;font-weight:820!important;letter-spacing:-.035em!important;}
+header .title-sub{font-size:14px!important;line-height:1.2!important;opacity:.96!important;margin-top:4px!important;}
+#themeToggle,#gsThemeToggle,.gs-theme-toggle,.theme-toggle,#btnTheme,#btnModoOscuro{position:absolute!important;right:18px!important;top:20px!important;width:56px!important;height:56px!important;border-radius:50%!important;display:grid!important;place-items:center!important;font-size:26px!important;padding:0!important;color:#fff!important;background:rgba(255,255,255,.16)!important;border:1px solid rgba(255,255,255,.26)!important;box-shadow:none!important;overflow:hidden!important;text-indent:-9999px!important;}
+#themeToggle::after,#gsThemeToggle::after,.gs-theme-toggle::after,.theme-toggle::after,#btnTheme::after,#btnModoOscuro::after{content:'🌙';text-indent:0!important;position:absolute!important;inset:0!important;display:grid!important;place-items:center!important;}
+body.dark #themeToggle::after,body.gs-dark #gsThemeToggle::after,body.gs-dark .gs-theme-toggle::after,body.dark .theme-toggle::after,body.dark #btnTheme::after,body.dark #btnModoOscuro::after{content:'☀️';}
+main{padding:14px!important;max-width:980px!important;}
+.panel{border-radius:26px!important;padding:16px!important;border:1px solid #e6e9ef!important;box-shadow:0 18px 38px rgba(16,24,40,.08)!important;background:rgba(255,255,255,.97)!important;}
+.doc-home{border:0!important;border-radius:28px!important;padding:20px!important;box-shadow:0 18px 38px rgba(16,24,40,.08)!important;background:#fff!important;}
+.doc-home h2{font-size:24px!important;font-weight:830!important;margin:0 0 6px!important;color:#111827!important;}
+.doc-home p{font-size:14px!important;color:#667085!important;margin:0 0 14px!important;line-height:1.35!important;}
+.doc-options{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important;}
+.doc-option{min-height:132px!important;border-radius:28px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:16px!important;border:1.4px solid #ead8dc!important;background:#fff!important;box-shadow:0 12px 28px rgba(16,24,40,.06)!important;}
+.doc-option::before{content:attr(data-ico)!important;width:72px!important;height:72px!important;border-radius:50%!important;background:#fff3f4!important;border:0!important;display:grid!important;place-items:center!important;font-size:36px!important;margin:0 0 10px!important;}
+.doc-option strong{font-size:20px!important;line-height:1.08!important;font-weight:850!important;color:#101828!important;margin:0!important;}
+.doc-option span{display:none!important;}
+.doc-option:has(input:checked){background:linear-gradient(135deg,#d40000,#a90000)!important;border-color:transparent!important;box-shadow:0 18px 34px rgba(212,0,0,.23)!important;}
+.doc-option:has(input:checked) strong{color:#fff!important;}
+.doc-option:has(input:checked)::before{background:rgba(255,255,255,.18)!important;color:#fff!important;}
+.doc-option:has(input:checked)::after{display:none!important;}
+.doc-current{display:none!important;}
+.pro-dashboard{display:none!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;position:static!important;top:auto!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;margin:14px 0!important;backdrop-filter:none!important;}
+.pro-dashboard.visible{display:grid!important;}
+.pro-nav-card{min-height:104px!important;border-radius:24px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:14px!important;background:#fff!important;border:1.4px solid #ead8dc!important;box-shadow:0 12px 26px rgba(16,24,40,.06)!important;}
+.pro-nav-card .ico{font-size:32px!important;margin:0 0 8px!important;}
+.pro-nav-card strong{font-size:19px!important;font-weight:830!important;line-height:1.08!important;color:#111827!important;}
+.pro-nav-card span{display:none!important;}
+.pro-nav-card.active{background:linear-gradient(135deg,#d40000,#a90000)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 18px 34px rgba(212,0,0,.23)!important;}
+.pro-nav-card.active strong{color:#fff!important;}
+.form-section-title{font-size:22px!important;font-weight:850!important;color:#111827!important;margin:18px 0 10px!important;}
+.form-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0;}
+.form-actions .btn{min-height:54px!important;border-radius:18px!important;font-size:16px!important;padding:10px 12px!important;}
+.field-row{gap:10px!important;margin-bottom:8px!important;}
+.field{min-width:220px!important;}
+.field label{font-size:14.5px!important;font-weight:720!important;color:#667085!important;margin:0 0 5px!important;}
+input,select,textarea{font-size:16px!important;min-height:44px!important;padding:10px 13px!important;border-radius:18px!important;border:1px solid #e0e5ec!important;background:#fff!important;color:#111827!important;}
+textarea{min-height:78px!important;}
+.inline-options{gap:8px!important;}
+.inline-options label{font-size:15px!important;font-weight:720!important;background:#fff!important;border:1px solid #e4e8ef!important;border-radius:16px!important;padding:10px 12px!important;}
+.materiales-box,.photos-box,.ec-library-box{border:0!important;border-radius:28px!important;background:#fff!important;padding:16px!important;box-shadow:0 18px 38px rgba(16,24,40,.08)!important;}
+.materiales-box h3,.photos-box h3,.ec-library-box h3{font-size:23px!important;font-weight:850!important;margin:0 0 12px!important;color:#111827!important;}
+.ec-preview,.load-summary{font-size:15px!important;line-height:1.35!important;border-radius:18px!important;background:#f7f8fa!important;border:1px solid #e5eaf1!important;color:#667085!important;}
+.ec-load-builder{padding:12px!important;border:1px solid #e5eaf1!important;border-radius:22px!important;box-shadow:none!important;}
+.ec-load-builder h4{display:none!important;}
+.ec-load-table-wrap{border:0!important;overflow:visible!important;margin-top:4px!important;}
+.ec-load-table{min-width:0!important;width:100%!important;border-collapse:separate!important;border-spacing:0 10px!important;font-size:15px!important;}
+.ec-load-table thead{display:none!important;}
+.ec-load-table tbody tr{display:grid!important;grid-template-columns:1fr 112px!important;gap:12px!important;align-items:center!important;padding:10px 12px!important;border:1px solid #e4e8ef!important;border-radius:22px!important;background:#fff!important;box-shadow:0 8px 18px rgba(16,24,40,.04)!important;}
+.ec-load-table tbody td{border:0!important;padding:0!important;background:transparent!important;display:none!important;}
+.ec-load-table tbody td:nth-child(3),.ec-load-table tbody td:nth-child(5){display:block!important;}
+.ec-load-table tbody td:nth-child(3){font-size:17px!important;font-weight:780!important;color:#111827!important;text-align:left!important;line-height:1.15!important;}
+.ec-load-table tbody td:nth-child(5){text-align:right!important;}
+.ec-qty-input{width:94px!important;min-height:48px!important;border-radius:20px!important;text-align:center!important;font-size:18px!important;font-weight:750!important;}
+.ec-load-table tfoot{display:none!important;}
+.canvas-box{min-height:112px!important;border-radius:20px!important;border:2px dashed #d4dae3!important;}
+.canvas-box canvas{height:108px!important;}
+.signature-status{font-size:13px!important;color:#667085!important;}
+#btnLimpiarForm{font-size:15px!important;padding:10px 14px!important;min-height:48px!important;}
+.panel.pdf{border-radius:28px!important;box-shadow:0 18px 38px rgba(16,24,40,.08)!important;}
+.panel.pdf .panel-title{font-size:23px!important;color:#111827!important;}
+.panel.pdf .tag{display:none!important;}
+@media(max-width:640px){
+  main{padding:10px!important;}
+  header{padding:13px 14px!important;min-height:92px!important;}
+  header .title-main{font-size:22px!important;max-width:260px!important;}
+  header .title-sub{font-size:13px!important;max-width:260px!important;}
+  .doc-options{grid-template-columns:1fr!important;}
+  .doc-option{min-height:112px!important;flex-direction:row!important;justify-content:flex-start!important;text-align:left!important;padding:16px 18px!important;}
+  .doc-option::before{width:56px!important;height:56px!important;font-size:30px!important;margin:0 14px 0 0!important;}
+  .pro-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  .pro-nav-card{min-height:90px!important;}
+  .pro-nav-card strong{font-size:17px!important;}
+  .field{min-width:100%!important;}
+  .form-actions{grid-template-columns:1fr!important;}
+}
+body.dark,body.gs-dark{background:#111827!important;color:#f9fafb!important;}
+body.dark .panel,body.gs-dark .panel,body.dark .doc-home,body.gs-dark .doc-home,body.dark .doc-option,body.gs-dark .doc-option,body.dark .pro-nav-card,body.gs-dark .pro-nav-card,body.dark .materiales-box,body.gs-dark .materiales-box,body.dark .photos-box,body.gs-dark .photos-box,body.dark .ec-library-box,body.gs-dark .ec-library-box,body.dark .ec-load-table tbody tr,body.gs-dark .ec-load-table tbody tr{background:#1f2937!important;border-color:#374151!important;color:#f9fafb!important;}
+body.dark .doc-home h2,body.gs-dark .doc-home h2,body.dark .doc-option strong,body.gs-dark .doc-option strong,body.dark .pro-nav-card strong,body.gs-dark .pro-nav-card strong,body.dark .form-section-title,body.gs-dark .form-section-title,body.dark .materiales-box h3,body.gs-dark .materiales-box h3,body.dark .photos-box h3,body.gs-dark .photos-box h3,body.dark .ec-library-box h3,body.gs-dark .ec-library-box h3,body.dark .ec-load-table tbody td:nth-child(3),body.gs-dark .ec-load-table tbody td:nth-child(3){color:#f9fafb!important;}
+body.dark input,body.gs-dark input,body.dark select,body.gs-dark select,body.dark textarea,body.gs-dark textarea{background:#111827!important;color:#f9fafb!important;border-color:#374151!important;}
+body.dark .field label,body.gs-dark .field label{color:#cbd5e1!important;}
+body.dark .ec-preview,body.gs-dark .ec-preview,body.dark .load-summary,body.gs-dark .load-summary{background:#111827!important;border-color:#374151!important;color:#cbd5e1!important;}
+
+</style>
 </head>
 
 <body>
 <header>
   <div class="logo-gs">GS</div>
   <div class="title-block">
-    <div class="title-main">GS Documentos PRO v8</div>
+    <div class="title-main">GS Documentos PRO</div>
     <div class="title-sub">Gestión Social · Documentos ESPT/CUND100</div>
   </div>
 </header>
@@ -2150,9 +2220,9 @@ function descargarExcelMateriales() {
 
 
   /* =====================================================
-     GS DOCUMENTOS PRO v8 · UX, pantallas, firmas, EC
+     GS DOCUMENTOS PRO · UX, pantallas, firmas, EC
      ===================================================== */
-  const GS_PRO_VERSION = "gsdoc-v8";
+  const GS_PRO_VERSION = "gsdoc-v9";
   const GS_PRO_SCREENS = {};
   let GS_PRO_ACTIVE_SCREEN = "docs";
 
@@ -2396,7 +2466,7 @@ function descargarExcelMateriales() {
     const tomas = GS_EC_ROWS.filter(r=>r.nombre === "TOMA CORRIENTE").reduce((a,b)=>a+(Number(b.cantidad)||0),0);
     const electro = GS_EC_ROWS.filter(r=>!r.nombre.includes("BOMBILLO") && r.nombre !== "TOMA CORRIENTE").reduce((a,b)=>a+(Number(b.cantidad)||0),0);
     const circuitosActivos = GS_EC_ROWS.filter(r=>(Number(r.cantidad)||0)>0).length;
-    const resumenPorTipo = ["ALUMBRADO","CALEFACCIÓN","FUERZA"].map(tipo=>{
+    const resumenPorTipo = ["ALUMBRADO","CALEFACCIÓN","OPERACIÓN"].map(tipo=>{
       const qty = GS_EC_ROWS.filter(r=>r.circuito===tipo).reduce((a,b)=>a+(Number(b.cantidad)||0),0);
       return `${tipo}: ${qty}`;
     }).join(" · ");
@@ -2485,140 +2555,329 @@ function descargarExcelMateriales() {
 
 
   /* =====================================================
-     GS DOCUMENTOS PRO v8 · reglas por documento y UI limpia
+     GS DOCUMENTOS PRO · matriz de campos y limpieza
      ===================================================== */
-  const GS_FIELD_DOCS = {
-    sol_correo:["E1"],
-    cm_nombre_proyecto:["E1","E6"],
-    cm_retie_constructor:["RETIE","E6","EC"],
-    cm_retie_matricula:["RETIE","EC"],
-    retie_const_identificacion:["RETIE"],
-    retie_decl_num:["RETIE"],
-    retie_prof_constructor:["RETIE"],
-    retie_consejo:["RETIE"],
-    retie_fecha_construccion:["RETIE"],
-    retie_dir_constructor:["RETIE"],
-    retie_cel_constructor:["RETIE"],
-    retie_correo_constructor:["RETIE"]
+  const GS_DOC_FIELD_RULES = {
+    cm_nombre:["ALL"], cm_fecha_solicitud:["ALL"], cm_tipo_doc:["ALL"], cm_num_doc:["ALL"], cm_dir_radica:["ALL"],
+    cm_localidad:["ALL"], cm_depto:["ALL"], cm_mpio:["ALL"], cm_celular:["ALL"],
+    sol_correo:["E1"], cm_nombre_proyecto:["E1","E6"],
+    e1_tipo_persona:["E1"], e1_zona:["E1"], e1_coord_x:["E1"], e1_coord_y:["E1"], e1_indicaciones:["E1"],
+    e1_red_cercana:["E1"], e1_distancia_red:["E1"], e1_num_transformador:["E1"], e1_no_solicitud:["E1"],
+    e1_tipo_uso:["E1"], e1_tipo_uso_otro:["E1"], e1_estrato:["E1"],
+    dj_descripcion:["DJ"], dj_ciudad_dom:["DJ"], dj_fecha_pose:["DJ"], dj_posesion:["DJ"],
+    cm_retie_constructor:["RETIE","E6","EC"], cm_retie_matricula:["RETIE","EC"],
+    retie_const_identificacion:["RETIE"], retie_decl_num:["RETIE"], retie_prof_constructor:["RETIE"], retie_consejo:["RETIE"],
+    retie_fecha_construccion:["RETIE"], retie_dir_constructor:["RETIE"], retie_cel_constructor:["RETIE"], retie_correo_constructor:["RETIE"]
   };
-  const GS_DOC_SCREENS = {
-    e1:["E1"],
-    dj:["DJ"],
-    retie:["RETIE","E6","EC"],
-    ec:["EC"],
-    firmas:["E1","E6","AR","DJ","RETIE","EC"]
-  };
-  function gsDocs(){ return getDocsSeleccionados(); }
-  function gsHasDoc(list){ const docs=gsDocs(); return docs.some(d=>list.includes(d)); }
-  function gsSetFieldVisibleById(id, visible){
-    const el = document.getElementById(id); if(!el) return;
-    const field = el.closest('.field') || el.closest('.field-row') || el.parentElement;
-    if(field) field.classList.toggle('gs-field-hidden', !visible);
-    el.disabled = !visible;
-  }
-  function gsApplyFieldMatrix(){
-    const docs = gsDocs();
-    Object.entries(GS_FIELD_DOCS).forEach(([id,allowed])=>gsSetFieldVisibleById(id, docs.some(d=>allowed.includes(d))));
-    // Firmas por documento
-    const firmaSol = document.getElementById('canvasFirmaUsuario')?.closest('.field');
-    const firmaTec = document.getElementById('canvasFirmaTecnico')?.closest('.field');
-    const solVisible = docs.some(d=>['E1','E6','AR','DJ'].includes(d));
-    const tecVisible = docs.some(d=>['RETIE','EC'].includes(d));
-    if(firmaSol){ firmaSol.classList.toggle('gs-field-hidden', !solVisible); setDisabledIn(firmaSol,!solVisible); }
-    if(firmaTec){ firmaTec.classList.toggle('gs-field-hidden', !tecVisible); setDisabledIn(firmaTec,!tecVisible); }
-  }
-  function gsInstallThemeToggle(){
-    if(document.getElementById('gsThemeToggle')) return;
-    const btn=document.createElement('button');
-    btn.type='button'; btn.id='gsThemeToggle'; btn.className='gs-theme-toggle';
-    const saved=localStorage.getItem('gsdoc-theme') || 'auto';
-    function apply(mode){
-      const dark = mode==='dark' || (mode==='auto' && matchMedia('(prefers-color-scheme: dark)').matches);
-      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-      btn.textContent = dark ? '☀️ Claro' : '🌙 Oscuro';
-    }
-    btn.addEventListener('click',()=>{
-      const now=document.documentElement.dataset.theme==='dark'?'light':'dark';
-      localStorage.setItem('gsdoc-theme', now); apply(now);
+
+  function gsV8Docs(){ return getDocsSeleccionados(); }
+  function gsV8Has(docs, doc){ return docs.includes(doc) || docs.length === DOCS_ALL.length; }
+  function gsV8Applies(rule, docs){ return rule?.includes("ALL") || docs.some(d=>rule?.includes(d)) || docs.length === DOCS_ALL.length; }
+  function gsV8FieldWrap(ctrl){ return ctrl?.closest('.field') || ctrl?.closest('.field-row') || ctrl?.closest('label'); }
+  function gsV8SetWrap(ctrl, show){ const w=gsV8FieldWrap(ctrl); if(w) w.classList.toggle('hidden-by-doc', !show); ctrl.disabled=!show; }
+  function gsV8ApplyFieldMatrix(){
+    const docs = gsV8Docs(); if(!docs.length) return;
+    Object.entries(GS_DOC_FIELD_RULES).forEach(([id,rule])=>{
+      document.querySelectorAll(`#${id}, [name="${id}"]`).forEach(ctrl=>gsV8SetWrap(ctrl, gsV8Applies(rule, docs)));
     });
-    document.querySelector('header')?.appendChild(btn); apply(saved);
+    const showE1 = gsV8Has(docs,'E1'), showDJ = gsV8Has(docs,'DJ'), showRetie = gsV8Has(docs,'RETIE') || gsV8Has(docs,'EC') || gsV8Has(docs,'E6'), showEC = gsV8Has(docs,'EC');
+    mostrarBloque(bloqueDesdeTitulo(seccionPorTitulo("SOLICITUD DE SERVICIO")), showE1);
+    mostrarBloque(bloqueDesdeTitulo(seccionPorTitulo("DECLARACIÓN JURAMENTADA")), showDJ);
+    mostrarBloque(bloqueDesdeTitulo(seccionPorTitulo("RETIE")), showRetie);
+    const ec = document.getElementById('bloqueECPlanos'); if(ec){ec.classList.toggle('hidden-by-doc', !showEC); setDisabledIn(ec,!showEC);}
+    const firmas = bloqueDesdeTitulo(seccionPorTitulo("FIRMAS DIBUJADAS"));
+    const requiereFirmaSolic = docs.some(d=>['E1','E6','AR','DJ'].includes(d)) || docs.length===DOCS_ALL.length;
+    const requiereFirmaTec = docs.some(d=>['EC','RETIE'].includes(d)) || docs.length===DOCS_ALL.length;
+    firmas.forEach(n=>{
+      n.querySelectorAll('.field').forEach(field=>{
+        const txt=(field.textContent||'').toUpperCase();
+        if(txt.includes('SOLICITANTE')) field.classList.toggle('hidden-by-doc', !requiereFirmaSolic);
+        if(txt.includes('TÉCNICO') || txt.includes('TECNICO')) field.classList.toggle('hidden-by-doc', !requiereFirmaTec);
+      });
+    });
+    gsV8UpdateNav();
   }
-  function gsInsertScreenTitle(title){
-    const first = (GS_PRO_SCREENS[GS_PRO_ACTIVE_SCREEN]||[]).find(Boolean);
-    if(!first || first.id==='pantallaDocumentos') return;
-    document.querySelectorAll('.gs-screen-title').forEach(x=>x.remove());
-    const h=document.createElement('div'); h.className='gs-screen-title'; h.textContent=title;
-    first.insertAdjacentElement('beforebegin', h);
-    GS_PRO_SCREENS[GS_PRO_ACTIVE_SCREEN].unshift(h);
-  }
-  function gsVisibleNav(){
-    const docs=gsDocs();
+
+  function gsV8UpdateNav(){
+    const docs = gsV8Docs();
     const show = {
-      docs:true, common:docs.length>0, e1:docs.includes('E1'), dj:docs.includes('DJ'),
-      retie:docs.some(d=>['RETIE','E6','EC'].includes(d)),
-      materiales:docs.length>0, fotos:docs.length>0, ec:docs.includes('EC'),
-      firmas:docs.some(d=>['E1','E6','AR','DJ','RETIE','EC'].includes(d)), generar:docs.length>0
+      docs:true,
+      common:docs.length>0,
+      e1:gsV8Has(docs,'E1'),
+      dj:gsV8Has(docs,'DJ'),
+      retie:gsV8Has(docs,'RETIE') || gsV8Has(docs,'EC') || gsV8Has(docs,'E6'),
+      materiales:docs.length>0,
+      fotos:docs.length>0,
+      ec:gsV8Has(docs,'EC'),
+      firmas:docs.length>0,
+      generar:docs.length>0
     };
-    document.querySelectorAll('.pro-nav-card').forEach(btn=>btn.classList.toggle('nav-hidden', !show[btn.dataset.screen]));
+    document.querySelectorAll('.pro-nav-card').forEach(btn=>btn.classList.toggle('hidden-nav', !show[btn.dataset.screen]));
   }
-  const gsOldCreateDashboard = gsProCreateDashboard;
+
+  const gsV8OldCreateDashboard = gsProCreateDashboard;
   gsProCreateDashboard = function(){
-    gsOldCreateDashboard();
+    gsV8OldCreateDashboard();
     const dash=document.getElementById('gsProDashboard'); if(!dash) return;
-    dash.innerHTML = `
-      <button type="button" class="pro-nav-card" data-screen="docs"><span class="ico">📚</span><strong>Inicio</strong></button>
-      <button type="button" class="pro-nav-card" data-screen="common"><span class="ico">🏠</span><strong>Datos</strong></button>
-      <button type="button" class="pro-nav-card" data-screen="e1"><span class="ico">📝</span><strong>E1</strong></button>
-      <button type="button" class="pro-nav-card" data-screen="dj"><span class="ico">📄</span><strong>DJ</strong></button>
-      <button type="button" class="pro-nav-card" data-screen="retie"><span class="ico">⚡</span><strong>Técnico</strong></button>
-      <button type="button" class="pro-nav-card" data-screen="materiales"><span class="ico">🧰</span><strong>Materiales</strong></button>
-      <button type="button" class="pro-nav-card" data-screen="fotos"><span class="ico">📷</span><strong>Soportes</strong></button>
-      <button type="button" class="pro-nav-card" data-screen="ec"><span class="ico">📐</span><strong>EC</strong></button>
-      <button type="button" class="pro-nav-card" data-screen="firmas"><span class="ico">✍️</span><strong>Firmas</strong></button>
-      <button type="button" class="pro-nav-card" data-screen="generar"><span class="ico">📦</span><strong>Generar</strong></button>`;
-    dash.onclick=(ev)=>{ const btn=ev.target.closest('.pro-nav-card'); if(btn) gsProShowScreen(btn.dataset.screen); };
-    gsVisibleNav();
-  };
-  const gsOldShowScreen = gsProShowScreen;
-  gsProShowScreen = function(screen){
-    gsOldShowScreen(screen);
-    gsApplyFieldMatrix(); gsVisibleNav();
-    const titles={common:'Datos del predio', e1:'Solicitud E1', dj:'Declaración juramentada', retie:'Datos del técnico', materiales:'Materiales', fotos:'Soportes', ec:'Esquema constructivo', firmas:'Firmas', generar:'Generar'};
-    if(titles[screen]) gsInsertScreenTitle(titles[screen]);
-  };
-  const gsOldAplicarV8 = aplicarSeleccionDocumental;
-  aplicarSeleccionDocumental = function(){
-    const ok = gsOldAplicarV8();
-    if(!ok) return false;
-    // matriz específica
-    gsApplyFieldMatrix();
-    gsVisibleNav();
-    // materiales y soportes siempre opcionales para cualquier documento
-    const bloqueMat=document.getElementById('bloqueMateriales'); if(bloqueMat){ bloqueMat.classList.remove('hidden-by-doc'); setDisabledIn(bloqueMat,false); }
-    const bloqueFotos=gsProPhotosBox(); if(bloqueFotos){ bloqueFotos.classList.remove('hidden-by-doc'); setDisabledIn(bloqueFotos,false); }
-    return true;
-  };
-  function gsSimplifyDocCards(){
-    const labels = {ALL:'Todos', E1:'E1', E6:'E6', AR:'AR', DJ:'DJ', RETIE:'RETIE', EC:'EC'};
-    document.querySelectorAll('input[name="docSelect"]').forEach(inp=>{
-      const strong = inp.closest('label')?.querySelector('strong');
-      if(strong && labels[inp.value]) strong.textContent = labels[inp.value];
+    const labels = {
+      docs:['📚','Documentos'], common:['🏠','Predio'], e1:['📝','E1'], dj:['📄','DJ'], retie:['⚡','Técnico'],
+      materiales:['🧰','Materiales'], fotos:['📷','Soportes'], ec:['📐','EC'], firmas:['✍️','Firmas'], generar:['📦','Generar']
+    };
+    dash.querySelectorAll('.pro-nav-card').forEach(btn=>{
+      const data=labels[btn.dataset.screen]; if(data) btn.innerHTML=`<span class="ico">${data[0]}</span><strong>${data[1]}</strong>`;
     });
-    const intro=document.querySelector('#pantallaDocumentos p');
-    if(intro) intro.textContent='Elige un formato. La app mostrará solo los campos necesarios.';
+    gsV8UpdateNav();
+  };
+
+  const gsV8OldAplicar = aplicarSeleccionDocumental;
+  aplicarSeleccionDocumental = function(){
+    const ok = gsV8OldAplicar();
+    if(ok) gsV8ApplyFieldMatrix();
+    return ok;
+  };
+
+  const gsV8OldShow = gsProShowScreen;
+  gsProShowScreen = function(screen){
+    gsV8ApplyFieldMatrix();
+    gsV8OldShow(screen);
+    gsV8UpdateNav();
+  };
+
+  function gsV8ThemeButton(){
+    if(document.getElementById('gsThemeToggle')) return;
+    const btn=document.createElement('button'); btn.id='gsThemeToggle'; btn.className='gs-theme-toggle'; btn.type='button';
+    const saved=localStorage.getItem('gsdoc-theme')||'light';
+    document.body.classList.toggle('gs-dark', saved==='dark');
+    btn.textContent=saved==='dark'?'☀️':'🌙';
+    btn.addEventListener('click',()=>{ const dark=!document.body.classList.contains('gs-dark'); document.body.classList.toggle('gs-dark',dark); localStorage.setItem('gsdoc-theme',dark?'dark':'light'); btn.textContent=dark?'☀️':'🌙'; });
+    document.body.appendChild(btn);
   }
-  // Cuadro de cargas: solo carga y cantidad visibles, datos técnicos permanecen internos para EC
-  function gsCleanECText(){
-    document.querySelectorAll('#ecLoadBuilder .hint').forEach(h=>h.textContent='Diligencia cantidades. El detalle técnico queda interno para el EC.');
+
+  function gsV8MakeZipName(){
+    const datos = recogerDatos();
+    return (datos.cm_nombre || 'SOLICITANTE').trim().replace(/[\/:*?"<>|]+/g, '_').replace(/\s+/g, '_') || 'SOLICITANTE';
   }
+
   document.addEventListener('DOMContentLoaded',()=>{
-    gsInstallThemeToggle();
-    gsSimplifyDocCards();
-    setTimeout(()=>{ gsApplyFieldMatrix(); gsVisibleNav(); gsCleanECText(); }, 250);
-    setTimeout(()=>{ gsCleanECText(); gsVisibleNav(); }, 900);
+    gsV8ThemeButton();
+    document.querySelectorAll('.doc-option span').forEach(s=>s.remove());
+    document.querySelectorAll('.doc-option strong').forEach(s=>{ s.textContent=s.textContent.replace('Formato de solicitud ','').replace('Aceptación de requisitos ','AR').replace('Declaración juramentada ','DJ').replace('Declaración ','').trim(); });
+    setTimeout(()=>{ gsV8ApplyFieldMatrix(); gsV8UpdateNav(); },350);
+    const btn=document.getElementById('btnALL');
+    if(btn){
+      btn.addEventListener('click', async (ev)=>{
+        ev.preventDefault(); ev.stopImmediatePropagation();
+        if (!documentosSeleccionados.length && !aplicarSeleccionDocumental()) return;
+        const docs = documentosSeleccionados.length ? documentosSeleccionados : getDocsSeleccionados();
+        if (!docs.length) { alert('Selecciona al menos un documento para generar.'); return; }
+        const nombre = gsV8MakeZipName();
+        const zip = new JSZip();
+        for (const tipo of docs) { const bytes = await generarPDF(tipo, false); if (bytes) zip.file(`${tipo}_${nombre}.pdf`, bytes); }
+        const excelBytes = generarExcelMateriales_bytes(); if (excelBytes) zip.file(`Materiales_${nombre}.xlsx`, excelBytes);
+        fotosGuardadas.forEach((foto, index) => { const base64data = foto.archivoBase64.split(',')[1]; zip.file(`${foto.nombreTipo}_${index + 1}.jpg`, base64data, { base64: true }); });
+        const contenido = await zip.generateAsync({ type: 'blob' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(contenido); a.download = `${nombre}.zip`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
+      }, true);
+    }
   });
 
-  /* ====== SERVICE WORKER PWA · gsdoc-v8 ====== */
+
+
+
+  /* =====================================================
+     GS DOCUMENTOS PRO v9 · Flujo final depurado
+     ===================================================== */
+  function gsV9SelectedDocs(){
+    const docs = getDocsSeleccionados();
+    return docs.length === DOCS_ALL.length ? [...DOCS_ALL] : docs;
+  }
+  function gsV9NeedsAny(list){
+    const docs = gsV9SelectedDocs();
+    return list.some(d => docs.includes(d));
+  }
+  function gsV9FieldWrap(id){
+    const el = document.getElementById(id);
+    return el ? (el.closest('.field') || el.closest('.field-row') || el.parentElement) : null;
+  }
+  function gsV9SetVisible(node, show){ if(node) node.classList.toggle('hidden-by-doc', !show); }
+  function gsV9ApplyFieldMatrix(){
+    const docs = gsV9SelectedDocs();
+    const has = d => docs.includes(d);
+    gsV9SetVisible(gsV9FieldWrap('sol_correo'), has('E1'));
+    gsV9SetVisible(gsV9FieldWrap('cm_nombre_proyecto'), has('E1') || has('E6'));
+    const firmaSol = document.getElementById('canvasFirmaUsuario')?.closest('.field');
+    const firmaTec = document.getElementById('canvasFirmaTecnico')?.closest('.field');
+    gsV9SetVisible(firmaSol, gsV9NeedsAny(['E1','E6','AR','DJ']));
+    gsV9SetVisible(firmaTec, gsV9NeedsAny(['RETIE','EC']));
+  }
+  function gsProCreateDashboard(){
+    if(document.getElementById('gsProDashboard')) return;
+    const home = document.getElementById('pantallaDocumentos'); if(!home) return;
+    const dash = document.createElement('div');
+    dash.id = 'gsProDashboard';
+    dash.className = 'pro-dashboard';
+    dash.innerHTML = `
+      <button type="button" class="pro-nav-card" data-screen="formulario"><span class="ico">📝</span><strong>Formulario</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="materiales"><span class="ico">🧰</span><strong>Materiales</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="fotos"><span class="ico">📷</span><strong>Soportes</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="firmas"><span class="ico">✍️</span><strong>Firmas</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="generar"><span class="ico">📦</span><strong>Generar</strong></button>`;
+    home.insertAdjacentElement('afterend', dash);
+    dash.addEventListener('click', ev=>{
+      const btn=ev.target.closest('.pro-nav-card'); if(btn) gsProShowScreen(btn.dataset.screen);
+    });
+  }
+  function gsProBuildScreenMap(){
+    const common = gsProNodesCommon();
+    const e1 = bloqueDesdeTitulo(seccionPorTitulo('SOLICITUD DE SERVICIO'));
+    const dj = bloqueDesdeTitulo(seccionPorTitulo('DECLARACIÓN JURAMENTADA'));
+    const retie = bloqueDesdeTitulo(seccionPorTitulo('RETIE'));
+    const ec = [document.getElementById('bloqueECPlanos')].filter(Boolean);
+    GS_PRO_SCREENS.docs = [document.getElementById('pantallaDocumentos')].filter(Boolean);
+    GS_PRO_SCREENS.formulario = [...common, ...e1, ...dj, ...retie, ...ec].filter(Boolean);
+    GS_PRO_SCREENS.materiales = [document.getElementById('bloqueMateriales')].filter(Boolean);
+    GS_PRO_SCREENS.fotos = [gsProPhotosBox()].filter(Boolean);
+    GS_PRO_SCREENS.firmas = Array.from(document.querySelectorAll('#canvasFirmaUsuario,#canvasFirmaTecnico')).map(c=>c.closest('.field-row')).filter(Boolean);
+    const panelPdf = document.querySelector('.panel.pdf');
+    GS_PRO_SCREENS.generar = [panelPdf].filter(Boolean);
+    const debug = gsProDebugBox(); if(debug) debug.classList.add('hidden-by-doc');
+  }
+  function gsProShowScreen(screen){
+    gsProBuildScreenMap();
+    GS_PRO_ACTIVE_SCREEN = screen || 'docs';
+    Object.values(GS_PRO_SCREENS).flat().filter(Boolean).forEach(n=>n.classList.add('pro-screen-hidden'));
+    (GS_PRO_SCREENS[GS_PRO_ACTIVE_SCREEN] || []).forEach(n=>n.classList.remove('pro-screen-hidden'));
+    document.querySelectorAll('.pro-nav-card').forEach(btn=>btn.classList.toggle('active', btn.dataset.screen===GS_PRO_ACTIVE_SCREEN));
+    const dash=document.getElementById('gsProDashboard');
+    if(dash) dash.classList.toggle('visible', GS_PRO_ACTIVE_SCREEN !== 'docs' && getDocsSeleccionados().length>0);
+    gsV9ApplyFieldMatrix();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function gsV9IconizeDocumentCards(){
+    const icons = {ALL:'📚',E1:'📄',E6:'🧾',AR:'✅',DJ:'📜',RETIE:'⚡',EC:'📐'};
+    document.querySelectorAll('.doc-option').forEach(label=>{
+      const input = label.querySelector('input[name="docSelect"]');
+      if(input) label.dataset.ico = icons[input.value] || '📄';
+      const strong = label.querySelector('strong');
+      if(strong){
+        const v = input?.value;
+        if(v==='ALL') strong.textContent = 'Todos los documentos';
+        if(v==='E1') strong.textContent = 'Formato de solicitud E1';
+        if(v==='E6') strong.textContent = 'Recibo técnico E6';
+        if(v==='AR') strong.textContent = 'Aceptación de requisitos';
+        if(v==='DJ') strong.textContent = 'Declaración juramentada';
+        if(v==='RETIE') strong.textContent = 'RETIE';
+        if(v==='EC') strong.textContent = 'Esquema constructivo';
+      }
+    });
+  }
+  const gsV9OriginalAplicar = aplicarSeleccionDocumental;
+  aplicarSeleccionDocumental = function(){
+    const ok = gsV9OriginalAplicar();
+    gsV9ApplyFieldMatrix();
+    return ok;
+  };
+  function gsV9WireDocs(){
+    document.querySelectorAll('input[name="docSelect"]').forEach(chk=>{
+      chk.addEventListener('change',()=>{
+        const all=document.getElementById('docTodos');
+        if(chk.value==='ALL' && chk.checked){
+          document.querySelectorAll('input[name="docSelect"]').forEach(x=>{ if(x.value!=='ALL') x.checked=false; });
+        } else if(chk.value!=='ALL' && chk.checked && all){ all.checked=false; }
+        aplicarSeleccionDocumental();
+        if(getDocsSeleccionados().length){
+          document.getElementById('gsProDashboard')?.classList.add('visible');
+          gsProShowScreen('formulario');
+        }
+      });
+    });
+  }
+  function gsV9InjectFormActions(){
+    if(document.getElementById('gsV9FormActions')) return;
+    const common = gsProNodesCommon();
+    const first = common[0]; if(!first) return;
+    const title = document.createElement('div');
+    title.id = 'gsV9FormTitle';
+    title.className = 'form-section-title';
+    title.textContent = 'Formulario';
+    first.parentNode.insertBefore(title, first);
+    const actions = document.createElement('div');
+    actions.id='gsV9FormActions';
+    actions.className='form-actions';
+    actions.innerHTML = `
+      <button type="button" class="btn btn-outline" onclick="gsProShowScreen('docs')">← Volver al inicio</button>
+      <button type="button" class="btn" onclick="gsProShowScreen('materiales')">Materiales</button>
+      <button type="button" class="btn" onclick="gsProShowScreen('fotos')">Soportes</button>
+      <button type="button" class="btn" onclick="gsProShowScreen('firmas')">Firmas</button>
+      <button type="button" class="btn" onclick="gsProShowScreen('generar')">Generar</button>`;
+    const last = GS_PRO_SCREENS.formulario?.at?.(-1) || common.at(-1);
+    (last || first).insertAdjacentElement('afterend', actions);
+  }
+  function gsProRenderECTable(){
+    const tbody=document.querySelector('#ec_load_table tbody'); if(!tbody) return;
+    tbody.innerHTML='';
+    let total=0;
+    const totalsByCircuit = {ALUMBRADO:0, CALEFACCIÓN:0, FUERZA:0};
+    GS_EC_ROWS.forEach((r,i)=>{
+      if(r.circuito === 'OPERACIÓN') r.circuito = 'FUERZA';
+      const pt=(Number(r.cantidad)||0)*r.potencia; total+=pt; totalsByCircuit[r.circuito]=(totalsByCircuit[r.circuito]||0)+pt;
+      const tr=document.createElement('tr');
+      tr.innerHTML=`
+        <td>${r.circuitoNo}</td><td>${r.circuito}</td><td>${r.nombre}</td><td>${r.potencia.toLocaleString('es-CO')}</td>
+        <td><input type="number" min="0" step="1" value="${Number(r.cantidad)||0}" data-ec-qty="${i}" class="ec-qty-input"></td>
+        <td>${pt.toLocaleString('es-CO')}</td><td>${r.calibre}</td><td>${r.proteccion}</td><td>${r.descripcion}</td>`;
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('input[data-ec-qty]').forEach(inp=>inp.addEventListener('input',e=>{GS_EC_ROWS[Number(e.target.dataset.ecQty)].cantidad=Math.max(0,Number(e.target.value||0));gsProRenderECTable();}));
+    const set=(id,val)=>{const el=document.getElementById(id); if(el) el.value=val;};
+    set('ec_bombillos', totalsByCircuit.ALUMBRADO||0);
+    set('ec_tomas', totalsByCircuit.FUERZA||0);
+    set('ec_electrodomesticos', totalsByCircuit.CALEFACCIÓN||0);
+    set('ec_carga_estimada', total);
+    const totalEl=document.getElementById('ec_total_table'); if(totalEl) totalEl.textContent=total.toLocaleString('es-CO');
+    const res=document.getElementById('ecCargaResumen');
+    if(res) res.textContent = `Carga instalada: ${total.toLocaleString('es-CO')} W · Alumbrado: ${(totalsByCircuit.ALUMBRADO||0).toLocaleString('es-CO')} W · Calefacción: ${(totalsByCircuit.CALEFACCIÓN||0).toLocaleString('es-CO')} W · Fuerza: ${(totalsByCircuit.FUERZA||0).toLocaleString('es-CO')} W.`;
+  }
+  function gsProNormalizeSignature(canvas){
+    const w=canvas.width, h=canvas.height, ctx=canvas.getContext('2d');
+    const img=ctx.getImageData(0,0,w,h), data=img.data;
+    let minX=w,minY=h,maxX=0,maxY=0,found=false;
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      const a=data[(y*w+x)*4+3], r=data[(y*w+x)*4], g=data[(y*w+x)*4+1], b=data[(y*w+x)*4+2];
+      if(a>10 && (r<245||g<245||b<245)){found=true; minX=Math.min(minX,x); minY=Math.min(minY,y); maxX=Math.max(maxX,x); maxY=Math.max(maxY,y);}
+    }
+    if(!found) return canvas.toDataURL('image/png');
+    const pad=28; minX=Math.max(0,minX-pad); minY=Math.max(0,minY-pad); maxX=Math.min(w,maxX+pad); maxY=Math.min(h,maxY+pad);
+    const cw=maxX-minX, ch=maxY-minY;
+    const crop=document.createElement('canvas'); crop.width=cw; crop.height=ch; crop.getContext('2d').drawImage(canvas,minX,minY,cw,ch,0,0,cw,ch);
+    let src=crop;
+    if(ch > cw*1.15){ const rot=document.createElement('canvas'); rot.width=ch; rot.height=cw; const rctx=rot.getContext('2d'); rctx.translate(rot.width/2,rot.height/2); rctx.rotate(-Math.PI/2); rctx.drawImage(crop,-cw/2,-ch/2); src=rot; }
+    const out=document.createElement('canvas'); out.width=1000; out.height=300;
+    const o=out.getContext('2d'); o.clearRect(0,0,out.width,out.height);
+    const scale=Math.min((out.width-50)/src.width,(out.height-34)/src.height);
+    const dw=src.width*scale, dh=src.height*scale;
+    o.drawImage(src,(out.width-dw)/2,(out.height-dh)/2,dw,dh);
+    return out.toDataURL('image/png');
+  }
+  document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(()=>{
+      document.body.classList.toggle('dark', localStorage.getItem('gsTheme')==='dark');
+      const theme=document.querySelector('#themeToggle,#gsThemeToggle,.gs-theme-toggle,.theme-toggle,#btnTheme,#btnModoOscuro');
+      if(theme){ theme.addEventListener('click',()=>{document.body.classList.toggle('dark'); localStorage.setItem('gsTheme',document.body.classList.contains('dark')?'dark':'light');}); }
+      gsV9IconizeDocumentCards();
+      const oldDash=document.getElementById('gsProDashboard'); oldDash?.remove();
+      gsProCreateDashboard();
+      gsV9WireDocs();
+      gsProBuildScreenMap();
+      gsV9InjectFormActions();
+      gsV9ApplyFieldMatrix();
+      document.querySelectorAll('.section-title').forEach(x=>x.style.display='none');
+      gsProShowScreen(getDocsSeleccionados().length?'formulario':'docs');
+    },120);
+  });
+
+
+  /* ====== SERVICE WORKER PWA · gsdoc-v9 ====== */
   if ("serviceWorker" in navigator) {
     let refreshing = false;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
@@ -2629,8 +2888,8 @@ function descargarExcelMateriales() {
 
     window.addEventListener("load", async () => {
       try {
-        const reg = await navigator.serviceWorker.register("./sw.js?v=gsdoc-v8");
-        console.log("SW registrado:", reg.scope, "gsdoc-v8");
+        const reg = await navigator.serviceWorker.register("./sw.js?v=gsdoc-v9");
+        console.log("SW registrado:", reg.scope, "gsdoc-v9");
         await reg.update();
 
         if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
