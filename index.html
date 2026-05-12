@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link rel="manifest" href="./manifest.json?v=gsdoc-v7">
+  <link rel="manifest" href="./manifest.json?v=gsdoc-v8">
 <meta name="theme-color" content="#d40000">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=gsdoc-v7">
-<link rel="shortcut icon" href="./icon-192.png?v=gsdoc-v7">
-<link rel="apple-touch-icon" href="./icon-180.png?v=gsdoc-v7">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=gsdoc-v8">
+<link rel="shortcut icon" href="./icon-192.png?v=gsdoc-v8">
+<link rel="apple-touch-icon" href="./icon-180.png?v=gsdoc-v8">
 
   <meta charset="UTF-8" />
   <title>GS Documentos PRO – Formularios ESPT</title>
@@ -450,7 +450,7 @@
   
 
 /* =====================================================
-   GS DOCUMENTOS PRO v7 · Rediseño tipo GS Diagnósticos
+   GS DOCUMENTOS PRO v8 · Rediseño tipo GS Diagnósticos
    ===================================================== */
 :root{
   --gs-red:#d40000;
@@ -559,6 +559,101 @@ footer{font-size:13px;color:#6b7280;padding-bottom:22px;}
   .ec-load-row{grid-template-columns:1fr;}
 }
 
+  
+
+/* =====================================================
+   GS DOCUMENTOS PRO v8 · Depuración visual profunda
+   ===================================================== */
+:root{
+  --gs-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --gs-bg:#f5f6f8;
+  --gs-card:#ffffff;
+  --gs-ink:#1e2834;
+  --gs-muted:#6b7280;
+  --gs-line:#dde3ea;
+  --gs-red:#d40000;
+  --gs-shadow-soft:0 12px 28px rgba(15,23,42,.08);
+}
+html[data-theme="dark"]{
+  --gs-bg:#0f141b;
+  --gs-card:#171f29;
+  --gs-ink:#f2f5f8;
+  --gs-muted:#aab4c2;
+  --gs-line:#2d3847;
+  --gs-shadow-soft:0 12px 32px rgba(0,0,0,.28);
+}
+body{font-family:var(--gs-font)!important;background:var(--gs-bg)!important;color:var(--gs-ink)!important;font-size:16px!important;line-height:1.42!important;}
+header{position:static!important;padding:16px!important;background:linear-gradient(135deg,#d40000,#a90000)!important;box-shadow:0 6px 18px rgba(120,0,0,.20)!important;}
+header .title-main{font-size:23px!important;font-weight:750!important;letter-spacing:-.25px!important;}
+header .title-sub{font-size:14px!important;font-weight:500!important;opacity:.92!important;}
+.logo-gs{border-radius:18px!important;box-shadow:none!important;}
+main{padding:14px!important;background:var(--gs-bg)!important;}
+.panel{background:var(--gs-card)!important;color:var(--gs-ink)!important;border-color:var(--gs-line)!important;box-shadow:var(--gs-shadow-soft)!important;border-radius:24px!important;}
+.panel.pdf{background:var(--gs-card)!important;}
+.section-title{display:none!important;}
+.field label{font-size:15px!important;font-weight:650!important;color:var(--gs-ink)!important;}
+input,select,textarea{background:var(--gs-card)!important;color:var(--gs-ink)!important;border:1px solid var(--gs-line)!important;border-radius:16px!important;font-size:16px!important;min-height:50px!important;box-shadow:none!important;}
+textarea{min-height:92px!important;}
+input[readonly]{background:rgba(128,128,128,.08)!important;color:var(--gs-muted)!important;}
+.hint,.doc-home p,.load-summary{color:var(--gs-muted)!important;}
+.doc-home{background:var(--gs-card)!important;border:1px solid var(--gs-line)!important;border-left:0!important;border-radius:24px!important;box-shadow:var(--gs-shadow-soft)!important;padding:18px!important;}
+.doc-home h2{font-size:22px!important;color:var(--gs-ink)!important;margin-bottom:6px!important;}
+.doc-home p{font-size:14px!important;margin-bottom:14px!important;}
+.doc-options{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;}
+.doc-option{min-height:82px!important;border-radius:22px!important;padding:15px!important;align-items:center!important;background:var(--gs-card)!important;border:1px solid var(--gs-line)!important;box-shadow:0 6px 16px rgba(15,23,42,.05)!important;}
+.doc-option span{display:none!important;}
+.doc-option strong{font-size:16px!important;line-height:1.15!important;color:var(--gs-ink)!important;}
+.doc-option input{width:22px!important;height:22px!important;accent-color:var(--gs-red)!important;}
+.doc-option:has(input:checked){background:linear-gradient(135deg,var(--gs-red),#ad0000)!important;border-color:transparent!important;color:#fff!important;box-shadow:0 12px 24px rgba(212,0,0,.20)!important;}
+.doc-option:has(input:checked) strong{color:#fff!important;}
+.doc-current{background:rgba(212,0,0,.08)!important;color:var(--gs-red)!important;font-size:13px!important;}
+.pro-dashboard{position:static!important;top:auto!important;z-index:auto!important;display:none!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;background:transparent!important;border:0!important;padding:0!important;margin:0 0 14px!important;box-shadow:none!important;backdrop-filter:none!important;}
+.pro-dashboard.visible{display:grid!important;}
+.pro-nav-card{min-height:74px!important;border-radius:20px!important;padding:12px 8px!important;background:var(--gs-card)!important;border:1px solid var(--gs-line)!important;color:var(--gs-ink)!important;box-shadow:0 7px 18px rgba(15,23,42,.06)!important;}
+.pro-nav-card .ico{font-size:21px!important;margin:0 0 3px!important;}
+.pro-nav-card strong{font-size:13.5px!important;line-height:1.05!important;}
+.pro-nav-card span:not(.ico){display:none!important;}
+.pro-nav-card.active{background:linear-gradient(135deg,var(--gs-red),#ad0000)!important;color:#fff!important;border-color:transparent!important;}
+.pro-nav-card.active strong{color:#fff!important;}
+.pro-nav-card.nav-hidden{display:none!important;}
+.materiales-box,.photos-box,.ec-library-box{background:var(--gs-card)!important;border:1px solid var(--gs-line)!important;border-left:0!important;border-radius:24px!important;box-shadow:var(--gs-shadow-soft)!important;padding:16px!important;}
+.materiales-box h3,.photos-box h3,.ec-library-box h3{font-size:20px!important;color:var(--gs-ink)!important;margin-bottom:10px!important;}
+.ec-preview{display:none!important;}
+.ec-load-builder{background:var(--gs-card)!important;border-color:var(--gs-line)!important;border-radius:22px!important;box-shadow:none!important;padding:0!important;}
+.ec-load-builder h4{font-size:18px!important;color:var(--gs-ink)!important;margin:0 0 8px!important;}
+.ec-load-builder .hint{font-size:13px!important;}
+.ec-load-table-wrap{border:0!important;margin-top:10px!important;}
+.ec-load-table{min-width:0!important;width:100%!important;font-size:15px!important;border-collapse:separate!important;border-spacing:0 8px!important;background:transparent!important;}
+.ec-load-table th,.ec-load-table td{border:0!important;padding:10px!important;background:var(--gs-card)!important;color:var(--gs-ink)!important;}
+.ec-load-table th{font-size:13px!important;text-transform:uppercase!important;letter-spacing:.03em!important;background:transparent!important;color:var(--gs-muted)!important;}
+.ec-load-table th:nth-child(1),.ec-load-table td:nth-child(1),
+.ec-load-table th:nth-child(2),.ec-load-table td:nth-child(2),
+.ec-load-table th:nth-child(4),.ec-load-table td:nth-child(4),
+.ec-load-table th:nth-child(6),.ec-load-table td:nth-child(6),
+.ec-load-table th:nth-child(7),.ec-load-table td:nth-child(7),
+.ec-load-table th:nth-child(8),.ec-load-table td:nth-child(8),
+.ec-load-table th:nth-child(9),.ec-load-table td:nth-child(9){display:none!important;}
+.ec-load-table th:nth-child(3),.ec-load-table td:nth-child(3){width:68%!important;text-align:left!important;border-radius:16px 0 0 16px!important;}
+.ec-load-table th:nth-child(5),.ec-load-table td:nth-child(5){width:32%!important;border-radius:0 16px 16px 0!important;text-align:center!important;}
+.ec-qty-input{width:92px!important;min-height:44px!important;text-align:center!important;}
+.ec-load-table tfoot td{display:table-cell!important;background:rgba(212,0,0,.08)!important;color:var(--gs-red)!important;font-weight:800!important;border-radius:16px!important;}
+.ec-load-table tfoot td:not(:nth-child(1)):not(:nth-child(2)){display:none!important;}
+.load-summary{background:rgba(128,128,128,.08)!important;border-color:var(--gs-line)!important;border-radius:18px!important;}
+.gs-theme-toggle{position:absolute;right:14px;top:14px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:8px 11px;font-size:14px;font-weight:700;}
+.gs-screen-title{font-size:22px;font-weight:800;margin:0 0 14px;color:var(--gs-ink);letter-spacing:-.2px;}
+.field.gs-field-hidden{display:none!important;}
+.signature-status{color:var(--gs-muted)!important;}
+@media(max-width:640px){
+  body{font-size:15px!important;}
+  .doc-options{grid-template-columns:1fr!important;}
+  .pro-dashboard.visible{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+  .pro-nav-card{min-height:66px!important;border-radius:18px!important;}
+  .pro-nav-card strong{font-size:12.5px!important;}
+  .panel{padding:14px!important;border-radius:22px!important;}
+  header .title-main{font-size:21px!important;}
+  input,select,textarea{font-size:16px!important;}
+}
+
   </style>
 </head>
 
@@ -566,7 +661,7 @@ footer{font-size:13px;color:#6b7280;padding-bottom:22px;}
 <header>
   <div class="logo-gs">GS</div>
   <div class="title-block">
-    <div class="title-main">GS Documentos PRO v6</div>
+    <div class="title-main">GS Documentos PRO v8</div>
     <div class="title-sub">Gestión Social · Documentos ESPT/CUND100</div>
   </div>
 </header>
@@ -2036,10 +2131,8 @@ function descargarExcelMateriales() {
       if (bytes) zip.file(`${tipo}_${nombre}.pdf`, bytes);
     }
 
-    if (docs.includes("E1")) {
-      const excelBytes = generarExcelMateriales_bytes();
-      if (excelBytes) zip.file(`Materiales_${nombre}.xlsx`, excelBytes);
-    }
+    const excelBytes = generarExcelMateriales_bytes();
+    if (excelBytes) zip.file(`Materiales_${nombre}.xlsx`, excelBytes);
 
     fotosGuardadas.forEach((foto, index) => {
       const base64data = foto.archivoBase64.split(",")[1];
@@ -2050,16 +2143,16 @@ function descargarExcelMateriales() {
     const contenido = await zip.generateAsync({ type: "blob" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(contenido);
-    a.download = `${nombre}_GS_Documentos.zip`;
+    a.download = `${nombre}.zip`;
     a.click();
   });
 
 
 
   /* =====================================================
-     GS DOCUMENTOS PRO v7 · UX, pantallas, firmas, EC
+     GS DOCUMENTOS PRO v8 · UX, pantallas, firmas, EC
      ===================================================== */
-  const GS_PRO_VERSION = "gsdoc-v7";
+  const GS_PRO_VERSION = "gsdoc-v8";
   const GS_PRO_SCREENS = {};
   let GS_PRO_ACTIVE_SCREEN = "docs";
 
@@ -2224,10 +2317,10 @@ function descargarExcelMateriales() {
     {circuitoNo:2, circuito:"CALEFACCIÓN", nombre:"ESTUFA ELÉCTRICA 2 PUESTOS", potencia:2000, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
     {circuitoNo:3, circuito:"CALEFACCIÓN", nombre:"HORNO ELÉCTRICO", potencia:1200, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
     {circuitoNo:3, circuito:"CALEFACCIÓN", nombre:"HORNO MICROONDAS", potencia:1000, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
-    {circuitoNo:3, circuito:"OPERACIÓN", nombre:"AIRE ACONDICIONADO", potencia:1500, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
-    {circuitoNo:4, circuito:"OPERACIÓN", nombre:"LAVADORA", potencia:350, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
-    {circuitoNo:4, circuito:"OPERACIÓN", nombre:"NEVERA", potencia:300, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
-    {circuitoNo:4, circuito:"OPERACIÓN", nombre:"VENTILADOR", potencia:200, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"}
+    {circuitoNo:3, circuito:"FUERZA", nombre:"AIRE ACONDICIONADO", potencia:1500, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:4, circuito:"FUERZA", nombre:"LAVADORA", potencia:350, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:4, circuito:"FUERZA", nombre:"NEVERA", potencia:300, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"},
+    {circuitoNo:4, circuito:"FUERZA", nombre:"VENTILADOR", potencia:200, calibre:"16 mm²", proteccion:"1X20A", descripcion:"TOMACORRIENTE"}
   ];
   let GS_EC_ROWS = GS_EC_ITEMS.map(item => ({...item, cantidad:0}));
 
@@ -2303,7 +2396,7 @@ function descargarExcelMateriales() {
     const tomas = GS_EC_ROWS.filter(r=>r.nombre === "TOMA CORRIENTE").reduce((a,b)=>a+(Number(b.cantidad)||0),0);
     const electro = GS_EC_ROWS.filter(r=>!r.nombre.includes("BOMBILLO") && r.nombre !== "TOMA CORRIENTE").reduce((a,b)=>a+(Number(b.cantidad)||0),0);
     const circuitosActivos = GS_EC_ROWS.filter(r=>(Number(r.cantidad)||0)>0).length;
-    const resumenPorTipo = ["ALUMBRADO","CALEFACCIÓN","OPERACIÓN"].map(tipo=>{
+    const resumenPorTipo = ["ALUMBRADO","CALEFACCIÓN","FUERZA"].map(tipo=>{
       const qty = GS_EC_ROWS.filter(r=>r.circuito===tipo).reduce((a,b)=>a+(Number(b.cantidad)||0),0);
       return `${tipo}: ${qty}`;
     }).join(" · ");
@@ -2389,7 +2482,143 @@ function descargarExcelMateriales() {
   });
 
 
-  /* ====== SERVICE WORKER PWA · gsdoc-v7 ====== */
+
+
+  /* =====================================================
+     GS DOCUMENTOS PRO v8 · reglas por documento y UI limpia
+     ===================================================== */
+  const GS_FIELD_DOCS = {
+    sol_correo:["E1"],
+    cm_nombre_proyecto:["E1","E6"],
+    cm_retie_constructor:["RETIE","E6","EC"],
+    cm_retie_matricula:["RETIE","EC"],
+    retie_const_identificacion:["RETIE"],
+    retie_decl_num:["RETIE"],
+    retie_prof_constructor:["RETIE"],
+    retie_consejo:["RETIE"],
+    retie_fecha_construccion:["RETIE"],
+    retie_dir_constructor:["RETIE"],
+    retie_cel_constructor:["RETIE"],
+    retie_correo_constructor:["RETIE"]
+  };
+  const GS_DOC_SCREENS = {
+    e1:["E1"],
+    dj:["DJ"],
+    retie:["RETIE","E6","EC"],
+    ec:["EC"],
+    firmas:["E1","E6","AR","DJ","RETIE","EC"]
+  };
+  function gsDocs(){ return getDocsSeleccionados(); }
+  function gsHasDoc(list){ const docs=gsDocs(); return docs.some(d=>list.includes(d)); }
+  function gsSetFieldVisibleById(id, visible){
+    const el = document.getElementById(id); if(!el) return;
+    const field = el.closest('.field') || el.closest('.field-row') || el.parentElement;
+    if(field) field.classList.toggle('gs-field-hidden', !visible);
+    el.disabled = !visible;
+  }
+  function gsApplyFieldMatrix(){
+    const docs = gsDocs();
+    Object.entries(GS_FIELD_DOCS).forEach(([id,allowed])=>gsSetFieldVisibleById(id, docs.some(d=>allowed.includes(d))));
+    // Firmas por documento
+    const firmaSol = document.getElementById('canvasFirmaUsuario')?.closest('.field');
+    const firmaTec = document.getElementById('canvasFirmaTecnico')?.closest('.field');
+    const solVisible = docs.some(d=>['E1','E6','AR','DJ'].includes(d));
+    const tecVisible = docs.some(d=>['RETIE','EC'].includes(d));
+    if(firmaSol){ firmaSol.classList.toggle('gs-field-hidden', !solVisible); setDisabledIn(firmaSol,!solVisible); }
+    if(firmaTec){ firmaTec.classList.toggle('gs-field-hidden', !tecVisible); setDisabledIn(firmaTec,!tecVisible); }
+  }
+  function gsInstallThemeToggle(){
+    if(document.getElementById('gsThemeToggle')) return;
+    const btn=document.createElement('button');
+    btn.type='button'; btn.id='gsThemeToggle'; btn.className='gs-theme-toggle';
+    const saved=localStorage.getItem('gsdoc-theme') || 'auto';
+    function apply(mode){
+      const dark = mode==='dark' || (mode==='auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      btn.textContent = dark ? '☀️ Claro' : '🌙 Oscuro';
+    }
+    btn.addEventListener('click',()=>{
+      const now=document.documentElement.dataset.theme==='dark'?'light':'dark';
+      localStorage.setItem('gsdoc-theme', now); apply(now);
+    });
+    document.querySelector('header')?.appendChild(btn); apply(saved);
+  }
+  function gsInsertScreenTitle(title){
+    const first = (GS_PRO_SCREENS[GS_PRO_ACTIVE_SCREEN]||[]).find(Boolean);
+    if(!first || first.id==='pantallaDocumentos') return;
+    document.querySelectorAll('.gs-screen-title').forEach(x=>x.remove());
+    const h=document.createElement('div'); h.className='gs-screen-title'; h.textContent=title;
+    first.insertAdjacentElement('beforebegin', h);
+    GS_PRO_SCREENS[GS_PRO_ACTIVE_SCREEN].unshift(h);
+  }
+  function gsVisibleNav(){
+    const docs=gsDocs();
+    const show = {
+      docs:true, common:docs.length>0, e1:docs.includes('E1'), dj:docs.includes('DJ'),
+      retie:docs.some(d=>['RETIE','E6','EC'].includes(d)),
+      materiales:docs.length>0, fotos:docs.length>0, ec:docs.includes('EC'),
+      firmas:docs.some(d=>['E1','E6','AR','DJ','RETIE','EC'].includes(d)), generar:docs.length>0
+    };
+    document.querySelectorAll('.pro-nav-card').forEach(btn=>btn.classList.toggle('nav-hidden', !show[btn.dataset.screen]));
+  }
+  const gsOldCreateDashboard = gsProCreateDashboard;
+  gsProCreateDashboard = function(){
+    gsOldCreateDashboard();
+    const dash=document.getElementById('gsProDashboard'); if(!dash) return;
+    dash.innerHTML = `
+      <button type="button" class="pro-nav-card" data-screen="docs"><span class="ico">📚</span><strong>Inicio</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="common"><span class="ico">🏠</span><strong>Datos</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="e1"><span class="ico">📝</span><strong>E1</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="dj"><span class="ico">📄</span><strong>DJ</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="retie"><span class="ico">⚡</span><strong>Técnico</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="materiales"><span class="ico">🧰</span><strong>Materiales</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="fotos"><span class="ico">📷</span><strong>Soportes</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="ec"><span class="ico">📐</span><strong>EC</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="firmas"><span class="ico">✍️</span><strong>Firmas</strong></button>
+      <button type="button" class="pro-nav-card" data-screen="generar"><span class="ico">📦</span><strong>Generar</strong></button>`;
+    dash.onclick=(ev)=>{ const btn=ev.target.closest('.pro-nav-card'); if(btn) gsProShowScreen(btn.dataset.screen); };
+    gsVisibleNav();
+  };
+  const gsOldShowScreen = gsProShowScreen;
+  gsProShowScreen = function(screen){
+    gsOldShowScreen(screen);
+    gsApplyFieldMatrix(); gsVisibleNav();
+    const titles={common:'Datos del predio', e1:'Solicitud E1', dj:'Declaración juramentada', retie:'Datos del técnico', materiales:'Materiales', fotos:'Soportes', ec:'Esquema constructivo', firmas:'Firmas', generar:'Generar'};
+    if(titles[screen]) gsInsertScreenTitle(titles[screen]);
+  };
+  const gsOldAplicarV8 = aplicarSeleccionDocumental;
+  aplicarSeleccionDocumental = function(){
+    const ok = gsOldAplicarV8();
+    if(!ok) return false;
+    // matriz específica
+    gsApplyFieldMatrix();
+    gsVisibleNav();
+    // materiales y soportes siempre opcionales para cualquier documento
+    const bloqueMat=document.getElementById('bloqueMateriales'); if(bloqueMat){ bloqueMat.classList.remove('hidden-by-doc'); setDisabledIn(bloqueMat,false); }
+    const bloqueFotos=gsProPhotosBox(); if(bloqueFotos){ bloqueFotos.classList.remove('hidden-by-doc'); setDisabledIn(bloqueFotos,false); }
+    return true;
+  };
+  function gsSimplifyDocCards(){
+    const labels = {ALL:'Todos', E1:'E1', E6:'E6', AR:'AR', DJ:'DJ', RETIE:'RETIE', EC:'EC'};
+    document.querySelectorAll('input[name="docSelect"]').forEach(inp=>{
+      const strong = inp.closest('label')?.querySelector('strong');
+      if(strong && labels[inp.value]) strong.textContent = labels[inp.value];
+    });
+    const intro=document.querySelector('#pantallaDocumentos p');
+    if(intro) intro.textContent='Elige un formato. La app mostrará solo los campos necesarios.';
+  }
+  // Cuadro de cargas: solo carga y cantidad visibles, datos técnicos permanecen internos para EC
+  function gsCleanECText(){
+    document.querySelectorAll('#ecLoadBuilder .hint').forEach(h=>h.textContent='Diligencia cantidades. El detalle técnico queda interno para el EC.');
+  }
+  document.addEventListener('DOMContentLoaded',()=>{
+    gsInstallThemeToggle();
+    gsSimplifyDocCards();
+    setTimeout(()=>{ gsApplyFieldMatrix(); gsVisibleNav(); gsCleanECText(); }, 250);
+    setTimeout(()=>{ gsCleanECText(); gsVisibleNav(); }, 900);
+  });
+
+  /* ====== SERVICE WORKER PWA · gsdoc-v8 ====== */
   if ("serviceWorker" in navigator) {
     let refreshing = false;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
@@ -2400,8 +2629,8 @@ function descargarExcelMateriales() {
 
     window.addEventListener("load", async () => {
       try {
-        const reg = await navigator.serviceWorker.register("./sw.js?v=gsdoc-v7");
-        console.log("SW registrado:", reg.scope, "gsdoc-v7");
+        const reg = await navigator.serviceWorker.register("./sw.js?v=gsdoc-v8");
+        console.log("SW registrado:", reg.scope, "gsdoc-v8");
         await reg.update();
 
         if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
