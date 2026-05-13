@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link rel="manifest" href="./manifest.json?v=gsdoc-v9">
+  <link rel="manifest" href="./manifest.json?v=gsdoc-v10">
 <meta name="theme-color" content="#d40000">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=gsdoc-v9">
-<link rel="shortcut icon" href="./icon-192.png?v=gsdoc-v9">
-<link rel="apple-touch-icon" href="./icon-180.png?v=gsdoc-v9">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=gsdoc-v10">
+<link rel="shortcut icon" href="./icon-192.png?v=gsdoc-v10">
+<link rel="apple-touch-icon" href="./icon-180.png?v=gsdoc-v10">
 
   <meta charset="UTF-8" />
   <title>GS Documentos PRO – Formularios ESPT</title>
@@ -636,7 +636,7 @@ body.gs-dark .ec-load-table td{border-color:#344255!important;}
 
 
 /* =====================================================
-   GS DOCUMENTOS PRO v9 · Reestructura limpia tipo GS Diagnósticos
+   GS DOCUMENTOS PRO · Reestructura limpia tipo GS Diagnósticos
    ===================================================== */
 :root{--gs-font:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;}
 html,body{font-family:var(--gs-font)!important;background:#f4f6f8!important;color:#111827!important;}
@@ -725,14 +725,25 @@ body.dark .field label,body.gs-dark .field label{color:#cbd5e1!important;}
 body.dark .ec-preview,body.gs-dark .ec-preview,body.dark .load-summary,body.gs-dark .load-summary{background:#111827!important;border-color:#374151!important;color:#cbd5e1!important;}
 
 </style>
+
+<style id="gsdoc-v10-style">
+:root{--g:red;--gs-red:#d40000;--bg:#f4f5f7;--card:#fff;--ink:#24313d;--muted:#6f7a86;--line:#e1e6ec;--soft:#f8fafc;--shadow:0 10px 26px rgba(18,24,40,.10);}
+body.gs-v10{font-family:Inter,Segoe UI,Roboto,Arial,sans-serif!important;background:var(--bg)!important;color:var(--ink)!important;font-size:15px!important;padding-bottom:82px!important;}
+body.gs-v10.dark{--bg:#101418;--card:#171d24;--ink:#f4f7fb;--muted:#aab4c0;--line:#2a3440;--soft:#202832;--shadow:0 12px 28px rgba(0,0,0,.35);}
+body.gs-v10>header,body.gs-v10>main,body.gs-v10>footer{display:none!important;}
+#gs10App{display:block;max-width:1020px;margin:0 auto;padding:12px 12px 90px;}
+.gs10-top{position:sticky;top:0;z-index:50;margin:-12px -12px 12px;padding:12px;background:linear-gradient(135deg,#d40000,#990000);color:white;box-shadow:0 8px 20px rgba(130,0,0,.25)}
+.gs10-head{display:flex;align-items:center;gap:10px}.gs10-logo{width:42px;height:42px;border-radius:14px;background:#fff1;display:grid;place-items:center;font-size:23px}.gs10-title{font-size:20px;font-weight:800;line-height:1.1}.gs10-sub{font-size:12px;opacity:.9}.gs10-theme{margin-left:auto;border:1px solid #ffffff55;background:#ffffff18;color:#fff;border-radius:999px;width:42px;height:42px;font-size:20px}
+.gs10-screen{display:none}.gs10-screen.active{display:block}.gs10-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:var(--shadow);margin-bottom:12px}.gs10-card h2,.gs10-card h3{margin:0 0 10px;font-size:18px;font-weight:800;color:var(--ink)}.gs10-help{margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.35}.gs10-docgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.gs10-doc{min-height:88px;border:1px solid var(--line);background:var(--card);border-radius:18px;padding:12px;display:flex;align-items:center;gap:12px;text-align:left;color:var(--ink);box-shadow:0 6px 16px rgba(0,0,0,.04)}.gs10-doc .ico{font-size:28px;width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:var(--soft)}.gs10-doc strong{font-size:15px;line-height:1.12}.gs10-doc.sel{border-color:#d40000;background:linear-gradient(180deg,#fff5f5,var(--card));box-shadow:0 0 0 3px rgba(212,0,0,.10)}body.dark .gs10-doc.sel{background:#26191a}.gs10-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.gs10-btn{border:0;border-radius:14px;background:#d40000;color:#fff;font-weight:800;padding:12px 14px;font-size:15px;box-shadow:0 8px 18px rgba(212,0,0,.18)}.gs10-btn.secondary{background:var(--soft);color:var(--ink);border:1px solid var(--line);box-shadow:none}.gs10-btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}.gs10-form-section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;margin-bottom:12px}.gs10-form-section h3{font-size:16px;margin:0 0 8px}.gs10-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gs10-field{min-width:0}.gs10-field label{font-size:12px!important;color:var(--muted)!important;font-weight:750!important;margin-bottom:3px!important}.gs10-field input,.gs10-field select,.gs10-field textarea{width:100%!important;background:var(--soft)!important;border:1px solid var(--line)!important;color:var(--ink)!important;border-radius:12px!important;padding:9px 10px!important;font-size:15px!important;min-height:40px!important;box-shadow:none!important}.gs10-field textarea{min-height:74px!important}.gs10-field .inline-options{gap:6px!important;display:flex!important;flex-wrap:wrap!important}.gs10-field .inline-options label{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:8px 10px;color:var(--ink)!important;font-size:13px!important}.gs10-bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:90;padding:8px;display:flex;justify-content:center;gap:6px}body.dark .gs10-bottom{background:rgba(16,20,24,.92)}.gs10-nav{min-width:58px;border:0;background:transparent;color:var(--muted);border-radius:14px;padding:6px 8px;font-size:11px;font-weight:800}.gs10-nav span{display:block;font-size:20px;line-height:1.1}.gs10-nav.active{background:#d40000;color:#fff}.gs10-nav[hidden]{display:none!important}.gs10-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gs10-kpi{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:10px}.gs10-kpi b{display:block;font-size:17px;color:var(--ink)}.gs10-kpi span{font-size:12px;color:var(--muted)}.ec-load-builder h4,.ec-load-builder .hint{display:none!important}.ec-load-table{min-width:0!important;font-size:14px!important}.ec-load-table th,.ec-load-table td{padding:6px!important}.ec-load-table th:not(:nth-child(3)):not(:nth-child(5)),.ec-load-table td:not(:nth-child(3)):not(:nth-child(5)){display:none!important}.ec-load-table th:nth-child(3){width:70%;text-align:left!important}.ec-load-table td:nth-child(3){text-align:left!important;font-weight:700}.ec-load-table input{max-width:80px!important}.material-filter{display:flex;gap:8px;margin-bottom:10px}.mat-card{display:grid;grid-template-columns:1fr 84px;gap:8px;align-items:center;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:9px;margin:7px 0}.mat-card b{font-size:14px}.mat-card small{display:block;color:var(--muted)}.mat-card input{width:100%;border-radius:10px!important}.toast{position:fixed;left:14px;right:14px;bottom:86px;background:#111;color:white;padding:12px;border-radius:14px;z-index:999;display:none}.toast.show{display:block}@media(max-width:720px){#gs10App{padding:10px 10px 88px}.gs10-docgrid{grid-template-columns:1fr}.gs10-fields{grid-template-columns:1fr}.gs10-title{font-size:18px}.gs10-bottom{gap:2px}.gs10-nav{min-width:48px;font-size:10px;padding:5px}.gs10-nav span{font-size:18px}.gs10-card{border-radius:18px;padding:12px}.gs10-doc{min-height:76px}.gs10-doc .ico{font-size:24px;width:36px;height:36px}.gs10-doc strong{font-size:14px}.gs10-field input,.gs10-field select,.gs10-field textarea{font-size:14px!important;min-height:38px!important;padding:8px!important}}
+</style>
 </head>
 
 <body>
 <header>
   <div class="logo-gs">GS</div>
   <div class="title-block">
-    <div class="title-main">GS Documentos</div>
-    
+    <div class="title-main">GS Documentos PRO</div>
+    <div class="title-sub">Gestión Social · Documentos ESPT/CUND100</div>
   </div>
 </header>
 
@@ -2222,7 +2233,7 @@ function descargarExcelMateriales() {
   /* =====================================================
      GS DOCUMENTOS PRO · UX, pantallas, firmas, EC
      ===================================================== */
-  const GS_PRO_VERSION = "gsdoc-v9";
+  const GS_PRO_VERSION = "gsdoc-v10";
   const GS_PRO_SCREENS = {};
   let GS_PRO_ACTIVE_SCREEN = "docs";
 
@@ -2685,7 +2696,7 @@ function descargarExcelMateriales() {
 
 
   /* =====================================================
-     GS DOCUMENTOS PRO v9 · Flujo final depurado
+     GS DOCUMENTOS PRO · Flujo final depurado
      ===================================================== */
   function gsV9SelectedDocs(){
     const docs = getDocsSeleccionados();
@@ -2877,7 +2888,7 @@ function descargarExcelMateriales() {
   });
 
 
-  /* ====== SERVICE WORKER PWA · gsdoc-v9 ====== */
+  /* ====== SERVICE WORKER PWA · gsdoc-v10 ====== */
   if ("serviceWorker" in navigator) {
     let refreshing = false;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
@@ -2888,8 +2899,8 @@ function descargarExcelMateriales() {
 
     window.addEventListener("load", async () => {
       try {
-        const reg = await navigator.serviceWorker.register("./sw.js?v=gsdoc-v9");
-        console.log("SW registrado:", reg.scope, "gsdoc-v9");
+        const reg = await navigator.serviceWorker.register("./sw.js?v=gsdoc-v10");
+        console.log("SW registrado:", reg.scope, "gsdoc-v10");
         await reg.update();
 
         if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
@@ -2907,6 +2918,55 @@ function descargarExcelMateriales() {
       }
     });
   }
+</script>
+
+<script id="gsdoc-v10-script">
+(()=>{
+ const DOCS={E1:'Formato de solicitud E1',E6:'Recibo técnico E6',AR:'Aceptación de requisitos',DJ:'Declaración juramentada',RETIE:'RETIE',EC:'Esquema constructivo'};
+ const ALL=Object.keys(DOCS); let selected=[]; let screen='home'; const STORE='gsdoc-v10-state';
+ const fieldMap={
+  general:['cm_nombre','cm_fecha_solicitud','cm_tipo_doc','cm_num_doc','cm_dir_radica','cm_localidad','cm_depto','cm_mpio','cm_celular'],
+  e1:['sol_correo','cm_nombre_proyecto','e1_tipo_persona','e1_zona','e1_coord_x','e1_coord_y','e1_indicaciones','e1_red_cercana','e1_distancia_red','e1_num_transformador','e1_no_solicitud','e1_tipo_uso','e1_tipo_uso_otro','e1_estrato'],
+  e6:['cm_nombre_proyecto','cm_retie_constructor'],
+  ar:[],
+  dj:['dj_descripcion','dj_ciudad_dom','dj_fecha_pose','dj_posesion'],
+  retie:['cm_retie_constructor','cm_retie_matricula','retie_const_identificacion','retie_decl_num','retie_prof_constructor','retie_consejo','retie_fecha_construccion','retie_dir_constructor','retie_cel_constructor','retie_correo_constructor'],
+  ec:['cm_retie_constructor','cm_retie_matricula','ec_filtro_pisos','ec_filtro_habitaciones','ec_filtro_banos']
+ };
+ const reqSol=()=>selected.some(d=>['E1','E6','AR','DJ'].includes(d));
+ const reqTec=()=>selected.some(d=>['RETIE','EC'].includes(d));
+ const hasEC=()=>selected.includes('EC');
+ function save(){const data={selected,screen,theme:document.body.classList.contains('dark')?'dark':'light',values:{}};document.querySelectorAll('input,select,textarea').forEach(el=>{if(!el.id&&!el.name)return;if(el.type==='radio'||el.type==='checkbox'){if(el.checked)data.values[(el.name||el.id)+'|'+el.value]=true}else data.values[el.id]=el.value});localStorage.setItem(STORE,JSON.stringify(data));}
+ function restore(){try{const data=JSON.parse(localStorage.getItem(STORE)||'{}'); if(Array.isArray(data.selected))selected=data.selected; if(data.theme==='dark')document.body.classList.add('dark'); Object.entries(data.values||{}).forEach(([k,v])=>{if(k.includes('|')){const [n,val]=k.split('|'); const el=[...document.querySelectorAll(`[name="${CSS.escape(n)}"]`)].find(x=>x.value===val); if(el)el.checked=true;}else{const el=document.getElementById(k); if(el)el.value=v;}}); if(data.screen)screen=data.screen;}catch(e){}}
+ function toast(msg){let t=document.querySelector('.toast'); if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)} t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}
+ function fieldNode(id){let el=document.getElementById(id)||document.querySelector(`[name="${CSS.escape(id)}"]`); if(!el)return null; let node=el.closest('.field')||el.closest('label')||el; node.classList.add('gs10-field'); return node;}
+ function unique(a){return [...new Set(a.filter(Boolean))]}
+ function buildApp(){document.body.classList.add('gs-v10'); const old=document.getElementById('gs10App'); if(old)old.remove(); const app=document.createElement('div'); app.id='gs10App'; app.innerHTML=`
+  <div class="gs10-top"><div class="gs10-head"><div class="gs10-logo">📘</div><div><div class="gs10-title">GS Documentos</div><div class="gs10-sub">Gestión documental ESPT/CUND100</div></div><button class="gs10-theme" id="gs10Theme">${document.body.classList.contains('dark')?'☀️':'🌙'}</button></div></div>
+  <section class="gs10-screen" data-screen="home"><div class="gs10-card"><h2>Seleccione documentos</h2><p class="gs10-help">Puede escoger uno, varios o todos. La app construye un único formulario con los campos requeridos.</p><div class="gs10-docgrid" id="docGrid"></div><div class="gs10-actions"><button class="gs10-btn" id="goForm">Crear formulario</button><button class="gs10-btn secondary" id="clearSession">Limpiar sesión</button></div></div></section>
+  <section class="gs10-screen" data-screen="form"><div class="gs10-card"><h2>Formulario</h2><p class="gs10-help" id="formResume"></p><div id="formHost"></div><div class="gs10-actions"><button class="gs10-btn" data-go="generate">Generar</button><button class="gs10-btn secondary" data-go="home">Volver a inicio</button></div></div></section>
+  <section class="gs10-screen" data-screen="materials"><div class="gs10-card"><h2>Materiales</h2><p class="gs10-help">Opcional. Active solo si requiere anexar materiales.</p><div class="gs10-actions"><button class="gs10-btn secondary" id="matNo">No requiere</button><button class="gs10-btn" id="matYes">Requiere materiales</button></div><div class="material-filter"><button class="gs10-btn ghost" data-mat="INTERNA">Interna</button><button class="gs10-btn ghost" data-mat="EXTERNA">Externa</button><button class="gs10-btn ghost" data-mat="AMBAS">Ambas</button></div><div id="materialsHost"></div><div class="gs10-actions"><button class="gs10-btn secondary" data-go="form">Volver a formulario</button></div></div></section>
+  <section class="gs10-screen" data-screen="supports"><div class="gs10-card"><h2>Soportes</h2><p class="gs10-help">Opcional. Cargue o capture documentos soporte.</p><div id="supportsHost"></div><div class="gs10-actions"><button class="gs10-btn secondary" data-go="form">Volver a formulario</button></div></div></section>
+  <section class="gs10-screen" data-screen="signatures"><div class="gs10-card"><h2>Firmas</h2><p class="gs10-help">Se muestran solo las firmas necesarias según los documentos seleccionados.</p><div id="signHost"></div><div class="gs10-actions"><button class="gs10-btn secondary" data-go="form">Volver a formulario</button></div></div></section>
+  <section class="gs10-screen" data-screen="loads"><div class="gs10-card"><h2>Cuadro de cargas</h2><p class="gs10-help">Parte del Esquema constructivo. Diligencie cantidad por carga.</p><div id="loadsHost"></div><div class="gs10-kpis" id="loadKpis"></div><div class="gs10-actions"><button class="gs10-btn secondary" data-go="form">Volver a formulario</button></div></div></section>
+  <section class="gs10-screen" data-screen="generate"><div class="gs10-card"><h2>Generar documentos</h2><p class="gs10-help">Se generará el ZIP con el nombre del solicitante. Tras generar, puede limpiar la sesión.</p><div class="gs10-actions"><button class="gs10-btn" id="genZip">Generar ZIP</button><button class="gs10-btn secondary" id="finishClean">Finalizar y limpiar</button><button class="gs10-btn ghost" data-go="form">Volver</button></div></div></section>
+  <nav class="gs10-bottom"><button class="gs10-nav" data-go="home"><span>🏠</span>Inicio</button><button class="gs10-nav" data-go="form"><span>📝</span>Formulario</button><button class="gs10-nav" data-go="materials"><span>📦</span>Materiales</button><button class="gs10-nav" data-go="supports"><span>📎</span>Soportes</button><button class="gs10-nav" data-go="signatures"><span>✍️</span>Firmas</button><button class="gs10-nav" data-go="loads"><span>⚡</span>Cargas</button><button class="gs10-nav" data-go="generate"><span>📄</span>Generar</button></nav>`;
+ document.body.prepend(app); renderDocs(); wire(); renderAll(); }
+ function renderDocs(){const g=document.getElementById('docGrid'); if(!g)return; g.innerHTML=''; const cards=[['ALL','Todos los documentos','🧩'],...ALL.map(d=>[d,DOCS[d],{E1:'📝',E6:'🧾',AR:'✅',DJ:'✍️',RETIE:'🛡️',EC:'📐'}[d]])]; cards.forEach(([id,name,ico])=>{const b=document.createElement('button');b.className='gs10-doc '+((id==='ALL'?selected.length===ALL.length:selected.includes(id))?'sel':'');b.innerHTML=`<span class="ico">${ico}</span><strong>${name}</strong>`;b.onclick=()=>{ if(id==='ALL')selected=selected.length===ALL.length?[]:[...ALL]; else{selected=selected.includes(id)?selected.filter(x=>x!==id):[...selected,id]} renderDocs(); renderAll(); save();};g.appendChild(b)})}
+ function section(title,ids){const wrap=document.createElement('div');wrap.className='gs10-form-section';wrap.innerHTML=`<h3>${title}</h3><div class="gs10-fields"></div>`;const grid=wrap.querySelector('.gs10-fields'); unique(ids).forEach(id=>{const n=fieldNode(id); if(n)grid.appendChild(n)}); return wrap;}
+ function renderForm(){const h=document.getElementById('formHost'); if(!h)return; h.innerHTML=''; document.getElementById('formResume').textContent=selected.length?selected.map(d=>DOCS[d]).join(' · '):'Seleccione documentos en Inicio.'; if(!selected.length){h.innerHTML='<div class="gs10-form-section"><h3>Sin selección</h3><p class="gs10-help">Vuelva a inicio y seleccione documentos.</p></div>';return} h.appendChild(section('Datos generales',fieldMap.general.concat(selected.includes('E1')?['sol_correo']:[], selected.some(d=>['E1','E6'].includes(d))?['cm_nombre_proyecto']:[]))); if(selected.includes('E1'))h.appendChild(section('Formato de solicitud E1',fieldMap.e1.filter(x=>!['sol_correo','cm_nombre_proyecto'].includes(x)))); if(selected.includes('E6'))h.appendChild(section('Recibo técnico E6',fieldMap.e6.filter(x=>!['cm_nombre_proyecto'].includes(x)))); if(selected.includes('AR'))h.appendChild(section('Aceptación de requisitos',[])); if(selected.includes('DJ'))h.appendChild(section('Declaración juramentada',fieldMap.dj)); if(selected.includes('RETIE'))h.appendChild(section('RETIE',fieldMap.retie)); if(selected.includes('EC'))h.appendChild(section('Esquema constructivo',fieldMap.ec));}
+ function renderMaterials(){const h=document.getElementById('materialsHost'); if(!h)return; h.innerHTML=''; const sub=document.getElementById('subformMateriales'); if(sub)h.appendChild(sub); const tabla=document.querySelector('#tablaMateriales table'); if(tabla){tabla.style.display='none'; buildMatCards('AMBAS');}}
+ function buildMatCards(filter){const host=document.getElementById('materialsHost'); let box=document.getElementById('matCards'); if(box)box.remove(); box=document.createElement('div');box.id='matCards'; const rows=[...document.querySelectorAll('#tablaMateriales table tr')].slice(1); rows.forEach(r=>{const tipo=r.querySelector('.matTipo')?.textContent.trim().toUpperCase()||''; if(filter!=='AMBAS' && !tipo.includes(filter))return; const nom=r.querySelector('.materialNombre')?.textContent.trim()||''; const und=r.querySelector('.materialUnidad')?.textContent.trim()||''; const inp=r.querySelector('.cantidadMaterial'); if(!nom||!inp)return; const c=document.createElement('div');c.className='mat-card'; c.innerHTML=`<div><b>${nom}</b><small>${tipo} · ${und}</small></div>`; c.appendChild(inp); box.appendChild(c)}); host.appendChild(box)}
+ function renderSupports(){const h=document.getElementById('supportsHost'); if(!h)return; const box=document.querySelector('.photos-box'); if(box)h.appendChild(box);}
+ function renderSigns(){const h=document.getElementById('signHost'); if(!h)return; h.innerHTML=''; const all=[...document.querySelectorAll('.canvas-box')].map(x=>x.closest('.field')).filter(Boolean); if(reqSol()&&all[0])h.appendChild(all[0]); if(reqTec()&&all[1])h.appendChild(all[1]); if(!h.children.length)h.innerHTML='<p class="gs10-help">Los documentos seleccionados no requieren firmas.</p>';}
+ function renderLoads(){const h=document.getElementById('loadsHost'); if(!h)return; h.innerHTML=''; if(!hasEC()){h.innerHTML='<p class="gs10-help">El cuadro de cargas solo aplica para Esquema constructivo.</p>';return} if(window.gsProBuildECBuilder) window.gsProBuildECBuilder(); const b=document.getElementById('ecLoadBuilder'); if(b)h.appendChild(b); updateKpis();}
+ function updateKpis(){let sums={ALUMBRADO:0,'CALEFACCIÓN':0,FUERZA:0}; try{(window.GS_EC_ROWS||GS_EC_ROWS||[]).forEach(r=>{let t=(r.circuito||'').replace('OPERACIÓN','FUERZA'); sums[t]=(sums[t]||0)+(Number(r.cantidad)||0)*(Number(r.potencia)||0);});}catch(e){} const h=document.getElementById('loadKpis'); if(h)h.innerHTML=Object.entries({...sums,TOTAL:Object.values(sums).reduce((a,b)=>a+b,0)}).map(([k,v])=>`<div class="gs10-kpi"><b>${v.toLocaleString('es-CO')} W</b><span>${k}</span></div>`).join('');}
+ function renderAll(){renderForm(); renderMaterials(); renderSupports(); renderSigns(); renderLoads(); document.querySelector('[data-go="loads"]')?.toggleAttribute('hidden',!hasEC()); renderDocs(); show(screen||'home');}
+ function show(s){if(s==='loads'&&!hasEC())s='form'; screen=s; document.querySelectorAll('.gs10-screen').forEach(x=>x.classList.toggle('active',x.dataset.screen===s)); document.querySelectorAll('.gs10-nav').forEach(x=>x.classList.toggle('active',x.dataset.go===s)); save();}
+ function wire(){document.getElementById('gs10Theme').onclick=()=>{document.body.classList.toggle('dark');document.getElementById('gs10Theme').textContent=document.body.classList.contains('dark')?'☀️':'🌙';save()};document.getElementById('goForm').onclick=()=>{if(!selected.length)return toast('Seleccione al menos un documento');renderAll();show('form')};document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{renderAll();show(b.dataset.go)});document.getElementById('matNo').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="no"]')?.click();toast('Materiales desactivados');save()};document.getElementById('matYes').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="si"]')?.click();renderMaterials();toast('Materiales activados');save()};document.querySelectorAll('[data-mat]').forEach(b=>b.onclick=()=>buildMatCards(b.dataset.mat));document.getElementById('genZip').onclick=()=>{const btn=document.getElementById('btnALL'); if(btn)btn.click(); toast('Generando ZIP... revise descargas.'); setTimeout(()=>{clearSession(true)},4500)};document.getElementById('finishClean').onclick=()=>clearSession(false);document.getElementById('clearSession').onclick=()=>clearSession(false);document.addEventListener('input',()=>{save();setTimeout(updateKpis,0)},true);document.addEventListener('change',()=>{save();setTimeout(updateKpis,0)},true);}
+ function clearSession(silent){localStorage.removeItem(STORE); document.querySelectorAll('input,textarea').forEach(el=>{if(['button','submit','file'].includes(el.type))return;if(el.type==='radio'||el.type==='checkbox')el.checked=false;else el.value=''});document.querySelectorAll('select').forEach(el=>el.selectedIndex=0);selected=[];screen='home'; if(!silent)toast('Sesión limpiada'); renderAll();}
+ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{restore();buildApp();if(!selected.length)screen='home';renderAll();show(screen)},800)});
+})();
 </script>
 </body>
 </html>

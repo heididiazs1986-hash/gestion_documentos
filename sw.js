@@ -1,11 +1,11 @@
-const CACHE_NAME = "gs-documentos-cache-v9";
+const CACHE_NAME = "gs-documentos-cache-v10";
 const APP_SHELL = [
   "./",
-  "./index.html?v=gsdoc-v9",
-  "./manifest.json?v=gsdoc-v9",
-  "./icon-192.png?v=gsdoc-v9",
-  "./icon-512.png?v=gsdoc-v9",
-  "./icon-180.png?v=gsdoc-v9"
+  "./index.html?v=gsdoc-v10",
+  "./manifest.json?v=gsdoc-v10",
+  "./icon-192.png?v=gsdoc-v10",
+  "./icon-512.png?v=gsdoc-v10",
+  "./icon-180.png?v=gsdoc-v10"
 ];
 
 self.addEventListener("message", (event) => {
@@ -35,6 +35,6 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
         return response;
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html?v=gsdoc-v9")))
+      .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html?v=gsdoc-v10")))
   );
 });
