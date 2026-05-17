@@ -34,14 +34,14 @@ main{max-width:1100px;margin:auto;padding:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin:0 0 14px}
 h1,h2,h3{margin:0 0 12px;letter-spacing:-.02em} h1{font-size:26px} h2{font-size:22px} h3{font-size:18px}
 .muted{color:var(--muted);font-size:14px}
-.grid-docs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid-docs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .doc-btn{
-  min-height:122px;border:1.5px solid var(--line);background:var(--card);border-radius:26px;padding:16px;text-align:left;
-  box-shadow:0 8px 18px rgba(0,0,0,.05);cursor:pointer;display:flex;gap:14px;align-items:center;color:var(--ink)
+  min-height:110px;height:110px;border:1.5px solid var(--line);background:var(--card);border-radius:20px;padding:12px;text-align:left;
+  box-shadow:0 8px 18px rgba(0,0,0,.05);cursor:pointer;display:grid;grid-template-rows:auto 1fr;gap:8px;align-items:start;color:var(--ink)
 }
-.doc-btn .ico{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:var(--soft);font-size:28px;flex:0 0 auto}
-.doc-btn strong{display:block;font-size:20px;line-height:1.1}
-.doc-btn small{display:block;color:var(--muted);margin-top:5px;font-size:12px}
+.doc-btn .ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--soft);font-size:22px;flex:0 0 auto}
+.doc-btn strong{display:block;font-size:14px;line-height:1.2}
+.doc-btn small{display:block;color:var(--muted);margin-top:4px;font-size:11px;line-height:1.2}
 .doc-btn.selected{border-color:var(--red);background:linear-gradient(135deg,var(--red),#b70000);color:#fff;box-shadow:0 18px 30px rgba(212,0,0,.22)}
 .doc-btn.selected small{color:#fff}.doc-btn.selected .ico{background:rgba(255,255,255,.18)}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
@@ -78,7 +78,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--red);box-shadow:0 0 0
 .item-row strong{font-size:15px}.item-row small{display:block;color:var(--muted);margin-top:2px}
 .item-row input{text-align:center}
 .summary{border:1px solid var(--line);border-radius:20px;background:var(--soft);padding:14px;color:var(--ink);display:grid;gap:6px;margin-top:12px}
-.sig-box{border:2px dashed #c6ccd4;border-radius:20px;height:160px;background:#fff;display:grid;place-items:center;overflow:hidden}
+.sig-box{border:2px dashed #c6ccd4;border-radius:20px;height:160px;background:#fff;display:grid;place-items:center;overflow:hidden;cursor:pointer}
 .sig-box canvas{width:100%;height:100%;background:#fff}
 .modal{position:fixed;inset:0;background:#fff;z-index:100;display:none;flex-direction:column}
 .modal.active{display:flex}
@@ -90,8 +90,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--red);box-shadow:0 0 0
 .footer{text-align:center;color:var(--muted);font-size:13px;margin:24px 0}
 @media(max-width:720px){
   main{padding:10px}.header{padding:16px 14px}.title{font-size:22px}.subtitle{font-size:13px}.logo{width:54px;height:54px}
-  .grid-docs{grid-template-columns:1fr 1fr;gap:10px}.doc-btn{min-height:112px;padding:12px;display:block}.doc-btn .ico{width:48px;height:48px;margin-bottom:8px}
-  .doc-btn strong{font-size:15.5px}.doc-btn small{display:none}
+  .grid-docs{grid-template-columns:1fr 1fr;gap:8px}.doc-btn{min-height:98px;height:98px;padding:10px;border-radius:16px;gap:6px}.doc-btn .ico{width:34px;height:34px;font-size:18px;margin-bottom:0}
+  .doc-btn strong{font-size:12.5px}.doc-btn small{font-size:10px;display:block}
   .form-grid{grid-template-columns:1fr;gap:10px}.card{padding:14px;border-radius:22px}.section{padding:13px}
   .nav-item{min-width:49px;font-size:10px}.nav-item b{font-size:18px}
 }
@@ -164,12 +164,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--red);box-shadow:0 0 0
       <div id="sigSolicitante" class="section">
         <div class="section-head"><h2>Firma solicitante</h2><span class="badge">E1 · E6 · AR · DJ</span></div>
         <div class="sig-box" data-sig="solicitante"><canvas id="canvasSolicitante"></canvas></div>
-        <div class="actions"><button class="btn outline" data-clear-sig="solicitante">Borrar</button><button class="btn" data-open-sig="solicitante">Firmar</button></div>
+        <div class="actions"><button class="btn outline" data-clear-sig="solicitante">Borrar</button></div>
       </div>
       <div id="sigTecnico" class="section">
         <div class="section-head"><h2>Firma técnico</h2><span class="badge">RETIE · EC</span></div>
         <div class="sig-box" data-sig="tecnico"><canvas id="canvasTecnico"></canvas></div>
-        <div class="actions"><button class="btn outline" data-clear-sig="tecnico">Borrar</button><button class="btn" data-open-sig="tecnico">Firmar</button></div>
+        <div class="actions"><button class="btn outline" data-clear-sig="tecnico">Borrar</button></div>
       </div>
       <div class="actions"><button class="btn" id="saveSigs">Guardar firmas</button><button class="btn outline" data-screen="formulario">← Volver al formulario</button></div>
     </div>
@@ -212,7 +212,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--red);box-shadow:0 0 0
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
+const STORAGE_KEY='gsdoc_state_v12';
+const DOC_SCHEMA_VERSION=12;
 const DOCS = [
   {id:'E1', name:'Formato de solicitud E1', icon:'📝'},
   {id:'E6', name:'Recibo técnico E6', icon:'⚡'},
@@ -229,7 +232,7 @@ const FIELDS = [
  {id:'cm_dir_radica', label:'Dirección de quien radica', type:'text', req:true, docs:'ALL', sec:'Datos generales'},
  {id:'cm_localidad', label:'Localidad del predio', type:'text', req:true, docs:'ALL', sec:'Datos generales'},
  {id:'cm_depto', label:'Departamento', type:'select', req:true, docs:'ALL', sec:'Datos generales', opts:['Cundinamarca','Bogotá D.C.','Meta','Tolima']},
- {id:'cm_mpio', label:'Municipio / Localidad', type:'text', req:true, docs:'ALL', sec:'Datos generales'},
+ {id:'cm_mpio', label:'Municipio / Localidad', type:'select', req:true, docs:'ALL', sec:'Datos generales', opts:[]},
  {id:'cm_celular', label:'Celular', type:'tel', req:true, docs:'ALL', sec:'Datos generales'},
  {id:'sol_correo', label:'Correo electrónico', type:'email', docs:['E1'], sec:'Datos generales'},
  {id:'cm_nombre_proyecto', label:'Nombre del proyecto', type:'select', req:true, docs:['E1','E6'], sec:'Datos generales', opts:['CUNDINAMARCA AL 100','ENERGÍA SEGURA PARA TODOS','NORMALIZACIÓN DE INSTITUCIONES EDUCATIVAS']},
@@ -254,7 +257,7 @@ const FIELDS = [
  {id:'retie_const_identificacion', label:'Identificación del constructor', type:'text', req:true, docs:['RETIE'], sec:'RETIE'},
  {id:'retie_decl_num', label:'Lugar de expedición', type:'text', req:true, docs:['RETIE'], sec:'RETIE'},
  {id:'retie_prof_constructor', label:'Profesión del constructor', type:'text', req:true, docs:['RETIE'], sec:'RETIE'},
- {id:'retie_consejo', label:'Consejo profesional', type:'text', req:true, docs:['RETIE'], sec:'RETIE'},
+ {id:'retie_consejo', label:'Consejo profesional', type:'select', req:true, docs:['RETIE'], sec:'RETIE', opts:['CONTE','CONALTEL']},
  {id:'retie_fecha_construccion', label:'Fecha de construcción', type:'date', req:true, docs:['RETIE'], sec:'RETIE'},
  {id:'retie_dir_constructor', label:'Dirección del constructor', type:'text', docs:['RETIE'], sec:'RETIE'},
  {id:'retie_cel_constructor', label:'Celular del constructor', type:'tel', docs:['RETIE'], sec:'RETIE'},
@@ -287,20 +290,31 @@ const LOADS = [
  {tipo:'FUERZA', nombre:'NEVERA', w:300},
  {tipo:'FUERZA', nombre:'VENTILADOR', w:200}
 ];
-let state = JSON.parse(localStorage.getItem('gsdoc_state_v11')||'{}');
+const DEPT_MUNICIPIOS = {
+  'Cundinamarca':['Agua de Dios','Cáqueza','Fómeque','Fusagasugá','Girardot','Granada','Guaduas','La Mesa','Madrid','Mosquera','Soacha','Ubaté','Villeta','Zipaquirá'],
+  'Meta':['Acacías','Cabuyaro','Castilla La Nueva','Cumaral','Granada','Puerto Gaitán','Puerto López','San Martín','Villavicencio'],
+  'Tolima':['Alvarado','Espinal','Flandes','Guamo','Honda','Ibagué','Lérida','Líbano','Melgar','Mariquita'],
+  'Bogotá D.C.':['Usaquén','Chapinero','Santa Fe','San Cristóbal','Usme','Tunjuelito','Bosa','Kennedy','Fontibón','Engativá','Suba','Barrios Unidos','Teusaquillo','Los Mártires','Antonio Nariño','Puente Aranda','La Candelaria','Rafael Uribe Uribe','Ciudad Bolívar','Sumapaz']
+};
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
 state.docs = state.docs || [];
 state.form = state.form || {};
 state.materials = state.materials || {};
 state.loads = state.loads || {};
 state.supports = state.supports || [];
 state.sigs = state.sigs || {};
+state.supportFiles = state.supportFiles || {};
+state.ui = state.ui || {screen:'inicio'};
+state.schema = DOC_SCHEMA_VERSION;
 let activeSig = null, sigDrawing=false, sigCtx=null;
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
-function save(){ localStorage.setItem('gsdoc_state_v11', JSON.stringify(state)); }
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(window.__to); window.__to=setTimeout(()=>t.style.display='none',2300); }
 function hasDoc(id){ return state.docs.includes(id); }
 function docApplies(rule){ return rule==='ALL' || rule.some(d=>hasDoc(d)); }
 function screen(id){
+  if(id!=='inicio' && !state.docs.length){ toast('Seleccione al menos un documento'); id='inicio'; }
+  if(id==='cargas' && !hasDoc('EC')) id='formulario';
   $$('.screen').forEach(x=>x.classList.toggle('active', x.id===id));
   $$('.nav-item').forEach(x=>x.classList.toggle('active', x.dataset.screen===id));
   if(id==='formulario') renderForm();
@@ -308,17 +322,29 @@ function screen(id){
   if(id==='soportes') renderSupports();
   if(id==='firmas') renderSigs();
   if(id==='cargas') renderLoads();
+  state.ui.screen=id;
+  save();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function updateNav(){
-  $('#navCargas').classList.toggle('hide', !hasDoc('EC'));
+  $('#navCargas').classList.add('hide');
 }
+
+function pruneStateBySelection(){
+  const validFields = new Set(FIELDS.filter(f=>docApplies(f.docs)).map(f=>f.id));
+  Object.keys(state.form).forEach(k=>{ if(!validFields.has(k)) delete state.form[k]; });
+  if(!hasDoc('EC')) state.loads={};
+  const needsSol=['E1','E6','AR','DJ'].some(hasDoc), needsTec=['RETIE','EC'].some(hasDoc);
+  if(!needsSol) delete state.sigs.solicitante;
+  if(!needsTec) delete state.sigs.tecnico;
+}
+
 function renderDocs(){
   const grid=$('#docGrid'); grid.innerHTML='';
   DOCS.forEach(d=>{
     const b=document.createElement('button'); b.type='button'; b.className='doc-btn '+(hasDoc(d.id)?'selected':''); b.dataset.doc=d.id;
     b.innerHTML=`<span class="ico">${d.icon}</span><span><strong>${d.name}</strong><small>${d.id==='EC'?'Incluye cuadro de cargas':'Documento de legalización'}</small></span>`;
-    b.onclick=()=>{ state.docs = hasDoc(d.id) ? state.docs.filter(x=>x!==d.id) : [...state.docs,d.id]; save(); renderDocs(); updateNav(); };
+    b.onclick=()=>{ state.docs = hasDoc(d.id) ? state.docs.filter(x=>x!==d.id) : [...state.docs,d.id]; pruneStateBySelection(); save(); renderDocs(); updateNav(); };
     grid.appendChild(b);
   });
 }
@@ -341,10 +367,36 @@ function renderForm(){
     div.innerHTML=`<div class="section-head"><h2>${sec}</h2><span class="badge">${fields.length} campos</span></div><div class="form-grid">${fields.map(fieldHtml).join('')}</div>`;
     cont.appendChild(div);
   });
+  if(hasDoc('EC')){
+    const div=document.createElement('div'); div.className='section';
+    div.innerHTML=`
+      <div class="section-head"><h2>Cuadro de cargas</h2><span class="badge">Esquema constructivo</span></div>
+      <p class="muted">Registre cantidad por carga. El resumen calcula potencia por circuito.</p>
+      <div id="loadListInline" class="load-list"></div>
+      <div class="summary" id="loadSummaryInline"></div>
+      <div class="actions"><button class="btn" id="saveLoadsInline">Guardar cargas</button></div>
+    `;
+    cont.appendChild(div);
+    renderLoads('loadListInline','loadSummaryInline');
+    $('#saveLoadsInline').onclick=()=>{ save(); toast('Cargas guardadas'); };
+  }
   cont.querySelectorAll('input,select,textarea').forEach(el=>{
-    el.addEventListener('input',()=>{ if(el.type==='radio'){ state.form[el.name]=el.value; } else state.form[el.id]=el.value; save(); });
-    el.addEventListener('change',()=>{ if(el.type==='radio'){ state.form[el.name]=el.value; } else state.form[el.id]=el.value; save(); });
+    el.addEventListener('input',()=>{ if(el.type==='text') applySmartCase(el); if(el.type==='radio'){ state.form[el.name]=el.value; } else state.form[el.id]=el.value; save(); });
+    el.addEventListener('change',()=>{ if(el.type==='text') applySmartCase(el); if(el.type==='radio'){ state.form[el.name]=el.value; } else state.form[el.id]=el.value; save(); });
   });
+  bindMunicipioDependiente();
+}
+function bindMunicipioDependiente(){
+  const dep=$('#cm_depto'), mpio=$('#cm_mpio');
+  if(!dep || !mpio) return;
+  const fill=()=>{
+    const prev=state.form.cm_mpio||'';
+    const opts=DEPT_MUNICIPIOS[dep.value]||[];
+    mpio.innerHTML=`<option value="">Seleccione...</option>${opts.map(o=>`<option ${o===prev?'selected':''}>${o}</option>`).join('')}`;
+    if(prev && !opts.includes(prev)){ state.form.cm_mpio=''; save(); }
+  };
+  fill();
+  dep.addEventListener('change',()=>{ state.form.cm_depto=dep.value; fill(); });
 }
 function renderMaterials(filter='Todas'){
   const list=$('#materialList'); list.innerHTML='';
@@ -363,27 +415,28 @@ function renderSupports(){
     row.innerHTML=`<div><strong>${s.tipo||'Soporte'}</strong><small>${s.name||'Archivo/captura'}</small></div><button class="btn outline" data-del="${i}">Quitar</button>`;
     list.appendChild(row);
   });
-  list.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{state.supports.splice(+b.dataset.del,1);save();renderSupports();});
+  list.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ const idx=+b.dataset.del; const sup=state.supports[idx]; if(sup?.id) delete state.supportFiles[sup.id]; state.supports.splice(idx,1); save(); renderSupports();});
 }
 function renderSigs(){
   const needsSol=['E1','E6','AR','DJ'].some(hasDoc), needsTec=['RETIE','EC'].some(hasDoc);
   $('#sigSolicitante').classList.toggle('hide',!needsSol); $('#sigTecnico').classList.toggle('hide',!needsTec);
   drawPreview('solicitante'); drawPreview('tecnico');
 }
-function renderLoads(){
-  const list=$('#loadList'); list.innerHTML='';
+function renderLoads(listId='loadList', summaryId='loadSummary'){
+  const list=$('#'+listId); if(!list) return; list.innerHTML='';
   LOADS.forEach(l=>{
     const row=document.createElement('div'); row.className='item-row';
     row.innerHTML=`<div><strong>${l.nombre}</strong><small>${l.tipo}</small></div><input type="number" min="0" value="${state.loads[l.nombre]||0}" data-load="${l.nombre}">`;
     list.appendChild(row);
   });
-  list.querySelectorAll('input[data-load]').forEach(i=>i.oninput=()=>{state.loads[i.dataset.load]=+i.value||0; save(); calcLoads();});
-  calcLoads();
+  list.querySelectorAll('input[data-load]').forEach(i=>i.oninput=()=>{state.loads[i.dataset.load]=+i.value||0; save(); calcLoads(summaryId);});
+  calcLoads(summaryId);
 }
-function calcLoads(){
+function calcLoads(summaryId='loadSummary'){
   const sums={ALUMBRADO:0, CALEFACCIÓN:0, FUERZA:0};
   LOADS.forEach(l=>{ sums[l.tipo]+= (+state.loads[l.nombre]||0)*l.w; });
-  $('#loadSummary').innerHTML=`<strong>Resumen de potencia</strong><span>Alumbrado: ${sums.ALUMBRADO.toLocaleString('es-CO')} W</span><span>Calefacción: ${sums.CALEFACCIÓN.toLocaleString('es-CO')} W</span><span>Fuerza: ${sums.FUERZA.toLocaleString('es-CO')} W</span><strong>Total: ${(sums.ALUMBRADO+sums.CALEFACCIÓN+sums.FUERZA).toLocaleString('es-CO')} W</strong>`;
+  const node=$('#'+summaryId); if(!node) return;
+  node.innerHTML=`<strong>Resumen de potencia</strong><span>Alumbrado: ${sums.ALUMBRADO.toLocaleString('es-CO')} W</span><span>Calefacción: ${sums.CALEFACCIÓN.toLocaleString('es-CO')} W</span><span>Fuerza: ${sums.FUERZA.toLocaleString('es-CO')} W</span><strong>Total: ${(sums.ALUMBRADO+sums.CALEFACCIÓN+sums.FUERZA).toLocaleString('es-CO')} W</strong>`;
 }
 function drawPreview(type){
   const canvas = type==='solicitante'?$('#canvasSolicitante'):$('#canvasTecnico');
@@ -397,21 +450,81 @@ function setupModalCanvas(){
 }
 function pos(e,c){ const r=c.getBoundingClientRect(); const p=e.touches?e.touches[0]:e; return [(p.clientX-r.left)*devicePixelRatio,(p.clientY-r.top)*devicePixelRatio];}
 function cleanName(s){ return (s||'SOLICITANTE').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w]+/g,'_').replace(/^_+|_+$/g,'').toUpperCase(); }
+function smartCaseWords(text){
+  return text.toLowerCase().split(/\s+/).filter(Boolean).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+}
+function smartCaseSentence(text){
+  const low=text.toLowerCase();
+  return low.replace(/(^\s*[a-záéíóúñü])|([.!?]\s*[a-záéíóúñü])/g, m=>m.toUpperCase());
+}
+function applySmartCase(el){
+  if(!el || el.tagName!=='INPUT' || el.type!=='text') return;
+  if(el.id==='cm_nombre' || el.id==='cm_retie_constructor') el.value = smartCaseWords(el.value);
+  else el.value = smartCaseSentence(el.value);
+}
+function normalizeSignatureDataURL(src){
+  const img=new Image();
+  return new Promise(resolve=>{
+    img.onload=()=>{
+      const scan=document.createElement('canvas'); scan.width=img.width; scan.height=img.height;
+      const sctx=scan.getContext('2d'); sctx.drawImage(img,0,0);
+      const px=sctx.getImageData(0,0,scan.width,scan.height).data;
+      let minX=scan.width,minY=scan.height,maxX=-1,maxY=-1;
+      for(let y=0;y<scan.height;y++){
+        for(let x=0;x<scan.width;x++){
+          const i=(y*scan.width+x)*4;
+          const r=px[i],g=px[i+1],b=px[i+2],a=px[i+3];
+          if(a>10 && (r<245 || g<245 || b<245)){ if(x<minX)minX=x; if(y<minY)minY=y; if(x>maxX)maxX=x; if(y>maxY)maxY=y; }
+        }
+      }
+      if(maxX<0) return resolve(src);
+      const pad=24;
+      minX=Math.max(0,minX-pad); minY=Math.max(0,minY-pad); maxX=Math.min(scan.width-1,maxX+pad); maxY=Math.min(scan.height-1,maxY+pad);
+      const w=maxX-minX+1,h=maxY-minY+1;
+      const crop=document.createElement('canvas'); crop.width=w; crop.height=h;
+      crop.getContext('2d').drawImage(scan,minX,minY,w,h,0,0,w,h);
+      const out=document.createElement('canvas');
+      const landscape = w>=h;
+      out.width=landscape?w:h; out.height=landscape?h:w;
+      const octx=out.getContext('2d'); octx.fillStyle='#fff'; octx.fillRect(0,0,out.width,out.height);
+      if(landscape) octx.drawImage(crop,0,0);
+      else { octx.translate(out.width/2,out.height/2); octx.rotate(-Math.PI/2); octx.drawImage(crop,-w/2,-h/2); }
+      resolve(out.toDataURL('image/png'));
+    };
+    img.src=src;
+  });
+}
 async function generateZip(){
-  const payload={documentos: state.docs, formulario: state.form, materiales: state.materials, soportes: state.supports.map(x=>({tipo:x.tipo,name:x.name})), cargas: state.loads};
-  const content = "GS DOCUMENTOS\\n\\n"+JSON.stringify(payload,null,2);
-  const blob = new Blob([content],{type:'text/plain'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=cleanName(state.form.cm_nombre)+'.zip'; a.click(); URL.revokeObjectURL(a.href);
-  // For emergency demo this ZIP is a text payload with .zip extension. Real PDF bundling can be reconnected later.
-  if(confirm('Archivo generado. ¿Deseas limpiar el formulario?')){ localStorage.removeItem('gsdoc_state_v11'); state={docs:[],form:{},materials:{},loads:{},supports:[],sigs:{}}; save(); renderDocs(); updateNav(); screen('inicio'); }
+  const payload={
+    schema: DOC_SCHEMA_VERSION,
+    generado_en: new Date().toISOString(),
+    documentos: state.docs,
+    formulario: state.form,
+    materiales: state.materials,
+    soportes: state.supports.map(x=>({tipo:x.tipo,name:x.name,mime:x.mime||null,id:x.id||null})),
+    cargas: state.loads
+  };
+  if(typeof JSZip==='undefined'){ toast('No se pudo cargar motor ZIP.'); return; }
+  const zip = new JSZip();
+  zip.file('resumen/datos.json', JSON.stringify(payload,null,2));
+  Object.entries(state.sigs||{}).forEach(([k,v])=>{ if(v?.startsWith('data:image/')) zip.file(`firmas/${k}.png`, v.split(',')[1], {base64:true}); });
+  state.supports.forEach((sup,idx)=>{
+    const data= sup.id ? state.supportFiles[sup.id] : null;
+    if(data && data.includes(',')) zip.file(`soportes/${String(idx+1).padStart(2,'0')}_${sup.name||'soporte'}`, data.split(',')[1], {base64:true});
+  });
+  const out = await zip.generateAsync({type:'blob'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(out); a.download=cleanName(state.form.cm_nombre)+'.zip'; a.click(); URL.revokeObjectURL(a.href);
+  if(confirm('Archivo ZIP generado. ¿Deseas limpiar el formulario?')){ localStorage.removeItem(STORAGE_KEY); state={docs:[],form:{},materials:{},loads:{},supports:[],sigs:{},supportFiles:{},ui:{screen:'inicio'},schema:DOC_SCHEMA_VERSION}; save(); renderDocs(); updateNav(); screen('inicio'); }
 }
 document.addEventListener('DOMContentLoaded',()=>{
   document.documentElement.dataset.theme=localStorage.getItem('gsdoc_theme')||'light';
   $('#themeBtn').textContent=document.documentElement.dataset.theme==='dark'?'☀️':'🌙';
   renderDocs(); updateNav();
+  const restore = state.ui?.screen || 'inicio';
+  screen(restore);
   $('#themeBtn').onclick=()=>{ const n=document.documentElement.dataset.theme==='dark'?'light':'dark'; document.documentElement.dataset.theme=n; localStorage.setItem('gsdoc_theme',n); $('#themeBtn').textContent=n==='dark'?'☀️':'🌙'; };
-  $('#selectAll').onclick=()=>{ state.docs=DOCS.map(d=>d.id); save(); renderDocs(); updateNav(); };
-  $('#clearAll').onclick=()=>{ state.docs=[]; save(); renderDocs(); updateNav(); };
+  $('#selectAll').onclick=()=>{ state.docs=DOCS.map(d=>d.id); pruneStateBySelection(); save(); renderDocs(); updateNav(); };
+  $('#clearAll').onclick=()=>{ state.docs=[]; pruneStateBySelection(); save(); renderDocs(); updateNav(); };
   $('#goForm').onclick=()=>{ if(!state.docs.length) return toast('Seleccione al menos un documento'); screen('formulario'); };
   document.body.addEventListener('click',e=>{ const b=e.target.closest('[data-screen]'); if(b) screen(b.dataset.screen); });
   $('#saveForm').onclick=()=>{ save(); toast('Formulario guardado'); };
@@ -421,17 +534,17 @@ document.addEventListener('DOMContentLoaded',()=>{
   $$('.mat-filter').forEach(b=>b.onclick=()=>renderMaterials(b.dataset.filter));
   $('#addSupport').onclick=()=>{
     const input=document.createElement('input'); input.type='file'; input.accept='image/*,application/pdf'; input.capture='environment';
-    input.onchange=()=>{ const f=input.files[0]; if(f){ state.supports.push({name:f.name,tipo:'Documento soporte'}); save(); renderSupports(); } };
+    input.onchange=()=>{ const f=input.files[0]; if(f){ const reader=new FileReader(); reader.onload=()=>{ const id=Date.now().toString(36)+Math.random().toString(36).slice(2,7); state.supports.push({id,name:f.name,tipo:'Documento soporte',mime:f.type||'application/octet-stream'}); state.supportFiles[id]=reader.result; save(); renderSupports(); }; reader.readAsDataURL(f);} };
     input.click();
   };
   $('#generateZip').onclick=generateZip;
   document.body.addEventListener('click',e=>{
-    const o=e.target.closest('[data-open-sig]'); if(o){ activeSig=o.dataset.openSig; $('#sigTitle').textContent=activeSig==='tecnico'?'Firma técnico':'Firma solicitante'; $('#sigModal').classList.add('active'); setTimeout(setupModalCanvas,60); }
+    const o=e.target.closest('[data-open-sig], .sig-box[data-sig]'); if(o){ activeSig=o.dataset.openSig||o.dataset.sig; $('#sigTitle').textContent=activeSig==='tecnico'?'Firma técnico':'Firma solicitante'; $('#sigModal').classList.add('active'); setTimeout(setupModalCanvas,60); }
     const c=e.target.closest('[data-clear-sig]'); if(c){ delete state.sigs[c.dataset.clearSig]; save(); renderSigs(); }
   });
   $('#closeSig').onclick=()=>$('#sigModal').classList.remove('active');
   $('#clearSigModal').onclick=setupModalCanvas;
-  $('#saveSigModal').onclick=()=>{ state.sigs[activeSig]=$('#sigCanvas').toDataURL('image/png'); save(); $('#sigModal').classList.remove('active'); renderSigs(); };
+  $('#saveSigModal').onclick=async()=>{ state.sigs[activeSig]=await normalizeSignatureDataURL($('#sigCanvas').toDataURL('image/png')); save(); $('#sigModal').classList.remove('active'); renderSigs(); };
   const sig=$('#sigCanvas');
   ['mousedown','touchstart'].forEach(ev=>sig.addEventListener(ev,e=>{e.preventDefault(); sigDrawing=true; const [x,y]=pos(e,sig); sigCtx.beginPath(); sigCtx.moveTo(x,y);}));
   ['mousemove','touchmove'].forEach(ev=>sig.addEventListener(ev,e=>{ if(!sigDrawing)return; e.preventDefault(); const [x,y]=pos(e,sig); sigCtx.lineTo(x,y); sigCtx.stroke();}));
