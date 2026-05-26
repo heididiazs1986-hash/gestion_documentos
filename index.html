@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link rel="manifest" href="./manifest.json?v=gsdoc-v13">
+  <link rel="manifest" href="./manifest.json?v=gsdoc-v15">
 <meta name="theme-color" content="#d40000">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=gsdoc-v13">
-<link rel="shortcut icon" href="./icon-192.png?v=gsdoc-v13">
-<link rel="apple-touch-icon" href="./icon-180.png?v=gsdoc-v13">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=gsdoc-v15">
+<link rel="shortcut icon" href="./icon-192.png?v=gsdoc-v15">
+<link rel="apple-touch-icon" href="./icon-180.png?v=gsdoc-v15">
 
   <meta charset="UTF-8" />
   <title>GS Documentos PRO – Formularios ESPT</title>
@@ -726,7 +726,7 @@ body.dark .ec-preview,body.gs-dark .ec-preview,body.dark .load-summary,body.gs-d
 
 </style>
 
-<style id="gsdoc-v13-style">
+<style id="gsdoc-v15-style">
 :root{--g:red;--gs-red:#d40000;--bg:#f4f5f7;--card:#fff;--ink:#24313d;--muted:#6f7a86;--line:#e1e6ec;--soft:#f8fafc;--shadow:0 10px 26px rgba(18,24,40,.10);}
 body.gs-v10{font-family:Inter,Segoe UI,Roboto,Arial,sans-serif!important;background:var(--bg)!important;color:var(--ink)!important;font-size:15px!important;padding-bottom:82px!important;}
 body.gs-v10.dark{--bg:#101418;--card:#171d24;--ink:#f4f7fb;--muted:#aab4c0;--line:#2a3440;--soft:#202832;--shadow:0 12px 28px rgba(0,0,0,.35);}
@@ -782,7 +782,7 @@ body.gs-v10>header,body.gs-v10>main,body.gs-v10>footer{display:none!important;}
 .gs10-field select:disabled,.gs10-field input:disabled{opacity:1!important;background:var(--soft)!important;color:var(--ink)!important}
 </style>
 
-<style id="gsdoc-v13-mobile-fixes">
+<style id="gsdoc-v15-mobile-fixes">
 /* Radios/checks compactos y sin marcos gigantes */
 body.gs-v10 .gs10-field .inline-options{display:grid!important;gap:8px!important;margin-top:4px!important;}
 body.gs-v10 .gs10-field .inline-options.two-options{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
@@ -803,6 +803,10 @@ body.gs-v10 .gs10-screen, body.gs-v10 .gs10-card, body.gs-v10 #formHost{overflow
   body.gs-v10 .gs10-field .inline-options label{font-size:14px!important;padding:5px 2px!important;}
   body.gs-v10 .gs10-field .inline-options.two-options{grid-template-columns:1fr 1fr!important;}
 }
+
+/* PATCH v14: EC cargas como submódulo interno y técnico único */
+#gs10EcCargasSection.gs10-loads-collapsed{display:none!important;}
+.gs10-inline-load-open{width:100%;min-height:52px;border-radius:18px!important;margin-top:10px!important;}
 </style>
 
 </head>
@@ -2499,7 +2503,7 @@ function descargarExcelMateriales() {
   /* =====================================================
      GS DOCUMENTOS PRO · UX, pantallas, firmas, EC
      ===================================================== */
-  const GS_PRO_VERSION = "gsdoc-v13";
+  const GS_PRO_VERSION = "gsdoc-v15";
   const GS_PRO_SCREENS = {};
   let GS_PRO_ACTIVE_SCREEN = "docs";
 
@@ -3182,7 +3186,7 @@ function descargarExcelMateriales() {
   });
 
 
-  /* ====== SERVICE WORKER PWA · gsdoc-v13 ====== */
+  /* ====== SERVICE WORKER PWA · gsdoc-v15 ====== */
   if ("serviceWorker" in navigator) {
     let refreshing = false;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
@@ -3193,8 +3197,8 @@ function descargarExcelMateriales() {
 
     window.addEventListener("load", async () => {
       try {
-        const reg = await navigator.serviceWorker.register("./sw.js?v=gsdoc-v13");
-        console.log("SW registrado:", reg.scope, "gsdoc-v13");
+        const reg = await navigator.serviceWorker.register("./sw.js?v=gsdoc-v15");
+        console.log("SW registrado:", reg.scope, "gsdoc-v15");
         await reg.update();
 
         if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
@@ -3214,10 +3218,10 @@ function descargarExcelMateriales() {
   }
 </script>
 
-<script id="gsdoc-v13-script">
+<script id="gsdoc-v15-script">
 (()=>{
  const DOCS={E1:'Formato de solicitud E1',E6:'Recibo técnico E6',AR:'Aceptación de requisitos',DJ:'Declaración juramentada',RETIE:'RETIE',EC:'Esquema constructivo'};
- const ALL=Object.keys(DOCS); let selected=[]; let screen='home'; const STORE='gsdoc-v13-state';
+ const ALL=Object.keys(DOCS); let selected=[]; let screen='home'; const STORE='gsdoc-v15-state';
  const fieldMap={
   general:['cm_nombre','cm_fecha_solicitud','cm_tipo_doc','cm_num_doc','cm_dir_radica','cm_localidad','cm_depto','cm_mpio','cm_celular'],
   e1:['sol_correo','cm_nombre_proyecto','e1_tipo_persona','e1_zona','e1_coord_x','e1_coord_y','e1_indicaciones','e1_red_cercana','e1_distancia_red','e1_num_transformador','e1_no_solicitud','e1_tipo_uso','e1_tipo_uso_otro','e1_estrato'],
@@ -3449,15 +3453,15 @@ function descargarExcelMateriales() {
   <section class="gs10-screen" data-screen="signatures"><div class="gs10-card"><h2>Firmas</h2><p class="gs10-help">Se muestran solo las firmas necesarias según los documentos seleccionados.</p><div id="signHost"></div><div class="gs10-actions"><button class="gs10-btn secondary" data-go="form">Volver a formulario</button></div></div></section>
   <section class="gs10-screen" data-screen="loads"><div class="gs10-card"><h2>Cuadro de cargas</h2><p class="gs10-help">Parte del Esquema constructivo. Diligencie cantidad por carga.</p><div id="loadsHost"></div><div class="gs10-kpis" id="loadKpis"></div><div class="gs10-actions"><button class="gs10-btn secondary" data-go="form">Volver a formulario</button></div></div></section>
   <section class="gs10-screen" data-screen="generate"><div class="gs10-card"><h2>Generar documentos</h2><p class="gs10-help">Se generará el ZIP con el nombre del solicitante. Tras generar, puede limpiar la sesión.</p><div class="gs10-actions"><button class="gs10-btn" id="genZip">Generar ZIP</button><button class="gs10-btn secondary" id="finishClean">Finalizar y limpiar</button><button class="gs10-btn ghost" data-go="form">Volver</button></div></div></section>
-  <nav class="gs10-bottom"><button class="gs10-nav" data-go="home"><span>🏠</span>Inicio</button><button class="gs10-nav" data-go="form"><span>📝</span>Formulario</button><button class="gs10-nav" data-go="materials"><span>📦</span>Materiales</button><button class="gs10-nav" data-go="supports"><span>📎</span>Soportes</button><button class="gs10-nav" data-go="signatures"><span>✍️</span>Firmas</button><button class="gs10-nav" data-go="loads"><span>⚡</span>Cargas</button><button class="gs10-nav" data-go="generate"><span>📄</span>Generar</button></nav>`;
+  <nav class="gs10-bottom"><button class="gs10-nav" data-go="home"><span>🏠</span>Inicio</button><button class="gs10-nav" data-go="form"><span>📝</span>Formulario</button><button class="gs10-nav" data-go="materials"><span>📦</span>Materiales</button><button class="gs10-nav" data-go="supports"><span>📎</span>Soportes</button><button class="gs10-nav" data-go="signatures"><span>✍️</span>Firmas</button><button class="gs10-nav" data-go="generate"><span>📄</span>Generar</button></nav>`;
  document.body.prepend(app); renderDocs(); wire(); renderAll(); show(screen||'home'); }
  function renderDocs(){const g=document.getElementById('docGrid'); if(!g)return; g.innerHTML=''; const cards=[['ALL','Todos los documentos','🧩'],...ALL.map(d=>[d,DOCS[d],{E1:'📝',E6:'🧾',AR:'✅',DJ:'✍️',RETIE:'🛡️',EC:'📐'}[d]])]; cards.forEach(([id,name,ico])=>{const b=document.createElement('button');b.className='gs10-doc '+((id==='ALL'?selected.length===ALL.length:selected.includes(id))?'sel':'');b.innerHTML=`<span class="ico">${ico}</span><strong>${name}</strong>`;b.onclick=()=>{ if(id==='ALL')selected=selected.length===ALL.length?[]:[...ALL]; else{selected=selected.includes(id)?selected.filter(x=>x!==id):[...selected,id]} syncLegacySelection(); renderDocs(); renderAll(); save();};g.appendChild(b)})}
  function section(title,ids){const wrap=document.createElement('div');wrap.className='gs10-form-section';wrap.innerHTML=`<h3>${title}</h3><div class="gs10-fields"></div>`;const grid=wrap.querySelector('.gs10-fields'); unique(ids).forEach(id=>{const n=fieldNode(id); if(n)grid.appendChild(n)}); return wrap;}
  function gs10CreateInlineLoadsSection(){
    const wrap=document.createElement('div');
-   wrap.className='gs10-form-section';
+   wrap.className='gs10-form-section gs10-loads-collapsed';
    wrap.id='gs10EcCargasSection';
-   wrap.innerHTML=`<h3>Cuadro de cargas del esquema constructivo</h3><p class="gs10-help">Este cuadro hace parte obligatoria del EC. Registre las cantidades antes de generar el documento.</p><div id="gs10InlineLoads"></div><div class="gs10-kpis" id="loadKpisInline"></div>`;
+   wrap.innerHTML=`<h3>Cuadro de cargas del esquema constructivo</h3><p class="gs10-help">Este cuadro hace parte obligatoria del EC. Registre las cantidades antes de generar el documento.</p><div id="gs10InlineLoads"></div><div class="gs10-kpis" id="loadKpisInline"></div><div class="gs10-actions"><button type="button" class="gs10-btn secondary" id="closeInlineLoads">Volver al esquema constructivo</button></div>`;
    try{ if(window.gsProBuildECBuilder) window.gsProBuildECBuilder(); }catch(e){}
    const builder=document.getElementById('ecLoadBuilder');
    const host=wrap.querySelector('#gs10InlineLoads');
@@ -3471,6 +3475,14 @@ function descargarExcelMateriales() {
    setTimeout(updateKpis,0);
    return wrap;
  }
+ function addLoadsButtonToEcSection(sec){
+   if(!sec) return sec;
+   const btnWrap=document.createElement('div');
+   btnWrap.className='gs10-actions';
+   btnWrap.innerHTML='<button type="button" class="gs10-btn gs10-inline-load-open" id="openInlineLoads">⚡ Diligenciar cuadro de cargas</button>';
+   sec.appendChild(btnWrap);
+   return sec;
+ }
  function renderForm(){
    const h=document.getElementById('formHost');
    if(!h)return;
@@ -3481,17 +3493,28 @@ function descargarExcelMateriales() {
      return;
    }
    h.appendChild(section('Datos generales',fieldMap.general.concat(selected.includes('E1')?['sol_correo']:[], selected.some(d=>['E1','E6'].includes(d))?['cm_nombre_proyecto']:[])));
-   const techIds=[];
-   if(selected.some(d=>['E6','RETIE','EC'].includes(d))) techIds.push('cm_retie_constructor');
-   if(selected.some(d=>['RETIE','EC'].includes(d))) techIds.push('cm_retie_matricula');
-   if(techIds.length) h.appendChild(section('Datos del técnico', techIds));
+   /* Lógica técnica única y sin duplicados:
+      - E6: solo Nombre del técnico.
+      - RETIE: Nombre + matrícula + datos RETIE.
+      - EC: Nombre + matrícula solo si RETIE no está seleccionado.
+      - RETIE + EC: técnico y matrícula quedan una sola vez en RETIE.
+      - E6 + EC sin RETIE: nombre queda en E6 y matrícula en EC. */
+   const hasE6 = selected.includes('E6');
+   const hasRETIE = selected.includes('RETIE');
+   const hasEC = selected.includes('EC');
+   const e6TechIds = (!hasRETIE && hasE6) ? ['cm_retie_constructor'] : [];
+   const retieTechIds = hasRETIE ? ['cm_retie_constructor','cm_retie_matricula'] : [];
+   let ecTechIds = [];
+   if(hasEC && !hasRETIE){
+     ecTechIds = hasE6 ? ['cm_retie_matricula'] : ['cm_retie_constructor','cm_retie_matricula'];
+   }
    if(selected.includes('E1'))h.appendChild(section('Formato de solicitud E1',fieldMap.e1.filter(x=>!['sol_correo','cm_nombre_proyecto'].includes(x))));
-   if(selected.includes('E6'))h.appendChild(section('Recibo técnico E6',fieldMap.e6));
+   if(hasE6)h.appendChild(section('Recibo técnico E6', e6TechIds.concat(fieldMap.e6)));
    if(selected.includes('AR'))h.appendChild(section('Aceptación de requisitos',[]));
    if(selected.includes('DJ'))h.appendChild(section('Declaración juramentada',fieldMap.dj));
-   if(selected.includes('RETIE'))h.appendChild(section('RETIE',fieldMap.retie));
-   if(selected.includes('EC')){
-     h.appendChild(section('Esquema constructivo',fieldMap.ec));
+   if(hasRETIE)h.appendChild(section('RETIE', retieTechIds.concat(fieldMap.retie)));
+   if(hasEC){
+     h.appendChild(addLoadsButtonToEcSection(section('Esquema constructivo', ecTechIds.concat(fieldMap.ec))));
      h.appendChild(gs10CreateInlineLoadsSection());
    }
    h.querySelectorAll('input,select,textarea,button').forEach(ctrl=>{ ctrl.disabled=false; ctrl.removeAttribute('disabled'); });
@@ -3534,9 +3557,9 @@ function descargarExcelMateriales() {
  function renderSigns(){const h=document.getElementById('signHost'); if(!h)return; h.innerHTML=''; const all=[...document.querySelectorAll('.canvas-box')].map(x=>x.closest('.field')).filter(Boolean); if(reqSol()&&all[0])h.appendChild(all[0]); if(reqTec()&&all[1])h.appendChild(all[1]); if(!h.children.length)h.innerHTML='<p class="gs10-help">Los documentos seleccionados no requieren firmas.</p>';}
  function renderLoads(){const h=document.getElementById('loadsHost'); if(!h)return; h.innerHTML=''; if(!hasEC()){h.innerHTML='<p class="gs10-help">El cuadro de cargas solo aplica para Esquema constructivo.</p>';return} if(window.gsProBuildECBuilder) window.gsProBuildECBuilder(); const b=document.getElementById('ecLoadBuilder'); if(b)h.appendChild(b); updateKpis();}
  function updateKpis(){let sums={ALUMBRADO:0,'CALEFACCIÓN':0,FUERZA:0}; try{(window.GS_EC_ROWS||GS_EC_ROWS||[]).forEach(r=>{let t=(r.circuito||'').replace('OPERACIÓN','FUERZA'); sums[t]=(sums[t]||0)+(Number(r.cantidad)||0)*(Number(r.potencia)||0);});}catch(e){} const html=Object.entries({...sums,TOTAL:Object.values(sums).reduce((a,b)=>a+b,0)}).map(([k,v])=>`<div class="gs10-kpi"><b>${v.toLocaleString('es-CO')} W</b><span>${k}</span></div>`).join(''); ['loadKpis','loadKpisInline'].forEach(id=>{const h=document.getElementById(id); if(h)h.innerHTML=html;});}
- function renderAll(){syncLegacySelection();renderForm(); styleOptionGroups(); bindRetieDependenciasGS(); renderMaterials(); renderSupports(); renderSigns(); renderLoads(); document.querySelector('[data-go="loads"]')?.toggleAttribute('hidden',!hasEC()); renderDocs();}
+ function renderAll(){syncLegacySelection();renderForm(); styleOptionGroups(); bindRetieDependenciasGS(); renderMaterials(); renderSupports(); renderSigns(); renderLoads(); renderDocs();}
  function show(s){if(s==='loads'&&!hasEC())s='form'; screen=s; document.querySelectorAll('.gs10-screen').forEach(x=>x.classList.toggle('active',x.dataset.screen===s)); document.querySelectorAll('.gs10-nav').forEach(x=>x.classList.toggle('active',x.dataset.go===s)); save();}
- function wire(){document.getElementById('gs10Theme').onclick=()=>{document.body.classList.toggle('dark');document.getElementById('gs10Theme').textContent=document.body.classList.contains('dark')?'☀️':'🌙';save()};document.getElementById('goForm').onclick=()=>{if(!selected.length)return toast('Seleccione al menos un documento');renderAll();show('form')};document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{renderAll();show(b.dataset.go)});document.getElementById('matNo').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="no"]')?.click();toast('Materiales desactivados');save()};document.getElementById('matYes').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="si"]')?.click();renderMaterials();toast('Materiales activados');save()};document.querySelectorAll('[data-mat]').forEach(b=>b.onclick=()=>buildMatCards(b.dataset.mat));document.getElementById('genZip').onclick=()=>{gs10BeforeGenerate(); const btn=document.getElementById('btnALL'); if(btn)btn.click(); toast('Generando ZIP... revise descargas.');};document.getElementById('finishClean').onclick=()=>clearSession(false);document.getElementById('clearSession').onclick=()=>clearSession(false);document.addEventListener('input',(e)=>{
+ function wire(){document.getElementById('gs10Theme').onclick=()=>{document.body.classList.toggle('dark');document.getElementById('gs10Theme').textContent=document.body.classList.contains('dark')?'☀️':'🌙';save()};document.getElementById('goForm').onclick=()=>{if(!selected.length)return toast('Seleccione al menos un documento');renderAll();show('form')};document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{renderAll();show(b.dataset.go)});document.addEventListener('click',(e)=>{const open=e.target.closest('#openInlineLoads'); if(open){const sec=document.getElementById('gs10EcCargasSection'); if(sec){sec.classList.remove('gs10-loads-collapsed'); sec.scrollIntoView({behavior:'smooth',block:'start'}); try{ if(window.gsProRenderECTable) window.gsProRenderECTable(); }catch(err){} updateKpis();}} const close=e.target.closest('#closeInlineLoads'); if(close){const sec=document.getElementById('gs10EcCargasSection'); if(sec){sec.classList.add('gs10-loads-collapsed'); document.querySelector('#openInlineLoads')?.scrollIntoView({behavior:'smooth',block:'center'});}}});document.getElementById('matNo').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="no"]')?.click();toast('Materiales desactivados');save()};document.getElementById('matYes').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="si"]')?.click();renderMaterials();toast('Materiales activados');save()};document.querySelectorAll('[data-mat]').forEach(b=>b.onclick=()=>buildMatCards(b.dataset.mat));document.getElementById('genZip').onclick=()=>{gs10BeforeGenerate(); const btn=document.getElementById('btnALL'); if(btn)btn.click(); toast('Generando ZIP... revise descargas.');};document.getElementById('finishClean').onclick=()=>clearSession(false);document.getElementById('clearSession').onclick=()=>clearSession(false);document.addEventListener('input',(e)=>{
     const el=e.target;
     if(el && el.matches && el.matches('input[type="text"]')){
       const pos=el.selectionStart;
