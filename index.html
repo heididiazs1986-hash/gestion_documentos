@@ -3185,10 +3185,57 @@ function descargarExcelMateriales() {
  }
  window.gs10GetSelectedDocs = () => selected.length === ALL.length ? [...ALL] : [...selected];
 
- function save(){const data={selected,screen,theme:document.body.classList.contains('dark')?'dark':'light',values:{}};document.querySelectorAll('input,select,textarea').forEach(el=>{if(!el.id&&!el.name)return;if(el.type==='radio'||el.type==='checkbox'){if(el.checked)data.values[(el.name||el.id)+'|'+el.value]=true}else data.values[el.id]=el.value});localStorage.setItem(STORE,JSON.stringify(data));}
- function restore(){try{const data=JSON.parse(localStorage.getItem(STORE)||'{}'); if(Array.isArray(data.selected))selected=data.selected; if(data.theme==='dark')document.body.classList.add('dark'); Object.entries(data.values||{}).forEach(([k,v])=>{if(k.includes('|')){const [n,val]=k.split('|'); const el=[...document.querySelectorAll(`[name="${CSS.escape(n)}"]`)].find(x=>x.value===val); if(el)el.checked=true;}else{const el=document.getElementById(k); if(el)el.value=v;}}); if(data.screen)screen=data.screen;}catch(e){}}
+ let gs10SavedValues = {};
+ const gs10FieldTemplates = {};
+ function gs10RememberValuesFrom(root){
+   (root||document).querySelectorAll('input,select,textarea').forEach(el=>{
+     if(!el.id&&!el.name)return;
+     if(el.type==='file')return;
+     if(el.type==='radio'||el.type==='checkbox'){
+       const key=(el.name||el.id)+'|'+el.value;
+       if(el.checked) gs10SavedValues[key]=true;
+       else delete gs10SavedValues[key];
+     }else if(el.id){
+       gs10SavedValues[el.id]=el.value;
+     }
+   });
+ }
+ function gs10ApplyValuesTo(root){
+   (root||document).querySelectorAll('input,select,textarea').forEach(el=>{
+     if(el.type==='file')return;
+     if(el.type==='radio'||el.type==='checkbox'){
+       el.checked=!!gs10SavedValues[(el.name||el.id)+'|'+el.value];
+     }else if(el.id && Object.prototype.hasOwnProperty.call(gs10SavedValues,el.id)){
+       el.value=gs10SavedValues[el.id];
+     }
+   });
+ }
+ function save(){
+   const app=document.getElementById('gs10App');
+   if(app) gs10RememberValuesFrom(app);
+   const data={selected,screen,theme:document.body.classList.contains('dark')?'dark':'light',values:gs10SavedValues};
+   localStorage.setItem(STORE,JSON.stringify(data));
+ }
+ function restore(){try{const data=JSON.parse(localStorage.getItem(STORE)||'{}'); if(Array.isArray(data.selected))selected=data.selected; if(data.theme==='dark')document.body.classList.add('dark'); gs10SavedValues=data.values||{}; gs10ApplyValuesTo(document); if(data.screen)screen=data.screen;}catch(e){}}
  function toast(msg){let t=document.querySelector('.toast'); if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)} t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}
- function fieldNode(id){let el=document.getElementById(id)||document.querySelector(`[name="${CSS.escape(id)}"]`); if(!el)return null; let node=el.closest('.field')||el.closest('label')||el; node.classList.add('gs10-field'); return node;}
+ function fieldNode(id){
+   if(gs10FieldTemplates[id]){
+     const clone=gs10FieldTemplates[id].cloneNode(true);
+     clone.classList.add('gs10-field');
+     gs10ApplyValuesTo(clone);
+     return clone;
+   }
+   let el=document.getElementById(id)||document.querySelector(`[name="${CSS.escape(id)}"]`);
+   if(!el)return null;
+   let node=el.closest('.field')||el.closest('label')||el;
+   const template=node.cloneNode(true);
+   template.classList.add('gs10-field');
+   gs10FieldTemplates[id]=template;
+   const clone=template.cloneNode(true);
+   clone.classList.add('gs10-field');
+   gs10ApplyValuesTo(clone);
+   return clone;
+ }
  function unique(a){return [...new Set(a.filter(Boolean))]}
  function buildApp(){document.body.classList.add('gs-v10'); const old=document.getElementById('gs10App'); if(old)old.remove(); const app=document.createElement('div'); app.id='gs10App'; app.innerHTML=`
   <div class="gs10-top"><div class="gs10-head"><div class="gs10-logo">📘</div><div><div class="gs10-title">GS Documentos</div><div class="gs10-sub">Gestión documental ESPT/CUND100</div></div><button class="gs10-theme" id="gs10Theme">${document.body.classList.contains('dark')?'☀️':'🌙'}</button></div></div>
@@ -3200,7 +3247,7 @@ function descargarExcelMateriales() {
   <section class="gs10-screen" data-screen="loads"><div class="gs10-card"><h2>Cuadro de cargas</h2><p class="gs10-help">Parte del Esquema constructivo. Diligencie cantidad por carga.</p><div id="loadsHost"></div><div class="gs10-kpis" id="loadKpis"></div><div class="gs10-actions"><button class="gs10-btn secondary" data-go="form">Volver a formulario</button></div></div></section>
   <section class="gs10-screen" data-screen="generate"><div class="gs10-card"><h2>Generar documentos</h2><p class="gs10-help">Se generará el ZIP con el nombre del solicitante. Tras generar, puede limpiar la sesión.</p><div class="gs10-actions"><button class="gs10-btn" id="genZip">Generar ZIP</button><button class="gs10-btn secondary" id="finishClean">Finalizar y limpiar</button><button class="gs10-btn ghost" data-go="form">Volver</button></div></div></section>
   <nav class="gs10-bottom"><button class="gs10-nav" data-go="home"><span>🏠</span>Inicio</button><button class="gs10-nav" data-go="form"><span>📝</span>Formulario</button><button class="gs10-nav" data-go="materials"><span>📦</span>Materiales</button><button class="gs10-nav" data-go="supports"><span>📎</span>Soportes</button><button class="gs10-nav" data-go="signatures"><span>✍️</span>Firmas</button><button class="gs10-nav" data-go="loads"><span>⚡</span>Cargas</button><button class="gs10-nav" data-go="generate"><span>📄</span>Generar</button></nav>`;
- document.body.prepend(app); renderDocs(); wire(); renderAll(); }
+ document.body.prepend(app); renderDocs(); wire(); renderAll(); show(screen||'home'); }
  function renderDocs(){const g=document.getElementById('docGrid'); if(!g)return; g.innerHTML=''; const cards=[['ALL','Todos los documentos','🧩'],...ALL.map(d=>[d,DOCS[d],{E1:'📝',E6:'🧾',AR:'✅',DJ:'✍️',RETIE:'🛡️',EC:'📐'}[d]])]; cards.forEach(([id,name,ico])=>{const b=document.createElement('button');b.className='gs10-doc '+((id==='ALL'?selected.length===ALL.length:selected.includes(id))?'sel':'');b.innerHTML=`<span class="ico">${ico}</span><strong>${name}</strong>`;b.onclick=()=>{ if(id==='ALL')selected=selected.length===ALL.length?[]:[...ALL]; else{selected=selected.includes(id)?selected.filter(x=>x!==id):[...selected,id]} syncLegacySelection(); renderDocs(); renderAll(); save();};g.appendChild(b)})}
  function section(title,ids){const wrap=document.createElement('div');wrap.className='gs10-form-section';wrap.innerHTML=`<h3>${title}</h3><div class="gs10-fields"></div>`;const grid=wrap.querySelector('.gs10-fields'); unique(ids).forEach(id=>{const n=fieldNode(id); if(n)grid.appendChild(n)}); return wrap;}
  function renderForm(){const h=document.getElementById('formHost'); if(!h)return; h.innerHTML=''; document.getElementById('formResume').textContent=selected.length?selected.map(d=>DOCS[d]).join(' · '):'Seleccione documentos en Inicio.'; if(!selected.length){h.innerHTML='<div class="gs10-form-section"><h3>Sin selección</h3><p class="gs10-help">Vuelva a inicio y seleccione documentos.</p></div>';return} h.appendChild(section('Datos generales',fieldMap.general.concat(selected.includes('E1')?['sol_correo']:[], selected.some(d=>['E1','E6'].includes(d))?['cm_nombre_proyecto']:[]))); if(selected.includes('E1'))h.appendChild(section('Formato de solicitud E1',fieldMap.e1.filter(x=>!['sol_correo','cm_nombre_proyecto'].includes(x)))); if(selected.includes('E6'))h.appendChild(section('Recibo técnico E6',fieldMap.e6.filter(x=>!['cm_nombre_proyecto'].includes(x)))); if(selected.includes('AR'))h.appendChild(section('Aceptación de requisitos',[])); if(selected.includes('DJ'))h.appendChild(section('Declaración juramentada',fieldMap.dj)); if(selected.includes('RETIE'))h.appendChild(section('RETIE',fieldMap.retie)); if(selected.includes('EC'))h.appendChild(section('Esquema constructivo',fieldMap.ec));}
@@ -3240,7 +3287,7 @@ function descargarExcelMateriales() {
  function renderSigns(){const h=document.getElementById('signHost'); if(!h)return; h.innerHTML=''; const all=[...document.querySelectorAll('.canvas-box')].map(x=>x.closest('.field')).filter(Boolean); if(reqSol()&&all[0])h.appendChild(all[0]); if(reqTec()&&all[1])h.appendChild(all[1]); if(!h.children.length)h.innerHTML='<p class="gs10-help">Los documentos seleccionados no requieren firmas.</p>';}
  function renderLoads(){const h=document.getElementById('loadsHost'); if(!h)return; h.innerHTML=''; if(!hasEC()){h.innerHTML='<p class="gs10-help">El cuadro de cargas solo aplica para Esquema constructivo.</p>';return} if(window.gsProBuildECBuilder) window.gsProBuildECBuilder(); const b=document.getElementById('ecLoadBuilder'); if(b)h.appendChild(b); updateKpis();}
  function updateKpis(){let sums={ALUMBRADO:0,'CALEFACCIÓN':0,FUERZA:0}; try{(window.GS_EC_ROWS||GS_EC_ROWS||[]).forEach(r=>{let t=(r.circuito||'').replace('OPERACIÓN','FUERZA'); sums[t]=(sums[t]||0)+(Number(r.cantidad)||0)*(Number(r.potencia)||0);});}catch(e){} const h=document.getElementById('loadKpis'); if(h)h.innerHTML=Object.entries({...sums,TOTAL:Object.values(sums).reduce((a,b)=>a+b,0)}).map(([k,v])=>`<div class="gs10-kpi"><b>${v.toLocaleString('es-CO')} W</b><span>${k}</span></div>`).join('');}
- function renderAll(){syncLegacySelection();renderForm(); styleOptionGroups(); bindRetieDependenciasGS(); renderMaterials(); renderSupports(); renderSigns(); renderLoads(); document.querySelector('[data-go="loads"]')?.toggleAttribute('hidden',!hasEC()); renderDocs(); show(screen||'home');}
+ function renderAll(){syncLegacySelection();renderForm(); styleOptionGroups(); bindRetieDependenciasGS(); renderMaterials(); renderSupports(); renderSigns(); renderLoads(); document.querySelector('[data-go="loads"]')?.toggleAttribute('hidden',!hasEC()); renderDocs();}
  function show(s){if(s==='loads'&&!hasEC())s='form'; screen=s; document.querySelectorAll('.gs10-screen').forEach(x=>x.classList.toggle('active',x.dataset.screen===s)); document.querySelectorAll('.gs10-nav').forEach(x=>x.classList.toggle('active',x.dataset.go===s)); save();}
  function wire(){document.getElementById('gs10Theme').onclick=()=>{document.body.classList.toggle('dark');document.getElementById('gs10Theme').textContent=document.body.classList.contains('dark')?'☀️':'🌙';save()};document.getElementById('goForm').onclick=()=>{if(!selected.length)return toast('Seleccione al menos un documento');renderAll();show('form')};document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{renderAll();show(b.dataset.go)});document.getElementById('matNo').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="no"]')?.click();toast('Materiales desactivados');save()};document.getElementById('matYes').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="si"]')?.click();renderMaterials();toast('Materiales activados');save()};document.querySelectorAll('[data-mat]').forEach(b=>b.onclick=()=>buildMatCards(b.dataset.mat));document.getElementById('genZip').onclick=()=>{const btn=document.getElementById('btnALL'); if(btn)btn.click(); toast('Generando ZIP... revise descargas.'); setTimeout(()=>{clearSession(true)},4500)};document.getElementById('finishClean').onclick=()=>clearSession(false);document.getElementById('clearSession').onclick=()=>clearSession(false);document.addEventListener('input',(e)=>{
     const el=e.target;
@@ -3298,7 +3345,7 @@ function descargarExcelMateriales() {
    sync();
  }
 
- function clearSession(silent){localStorage.removeItem(STORE); document.querySelectorAll('input,textarea').forEach(el=>{if(['button','submit','file'].includes(el.type))return;if(el.type==='radio'||el.type==='checkbox')el.checked=false;else el.value=''});document.querySelectorAll('select').forEach(el=>el.selectedIndex=0);selected=[];syncLegacySelection();screen='home'; if(!silent)toast('Sesión limpiada'); renderAll();}
+ function clearSession(silent){localStorage.removeItem(STORE); gs10SavedValues={}; document.querySelectorAll('input,textarea').forEach(el=>{if(['button','submit','file'].includes(el.type))return;if(el.type==='radio'||el.type==='checkbox')el.checked=false;else el.value=''});document.querySelectorAll('select').forEach(el=>el.selectedIndex=0);selected=[];syncLegacySelection();screen='home'; if(!silent)toast('Sesión limpiada'); renderAll(); show('home');}
  document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{restore();syncLegacySelection();buildApp();if(!selected.length)screen='home';renderAll();show(screen)},800)});
 })();
 </script>
