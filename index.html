@@ -772,6 +772,15 @@ body.gs-v10>header,body.gs-v10>main,body.gs-v10>footer{display:none!important;}
 #matCards .mat-card input{min-height:42px!important;text-align:center!important;}
 
 </style>
+
+<style id="gsdoc-fix-forms-v12">
+.gs10-field .inline-options{display:grid!important;gap:6px!important}
+.gs10-field .inline-options.two-options{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.gs10-field .inline-options.multi-options{grid-template-columns:1fr!important}
+.gs10-field .inline-options label{border:0!important;background:transparent!important;padding:5px 2px!important;border-radius:0!important;display:flex!important;align-items:center!important;gap:8px!important;font-size:14px!important;box-shadow:none!important}
+.gs10-field .inline-options input[type="radio"],.gs10-field .inline-options input[type="checkbox"]{width:18px!important;height:18px!important;min-height:18px!important;flex:0 0 18px!important;margin:0!important;accent-color:#d40000!important}
+.gs10-field select:disabled,.gs10-field input:disabled{opacity:1!important;background:var(--soft)!important;color:var(--ink)!important}
+</style>
 </head>
 
 <body>
@@ -1304,8 +1313,8 @@ body.gs-v10>header,body.gs-v10>main,body.gs-v10>footer{display:none!important;}
       "Vergara","Vianí","Villagómez","Villapinzón","Villeta","Viotá","Yacopí",
       "Zipacón","Zipaquirá"
     ],
-    Meta: ["Cabuyaro","Villavicencio"],
-    Tolima: ["Flandes","Carmen de Apicalá"]
+    Meta: ["Acacías","Cabuyaro","Lejanías","San Juanito"],
+    Tolima: ["Flandes"]
   };
 
   function llenarMunicipios() {
@@ -3218,10 +3227,137 @@ function descargarExcelMateriales() {
  }
  function restore(){try{const data=JSON.parse(localStorage.getItem(STORE)||'{}'); if(Array.isArray(data.selected))selected=data.selected; if(data.theme==='dark')document.body.classList.add('dark'); gs10SavedValues=data.values||{}; gs10ApplyValuesTo(document); if(data.screen)screen=data.screen;}catch(e){}}
  function toast(msg){let t=document.querySelector('.toast'); if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)} t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}
+
+ function gs10EnableClone(clone){
+   if(!clone) return clone;
+   clone.querySelectorAll('input,select,textarea,button').forEach(ctrl=>{
+     ctrl.disabled = false;
+     ctrl.removeAttribute('disabled');
+     if(ctrl.type !== 'checkbox' && ctrl.type !== 'radio') ctrl.readOnly = false;
+   });
+   return clone;
+ }
+ const GS10_MUNICIPIOS={
+   'Meta':['Acacías','Cabuyaro','Lejanías','San Juanito'],
+   'Tolima':['Flandes']
+ };
+ function gs10MunList(dep){
+   if(dep==='Meta') return GS10_MUNICIPIOS.Meta;
+   if(dep==='Tolima') return GS10_MUNICIPIOS.Tolima;
+   if(dep==='Cundinamarca'){
+     try{
+       if(typeof MUNICIPIOS_POR_DEPTO!=='undefined' && Array.isArray(MUNICIPIOS_POR_DEPTO.Cundinamarca)) return MUNICIPIOS_POR_DEPTO.Cundinamarca;
+     }catch(e){}
+     return ['Agua de Dios','Albán','Anapoima','Anolaima','Apulo','Arbeláez','Beltrán','Bituima','Bojacá','Cabrera','Cachipay','Cajicá','Caparrapí','Cáqueza','Carmen de Carupa','Chaguaní','Chía','Chipaque','Choachí','Chocontá','Cogua','Cota','Cucunubá','El Colegio','El Peñón','El Rosal','Facatativá','Fómeque','Fosca','Funza','Fúquene','Fusagasugá','Gachalá','Gachancipá','Gachetá','Gama','Girardot','Granada','Guachetá','Guaduas','Guasca','Guataquí','Guatavita','Guayabal de Síquima','Guayabetal','Gutiérrez','Jerusalén','Junín','La Calera','La Mesa','La Palma','La Peña','La Vega','Lenguazaque','Machetá','Madrid','Manta','Medina','Mosquera','Nariño','Nemocón','Nilo','Nimaima','Nocaima','Pacho','Paime','Pandi','Paratebueno','Pasca','Puerto Salgar','Pulí','Quebradanegra','Quetame','Quipile','Ricaurte','San Antonio del Tequendama','San Bernardo','San Cayetano','San Francisco','San Juan de Rioseco','Sasaima','Sesquilé','Sibaté','Silvania','Simijaca','Soacha','Sopó','Subachoque','Suesca','Supatá','Susa','Sutatausa','Tabio','Tausa','Tena','Tenjo','Tibacuy','Tibirita','Tocaima','Tocancipá','Topaipí','Ubalá','Ubaque','Ubaté','Une','Útica','Venecia','Vergara','Vianí','Villagómez','Villapinzón','Villeta','Viotá','Yacopí','Zipacón','Zipaquirá'];
+   }
+   return [];
+ }
+ function gs10FillMunicipiosFor(depEl, mpioEl){
+   if(!depEl || !mpioEl) return;
+   const current = gs10SavedValues.cm_mpio || mpioEl.value || '';
+   const opts = gs10MunList(depEl.value);
+   mpioEl.innerHTML = '<option value="">Seleccione...</option>' + opts.map(m=>`<option value="${m}">${m}</option>`).join('');
+   if(opts.includes(current)) mpioEl.value = current;
+   else if(current && depEl.value==='Cundinamarca'){
+     const op=document.createElement('option'); op.value=current; op.textContent=current; mpioEl.appendChild(op); mpioEl.value=current;
+   }
+ }
+ function gs10PatchSpecialField(clone,id){
+   if(!clone) return clone;
+   if(id==='retie_prof_constructor'){
+     const old=clone.querySelector('input,select,textarea');
+     if(old){
+       const sel=document.createElement('select');
+       sel.id='retie_prof_constructor'; sel.required=true;
+       sel.innerHTML='<option value="">Seleccione...</option><option value="Técnico electricista">Técnico electricista</option><option value="Tecnólogo electricista">Tecnólogo electricista</option>';
+       sel.value=gs10SavedValues.retie_prof_constructor||old.value||'';
+       old.replaceWith(sel);
+     }
+   }
+   if(id==='retie_consejo'){
+     const old=clone.querySelector('input,select,textarea');
+     if(old){
+       const inp=document.createElement('input');
+       inp.id='retie_consejo'; inp.type='text'; inp.required=true; inp.readOnly=true;
+       inp.placeholder='Automático según profesión'; inp.value=gs10SavedValues.retie_consejo||old.value||'';
+       old.replaceWith(inp);
+     }
+   }
+   return clone;
+ }
+ function gs10SyncOneToLegacy(el){
+   if(!el || el.type==='file') return;
+   if(el.closest('#gs10App')==null) return;
+   if(el.type==='radio' || el.type==='checkbox'){
+     if(el.checked){
+       gs10SavedValues[(el.name||el.id)+'|'+el.value]=true;
+       document.querySelectorAll(`form#formMaestro input[name="${CSS.escape(el.name||'')}"]`).forEach(o=>{ o.checked = (o.value===el.value); o.disabled=false; });
+     }
+     return;
+   }
+   if(!el.id) return;
+   gs10SavedValues[el.id]=el.value;
+   const originals=[...document.querySelectorAll(`form#formMaestro #${CSS.escape(el.id)}`)].filter(o=>!o.closest('#gs10App'));
+   originals.forEach(o=>{
+     o.disabled=false;
+     if(o.tagName==='SELECT' && ![...o.options].some(opt=>opt.value===el.value)){
+       const opt=document.createElement('option'); opt.value=el.value; opt.textContent=el.value; o.appendChild(opt);
+     }
+     o.value=el.value;
+   });
+ }
+ function gs10SyncAppToLegacy(){
+   const app=document.getElementById('gs10App');
+   if(!app) return;
+   app.querySelectorAll('input,select,textarea').forEach(gs10SyncOneToLegacy);
+   const depVal=gs10SavedValues.cm_depto||document.querySelector('#gs10App #cm_depto')?.value||'';
+   const mpioVal=gs10SavedValues.cm_mpio||document.querySelector('#gs10App #cm_mpio')?.value||'';
+   const depOrig=document.querySelector('form#formMaestro #cm_depto');
+   const mpioOrig=document.querySelector('form#formMaestro #cm_mpio');
+   if(depOrig){ depOrig.disabled=false; depOrig.value=depVal; }
+   if(mpioOrig){
+     mpioOrig.disabled=false;
+     mpioOrig.innerHTML='<option value="">Seleccione...</option>' + gs10MunList(depVal).map(m=>`<option value="${m}">${m}</option>`).join('');
+     if(mpioVal && ![...mpioOrig.options].some(o=>o.value===mpioVal)){ const op=document.createElement('option'); op.value=mpioVal; op.textContent=mpioVal; mpioOrig.appendChild(op); }
+     mpioOrig.value=mpioVal;
+   }
+ }
+ function gs10BindDynamicFields(){
+   const app=document.getElementById('gs10App'); if(!app) return;
+   const dep=app.querySelector('#cm_depto'), mpio=app.querySelector('#cm_mpio');
+   if(dep && mpio){
+     gs10FillMunicipiosFor(dep,mpio);
+     dep.onchange=()=>{ gs10SavedValues.cm_depto=dep.value; gs10SavedValues.cm_mpio=''; gs10FillMunicipiosFor(dep,mpio); gs10SyncAppToLegacy(); save(); };
+     mpio.onchange=()=>{ gs10SavedValues.cm_mpio=mpio.value; gs10SyncAppToLegacy(); save(); };
+   }
+   const prof=app.querySelector('#retie_prof_constructor');
+   const consejo=app.querySelector('#retie_consejo');
+   if(prof && consejo){
+     const sync=()=>{
+       if(prof.value==='Técnico electricista') consejo.value='CONTE';
+       else if(prof.value==='Tecnólogo electricista') consejo.value='CONALTEL';
+       else consejo.value='';
+       consejo.readOnly=true; consejo.disabled=false;
+       gs10SavedValues.retie_prof_constructor=prof.value;
+       gs10SavedValues.retie_consejo=consejo.value;
+       gs10SyncAppToLegacy(); save();
+     };
+     prof.onchange=sync; sync();
+   }
+ }
+ function gs10BeforeGenerate(){
+   gs10RememberValuesFrom(document.getElementById('gs10App'));
+   gs10SyncAppToLegacy();
+   syncLegacySelection();
+   try{ aplicarSeleccionDocumental(); }catch(e){}
+ }
+ window.gs10BeforeGenerate=gs10BeforeGenerate;
  function fieldNode(id){
    if(gs10FieldTemplates[id]){
      const clone=gs10FieldTemplates[id].cloneNode(true);
      clone.classList.add('gs10-field');
+     gs10EnableClone(clone);
+     gs10PatchSpecialField(clone,id);
      gs10ApplyValuesTo(clone);
      return clone;
    }
@@ -3230,9 +3366,13 @@ function descargarExcelMateriales() {
    let node=el.closest('.field')||el.closest('label')||el;
    const template=node.cloneNode(true);
    template.classList.add('gs10-field');
+   gs10EnableClone(template);
+   gs10PatchSpecialField(template,id);
    gs10FieldTemplates[id]=template;
    const clone=template.cloneNode(true);
    clone.classList.add('gs10-field');
+   gs10EnableClone(clone);
+   gs10PatchSpecialField(clone,id);
    gs10ApplyValuesTo(clone);
    return clone;
  }
@@ -3250,8 +3390,26 @@ function descargarExcelMateriales() {
  document.body.prepend(app); renderDocs(); wire(); renderAll(); show(screen||'home'); }
  function renderDocs(){const g=document.getElementById('docGrid'); if(!g)return; g.innerHTML=''; const cards=[['ALL','Todos los documentos','🧩'],...ALL.map(d=>[d,DOCS[d],{E1:'📝',E6:'🧾',AR:'✅',DJ:'✍️',RETIE:'🛡️',EC:'📐'}[d]])]; cards.forEach(([id,name,ico])=>{const b=document.createElement('button');b.className='gs10-doc '+((id==='ALL'?selected.length===ALL.length:selected.includes(id))?'sel':'');b.innerHTML=`<span class="ico">${ico}</span><strong>${name}</strong>`;b.onclick=()=>{ if(id==='ALL')selected=selected.length===ALL.length?[]:[...ALL]; else{selected=selected.includes(id)?selected.filter(x=>x!==id):[...selected,id]} syncLegacySelection(); renderDocs(); renderAll(); save();};g.appendChild(b)})}
  function section(title,ids){const wrap=document.createElement('div');wrap.className='gs10-form-section';wrap.innerHTML=`<h3>${title}</h3><div class="gs10-fields"></div>`;const grid=wrap.querySelector('.gs10-fields'); unique(ids).forEach(id=>{const n=fieldNode(id); if(n)grid.appendChild(n)}); return wrap;}
- function renderForm(){const h=document.getElementById('formHost'); if(!h)return; h.innerHTML=''; document.getElementById('formResume').textContent=selected.length?selected.map(d=>DOCS[d]).join(' · '):'Seleccione documentos en Inicio.'; if(!selected.length){h.innerHTML='<div class="gs10-form-section"><h3>Sin selección</h3><p class="gs10-help">Vuelva a inicio y seleccione documentos.</p></div>';return} h.appendChild(section('Datos generales',fieldMap.general.concat(selected.includes('E1')?['sol_correo']:[], selected.some(d=>['E1','E6'].includes(d))?['cm_nombre_proyecto']:[]))); if(selected.includes('E1'))h.appendChild(section('Formato de solicitud E1',fieldMap.e1.filter(x=>!['sol_correo','cm_nombre_proyecto'].includes(x)))); if(selected.includes('E6'))h.appendChild(section('Recibo técnico E6',fieldMap.e6.filter(x=>!['cm_nombre_proyecto'].includes(x)))); if(selected.includes('AR'))h.appendChild(section('Aceptación de requisitos',[])); if(selected.includes('DJ'))h.appendChild(section('Declaración juramentada',fieldMap.dj)); if(selected.includes('RETIE'))h.appendChild(section('RETIE',fieldMap.retie)); if(selected.includes('EC'))h.appendChild(section('Esquema constructivo',fieldMap.ec));}
- function renderMaterials(){const h=document.getElementById('materialsHost'); if(!h)return; h.innerHTML=''; const sub=document.getElementById('subformMateriales'); if(sub)h.appendChild(sub); const tabla=document.querySelector('#tablaMateriales table'); if(tabla){tabla.style.display='none'; buildMatCards('AMBAS');}}
+ function renderForm(){
+   const h=document.getElementById('formHost');
+   if(!h)return;
+   h.innerHTML='';
+   document.getElementById('formResume').textContent=selected.length?selected.map(d=>DOCS[d]).join(' · '):'Seleccione documentos en Inicio.';
+   if(!selected.length){
+     h.innerHTML='<div class="gs10-form-section"><h3>Sin selección</h3><p class="gs10-help">Vuelva a inicio y seleccione documentos.</p></div>';
+     return;
+   }
+   h.appendChild(section('Datos generales',fieldMap.general.concat(selected.includes('E1')?['sol_correo']:[], selected.some(d=>['E1','E6'].includes(d))?['cm_nombre_proyecto']:[])));
+   if(selected.includes('E1'))h.appendChild(section('Formato de solicitud E1',fieldMap.e1.filter(x=>!['sol_correo','cm_nombre_proyecto'].includes(x))));
+   if(selected.includes('E6'))h.appendChild(section('Recibo técnico E6',fieldMap.e6.filter(x=>!['cm_nombre_proyecto'].includes(x))));
+   if(selected.includes('AR'))h.appendChild(section('Aceptación de requisitos',[]));
+   if(selected.includes('DJ'))h.appendChild(section('Declaración juramentada',fieldMap.dj));
+   if(selected.includes('RETIE'))h.appendChild(section('RETIE',fieldMap.retie));
+   if(selected.includes('EC'))h.appendChild(section('Esquema constructivo',fieldMap.ec));
+   h.querySelectorAll('input,select,textarea,button').forEach(ctrl=>{ ctrl.disabled=false; ctrl.removeAttribute('disabled'); });
+   gs10ApplyValuesTo(h);
+   gs10BindDynamicFields();
+ } function renderMaterials(){const h=document.getElementById('materialsHost'); if(!h)return; h.innerHTML=''; const sub=document.getElementById('subformMateriales'); if(sub)h.appendChild(sub); const tabla=document.querySelector('#tablaMateriales table'); if(tabla){tabla.style.display='none'; buildMatCards('AMBAS');}}
  function buildMatCards(filter){
    const host=document.getElementById('materialsHost'); 
    if(!host)return; 
@@ -3289,7 +3447,7 @@ function descargarExcelMateriales() {
  function updateKpis(){let sums={ALUMBRADO:0,'CALEFACCIÓN':0,FUERZA:0}; try{(window.GS_EC_ROWS||GS_EC_ROWS||[]).forEach(r=>{let t=(r.circuito||'').replace('OPERACIÓN','FUERZA'); sums[t]=(sums[t]||0)+(Number(r.cantidad)||0)*(Number(r.potencia)||0);});}catch(e){} const h=document.getElementById('loadKpis'); if(h)h.innerHTML=Object.entries({...sums,TOTAL:Object.values(sums).reduce((a,b)=>a+b,0)}).map(([k,v])=>`<div class="gs10-kpi"><b>${v.toLocaleString('es-CO')} W</b><span>${k}</span></div>`).join('');}
  function renderAll(){syncLegacySelection();renderForm(); styleOptionGroups(); bindRetieDependenciasGS(); renderMaterials(); renderSupports(); renderSigns(); renderLoads(); document.querySelector('[data-go="loads"]')?.toggleAttribute('hidden',!hasEC()); renderDocs();}
  function show(s){if(s==='loads'&&!hasEC())s='form'; screen=s; document.querySelectorAll('.gs10-screen').forEach(x=>x.classList.toggle('active',x.dataset.screen===s)); document.querySelectorAll('.gs10-nav').forEach(x=>x.classList.toggle('active',x.dataset.go===s)); save();}
- function wire(){document.getElementById('gs10Theme').onclick=()=>{document.body.classList.toggle('dark');document.getElementById('gs10Theme').textContent=document.body.classList.contains('dark')?'☀️':'🌙';save()};document.getElementById('goForm').onclick=()=>{if(!selected.length)return toast('Seleccione al menos un documento');renderAll();show('form')};document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{renderAll();show(b.dataset.go)});document.getElementById('matNo').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="no"]')?.click();toast('Materiales desactivados');save()};document.getElementById('matYes').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="si"]')?.click();renderMaterials();toast('Materiales activados');save()};document.querySelectorAll('[data-mat]').forEach(b=>b.onclick=()=>buildMatCards(b.dataset.mat));document.getElementById('genZip').onclick=()=>{const btn=document.getElementById('btnALL'); if(btn)btn.click(); toast('Generando ZIP... revise descargas.'); setTimeout(()=>{clearSession(true)},4500)};document.getElementById('finishClean').onclick=()=>clearSession(false);document.getElementById('clearSession').onclick=()=>clearSession(false);document.addEventListener('input',(e)=>{
+ function wire(){document.getElementById('gs10Theme').onclick=()=>{document.body.classList.toggle('dark');document.getElementById('gs10Theme').textContent=document.body.classList.contains('dark')?'☀️':'🌙';save()};document.getElementById('goForm').onclick=()=>{if(!selected.length)return toast('Seleccione al menos un documento');renderAll();show('form')};document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{renderAll();show(b.dataset.go)});document.getElementById('matNo').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="no"]')?.click();toast('Materiales desactivados');save()};document.getElementById('matYes').onclick=()=>{document.querySelector('input[name="reqMateriales"][value="si"]')?.click();renderMaterials();toast('Materiales activados');save()};document.querySelectorAll('[data-mat]').forEach(b=>b.onclick=()=>buildMatCards(b.dataset.mat));document.getElementById('genZip').onclick=()=>{gs10BeforeGenerate(); const btn=document.getElementById('btnALL'); if(btn)btn.click(); toast('Generando ZIP... revise descargas.');};document.getElementById('finishClean').onclick=()=>clearSession(false);document.getElementById('clearSession').onclick=()=>clearSession(false);document.addEventListener('input',(e)=>{
     const el=e.target;
     if(el && el.matches && el.matches('input[type="text"]')){
       const pos=el.selectionStart;
@@ -3298,9 +3456,13 @@ function descargarExcelMateriales() {
       const diff=el.value.length-before.length;
       try{el.setSelectionRange((pos||0)+diff,(pos||0)+diff);}catch(_){}
     }
+    if(el && el.closest && el.closest('#gs10App')) gs10SyncOneToLegacy(el);
+    gs10BindDynamicFields();
     save();setTimeout(updateKpis,0)
   },true);
-  document.addEventListener('change',()=>{bindRetieDependenciasGS(); save();setTimeout(updateKpis,0)},true);}
+  document.addEventListener('change',(e)=>{const el=e.target; if(el && el.closest && el.closest('#gs10App')) gs10SyncOneToLegacy(el); gs10BindDynamicFields(); bindRetieDependenciasGS(); save();setTimeout(updateKpis,0)},true);
+  document.addEventListener('click',(e)=>{ if(e.target && e.target.id==='btnALL') gs10BeforeGenerate(); }, true);
+ }
 
  function styleOptionGroups(){
    document.querySelectorAll('.gs10-field .inline-options').forEach(g=>{
