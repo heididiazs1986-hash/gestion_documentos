@@ -1,9 +1,9 @@
 {
   "name": "GS Documentos",
-  "short_name": "GS Documentos",
-  "start_url": "./index.html",
+  "short_name": "GS Docs",
+  "start_url": "./index.html?v=gsdoc-v51",
   "display": "standalone",
-  "background_color": "#F3F5F7",
+  "background_color": "#EEF4FA",
   "theme_color": "#0A5BD7",
   "icons": [
     {
@@ -16,6 +16,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "description": "GS Documentos - Gestión Social"
+  ]
 }
