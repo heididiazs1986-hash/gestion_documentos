@@ -1,4 +1,4 @@
-const CACHE='gs-docs-v52-1';
+const CACHE='gs-docs-v53-1';
 const CORE=['./','./index.html','./manifest.json','./gs-docs-icon-192.png','./gs-docs-icon-512.png','./templates/Constancia_TD.pdf'];
 const REMOTE=['https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js','https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js','https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
 self.addEventListener('install',e=>e.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(CORE);await Promise.allSettled(REMOTE.map(async u=>{try{const r=await fetch(u,{mode:'cors'});if(r&&r.ok)await c.put(u,r.clone())}catch(_){}}));await self.skipWaiting()})()));
