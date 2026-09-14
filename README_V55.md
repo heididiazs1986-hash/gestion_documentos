@@ -10,3 +10,10 @@ Cambios principales:
 - Constancia TD reorganizada: Hallazgos ampliados, autorización compacta y aliado mostrado en un campo pequeño como APPLUS+ o INMEL.
 - Exportación Excel de jornada usa nombre `Reporte_de_<sector>_<fecha>.xlsx`.
 - Caché PWA y manifest actualizados a v55.
+
+
+Corrección v55.1:
+- El aliado estratégico deja de mostrarse como campo aislado en la Constancia TD y se integra en la frase legal: “desarrollado por ENEL y su aliado estratégico [ALIADO].”
+- Se eliminan los botones adicionales de compartir/reintentar. Generar y Exportar abren directamente el menú nativo de compartir del celular cuando está disponible.
+- El cierre de jornada queda en dos pasos: primero exporta y permanece en Registros; luego, después de verificar el envío/guardado, el mismo botón permite cerrar y limpiar la jornada.
+- Si el equipo no admite Web Share con archivos, se usa descarga como respaldo sin limpiar ni cambiar de pantalla.
