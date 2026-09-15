@@ -67,7 +67,7 @@ jobs:
             echo "Firma release disponible."
           else
             echo "GS_HAS_SIGNING=false" >> "$GITHUB_ENV"
-            echo "Sin secretos de firma: se compilará APK debug de prueba."
+            echo "Sin secretos de firma: se compilará APK debug temporal para re-firma controlada."
           fi
 
       - name: Apply GS Documentos Android settings
@@ -87,15 +87,15 @@ jobs:
         shell: bash
         run: |
           if [ "$GS_HAS_SIGNING" = "true" ]; then
-            cp android/app/build/outputs/apk/release/app-release.apk GS_Documentos_v71_RELEASE.apk
+            cp android/app/build/outputs/apk/release/app-release.apk GS_Documentos_v72_RELEASE.apk
           else
-            cp android/app/build/outputs/apk/debug/app-debug.apk GS_Documentos_v71_GPS.apk
+            cp android/app/build/outputs/apk/debug/app-debug.apk GS_Documentos_v72_TEMP.apk
           fi
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GS-Documentos-v71-APK
-          path: GS_Documentos_v71*.apk
+          name: GS-Documentos-v72-APK
+          path: GS_Documentos_v72*.apk
           if-no-files-found: error
           retention-days: 30
