@@ -51,7 +51,7 @@ def prepare_web():
     html = html.replace(old_call, new_call, 1)
 
     html_path.write_text(html, encoding="utf-8")
-    print("Web v71 preparada para Android")
+    print("Web v72 preparada para Android")
 
 
 def prepare_android():
@@ -119,7 +119,7 @@ public class AndroidDownloader {
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
                 values.put(MediaStore.Downloads.MIME_TYPE, mimeType == null || mimeType.isEmpty() ? "application/octet-stream" : mimeType);
-                values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/GS Documentos");
+                values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
                 values.put(MediaStore.Downloads.IS_PENDING, 1);
                 Uri uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
                 if (uri == null) throw new Exception("No se pudo crear el archivo en Descargas");
@@ -131,14 +131,14 @@ public class AndroidDownloader {
                 values.put(MediaStore.Downloads.IS_PENDING, 0);
                 resolver.update(uri, values, null, null);
             } else {
-                File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "GS Documentos");
-                if (!folder.exists() && !folder.mkdirs()) throw new Exception("No se pudo crear la carpeta de descarga");
+                File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                if (!folder.exists() && !folder.mkdirs()) throw new Exception("No se pudo abrir la carpeta Descargas");
                 File target = new File(folder, fileName);
                 try (FileOutputStream out = new FileOutputStream(target)) {
                     out.write(bytes);
                 }
             }
-            Toast.makeText(context, "Guardado en Descargas/GS Documentos: " + fileName, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Guardado en Descargas: " + fileName, Toast.LENGTH_LONG).show();
             return true;
         } catch (Exception e) {
             Toast.makeText(context, "No se pudo guardar: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -169,8 +169,8 @@ public class AndroidDownloader {
 
     gradle = android / "app/build.gradle"
     g = gradle.read_text(encoding="utf-8")
-    g = re.sub(r'versionCode\s+\d+', 'versionCode 71', g, count=1)
-    g = re.sub(r'versionName\s+"[^"]+"', 'versionName "71.0"', g, count=1)
+    g = re.sub(r'versionCode\s+\d+', 'versionCode 72', g, count=1)
+    g = re.sub(r'versionName\s+"[^"]+"', 'versionName "72.0"', g, count=1)
 
     signing_vars = [
         os.getenv("GS_ANDROID_KEYSTORE_PATH"),
@@ -189,7 +189,7 @@ public class AndroidDownloader {
         print("Firma release no configurada: se generará APK debug de prueba")
 
     gradle.write_text(g, encoding="utf-8")
-    print("Proyecto Android v71 preparado con permisos GPS")
+    print("Proyecto Android v72 preparado con permisos GPS y descargas directas")
 
 
 if __name__ == "__main__":
