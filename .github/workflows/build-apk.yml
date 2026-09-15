@@ -49,22 +49,53 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
+      - name: Prepare optional stable signing
+        shell: bash
+        env:
+          KEYSTORE_B64: ${{ secrets.GS_ANDROID_KEYSTORE_B64 }}
+          STORE_PASSWORD: ${{ secrets.GS_ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.GS_ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.GS_ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ] && [ -n "$STORE_PASSWORD" ] && [ -n "$KEY_ALIAS" ] && [ -n "$KEY_PASSWORD" ]; then
+            echo "$KEYSTORE_B64" | base64 --decode > "$GITHUB_WORKSPACE/android/app/GS_Documentos_release.jks"
+            echo "GS_HAS_SIGNING=true" >> "$GITHUB_ENV"
+            echo "GS_ANDROID_KEYSTORE_PATH=$GITHUB_WORKSPACE/android/app/GS_Documentos_release.jks" >> "$GITHUB_ENV"
+            echo "GS_ANDROID_KEYSTORE_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "GS_ANDROID_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "GS_ANDROID_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
+            echo "Firma release disponible."
+          else
+            echo "GS_HAS_SIGNING=false" >> "$GITHUB_ENV"
+            echo "Sin secretos de firma: se compilará APK debug de prueba."
+          fi
+
       - name: Apply GS Documentos Android settings
         run: python3 scripts/prepare_apk.py android
 
-      - name: Build debug APK
+      - name: Build APK
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          if [ "$GS_HAS_SIGNING" = "true" ]; then
+            ./gradlew assembleRelease --no-daemon
+          else
+            ./gradlew assembleDebug --no-daemon
+          fi
 
       - name: Name APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk GS_Documentos_v71.apk
+        shell: bash
+        run: |
+          if [ "$GS_HAS_SIGNING" = "true" ]; then
+            cp android/app/build/outputs/apk/release/app-release.apk GS_Documentos_v71_RELEASE.apk
+          else
+            cp android/app/build/outputs/apk/debug/app-debug.apk GS_Documentos_v71_GPS.apk
+          fi
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: GS-Documentos-v71-APK
-          path: GS_Documentos_v71.apk
+          path: GS_Documentos_v71*.apk
           if-no-files-found: error
           retention-days: 30
