@@ -50,7 +50,7 @@ def prepare_web():
     html = html.replace(old_call, new_call, 1)
 
     html_path.write_text(html, encoding="utf-8")
-    print("Web v70 preparada para Android")
+    print("Web v71 preparada para Android")
 
 
 def prepare_android():
@@ -150,9 +150,14 @@ public class AndroidDownloader {
 
     manifest = android / "app/src/main/AndroidManifest.xml"
     text = manifest.read_text(encoding="utf-8")
-    permission = '<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />'
-    if permission not in text:
-        text = text.replace("<application", permission + "\n    <application", 1)
+    permissions = [
+        '<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />',
+        '<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />',
+        '<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />'
+    ]
+    missing = [p for p in permissions if p not in text]
+    if missing:
+        text = text.replace("<application", "\n    ".join(missing) + "\n    <application", 1)
     text = re.sub(r'android:icon="[^"]+"', 'android:icon="@drawable/gs_documentos_icon"', text, count=1)
     text = re.sub(r'android:roundIcon="[^"]+"', 'android:roundIcon="@drawable/gs_documentos_icon"', text, count=1)
     manifest.write_text(text, encoding="utf-8")
@@ -163,10 +168,10 @@ public class AndroidDownloader {
 
     gradle = android / "app/build.gradle"
     g = gradle.read_text(encoding="utf-8")
-    g = re.sub(r'versionCode\s+\d+', 'versionCode 70', g, count=1)
-    g = re.sub(r'versionName\s+"[^"]+"', 'versionName "70.0"', g, count=1)
+    g = re.sub(r'versionCode\s+\d+', 'versionCode 71', g, count=1)
+    g = re.sub(r'versionName\s+"[^"]+"', 'versionName "71.0"', g, count=1)
     gradle.write_text(g, encoding="utf-8")
-    print("Proyecto Android v70 preparado")
+    print("Proyecto Android v71 preparado con permisos GPS")
 
 
 if __name__ == "__main__":
