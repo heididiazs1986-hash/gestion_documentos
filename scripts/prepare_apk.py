@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import re
 import shutil
 import sys
@@ -170,6 +171,23 @@ public class AndroidDownloader {
     g = gradle.read_text(encoding="utf-8")
     g = re.sub(r'versionCode\s+\d+', 'versionCode 71', g, count=1)
     g = re.sub(r'versionName\s+"[^"]+"', 'versionName "71.0"', g, count=1)
+
+    signing_vars = [
+        os.getenv("GS_ANDROID_KEYSTORE_PATH"),
+        os.getenv("GS_ANDROID_KEYSTORE_PASSWORD"),
+        os.getenv("GS_ANDROID_KEY_ALIAS"),
+        os.getenv("GS_ANDROID_KEY_PASSWORD")
+    ]
+    if all(signing_vars):
+        signing_block = '''    signingConfigs {\n        release {\n            storeFile file(System.getenv("GS_ANDROID_KEYSTORE_PATH"))\n            storePassword System.getenv("GS_ANDROID_KEYSTORE_PASSWORD")\n            keyAlias System.getenv("GS_ANDROID_KEY_ALIAS")\n            keyPassword System.getenv("GS_ANDROID_KEY_PASSWORD")\n        }\n    }\n'''
+        if "signingConfigs {" not in g:
+            g = g.replace("android {\n", "android {\n" + signing_block, 1)
+        if "signingConfig signingConfigs.release" not in g:
+            g = re.sub(r'(release\s*\{)', r'\1\n            signingConfig signingConfigs.release', g, count=1)
+        print("Firma release estable habilitada")
+    else:
+        print("Firma release no configurada: se generará APK debug de prueba")
+
     gradle.write_text(g, encoding="utf-8")
     print("Proyecto Android v71 preparado con permisos GPS")
 
