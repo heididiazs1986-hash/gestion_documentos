@@ -59,12 +59,12 @@ jobs:
           ./gradlew assembleDebug --no-daemon
 
       - name: Name APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk GS_Documentos_v70.apk
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk GS_Documentos_v71.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GS-Documentos-v70-APK
-          path: GS_Documentos_v70.apk
+          name: GS-Documentos-v71-APK
+          path: GS_Documentos_v71.apk
           if-no-files-found: error
           retention-days: 30
