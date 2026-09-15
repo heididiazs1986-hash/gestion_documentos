@@ -1,0 +1,13 @@
+{
+  "name": "gs-documentos-android",
+  "version": "70.0.0",
+  "private": true,
+  "description": "Empaquetado Android de GS Documentos",
+  "dependencies": {
+    "@capacitor/android": "7.4.3",
+    "@capacitor/core": "7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "7.4.3"
+  }
+}
