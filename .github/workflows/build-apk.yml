@@ -11,7 +11,7 @@ on:
       - 'icon-512.png'
       - 'package.json'
       - 'capacitor.config.json'
-      - 'scripts/**'
+      - 'scripts/**'\n      - 'v73-render-fix.js'
       - '.github/workflows/build-apk.yml'
 
 permissions:
@@ -87,15 +87,15 @@ jobs:
         shell: bash
         run: |
           if [ "$GS_HAS_SIGNING" = "true" ]; then
-            cp android/app/build/outputs/apk/release/app-release.apk GS_Documentos_v72_RELEASE.apk
+            cp android/app/build/outputs/apk/release/app-release.apk GS_Documentos_v73_RELEASE.apk
           else
-            cp android/app/build/outputs/apk/debug/app-debug.apk GS_Documentos_v72_TEMP.apk
+            cp android/app/build/outputs/apk/debug/app-debug.apk GS_Documentos_v73_TEMP.apk
           fi
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GS-Documentos-v72-APK
-          path: GS_Documentos_v72*.apk
+          name: GS-Documentos-v73-APK
+          path: GS_Documentos_v73*.apk
           if-no-files-found: error
           retention-days: 30
