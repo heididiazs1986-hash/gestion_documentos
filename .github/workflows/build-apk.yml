@@ -11,7 +11,8 @@ on:
       - 'icon-512.png'
       - 'package.json'
       - 'capacitor.config.json'
-      - 'scripts/**'\n      - 'v73-render-fix.js'
+      - 'scripts/**'
+      - 'v73-render-fix.js'
       - '.github/workflows/build-apk.yml'
 
 permissions:
