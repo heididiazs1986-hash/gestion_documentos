@@ -1,7 +1,7 @@
 {
   "name": "GS Documentos",
   "short_name": "GS Docs",
-  "start_url": "./index.html?v=gsdoc-v60",
+  "start_url": "./index.html?v=gsdoc-v73",
   "display": "standalone",
   "background_color": "#EEF4FA",
   "theme_color": "#0A5BD7",
