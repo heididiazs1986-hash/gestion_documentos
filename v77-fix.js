@@ -309,7 +309,7 @@
       "2 Fecha de solicitud de servicio":"cm_fecha_ddmmaaaa",
       "Tipo de uso":"e1_tipo_uso",
       "Estrato":"e1_estrato",
-      "No de solicitud":"e1_no_solicitud",
+      "No de solicitud":"_orden_ro_e1",
       "Red electrica cercana":"e1_red_cercana"
     },
     E6:{
@@ -377,6 +377,7 @@
     v.ar_sector_pdf=v.ar_sector_pdf||rec.sector||v.cm_sector||'';
     v.ar_localidad_pdf=v.ar_localidad_pdf||rec.localidad||v.cm_localidad||'';
     v.ar_alcaldia_pdf=v.ar_alcaldia_pdf||v.cm_mpio||rec.municipio||rec.localidad||'';
+    v._orden_ro_e1=String(rec.orden_ro||rec.Orden_RO||rec.ro||v.e1_no_solicitud||'').trim();
     const techName=gs77TechName();
     const retieId=String(document.getElementById('retie_const_identificacion')?.value||v.retie_const_identificacion||state.jornada?.tecnico_cedula||'').replace(/\\D/g,'');
     let mat=String(document.getElementById('cm_retie_matricula')?.value||v.cm_retie_matricula||'').trim();
@@ -633,6 +634,16 @@
       if(!validateRequired()){show('form');return false}
       updateKpis();
       const zip=new JSZip(),sel=state.selected.length?[...state.selected]:[],rec=state.currentRecord||state.registration||{},errors=[];
+      if(sel.includes('E1')){
+        const ro=String(rec.orden_ro||rec.Orden_RO||rec.ro||appData().e1_no_solicitud||'').trim();
+        if(!ro){
+          toast('El E1 requiere Orden RO. Este dato llena “No de solicitud” en la página 2.');
+          try{show('register')}catch(_){}
+          const roInput=document.querySelector('[data-key="orden_ro"],#orden_ro,input[name="orden_ro"]');
+          roInput?.focus();
+          return false;
+        }
+      }
       try{zip.file(typeof tdFileName==='function'?tdFileName(rec):'TD_Constancia_Inspeccion.pdf',await makeTD(rec))}catch(e){errors.push('TD: '+e.message);warn('TD',e)}
       for(const d of sel){
         try{
@@ -687,5 +698,5 @@
     if(bad.length) warn('Plantillas con error',bad);
     else log('plantillas aprobadas listas');
   });
-  log('activo · v77');
+  log('activo · v77 · E1 Orden RO obligatorio en No de solicitud');
 })();
