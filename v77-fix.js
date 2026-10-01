@@ -388,6 +388,10 @@
     v.cm_retie_constructor=techName||v.cm_retie_constructor||'';
     v.retie_const_identificacion=retieId;
     v.cm_retie_matricula=mat;
+    state.form=state.form||{};
+    state.form.cm_retie_constructor=v.cm_retie_constructor;
+    state.form.retie_const_identificacion=retieId;
+    state.form.cm_retie_matricula=mat;
     v._tecnico_nombre=techName||state.jornada?.gestor_nombre||'';
     v._tecnico_cedula=retieId;
     return v;
@@ -631,9 +635,14 @@
   generateZip=async function(){
     try{
       forceApplus();
+      const current=gs77EnsureCurrentRecord();
+      if(!current){toast('Primero guarda el registro antes de generar documentos');show('register');return false}
+      if(!state.selected?.length){toast('Selecciona al menos un documento para generar');show('home');return false}
       if(!validateRequired()){show('form');return false}
+      if(!state.signatures?.solicitante){toast('Falta la firma del usuario. Firma antes de descargar.');show('signatures');return false}
+      if(!state.signatures?.tecnico){toast('Falta la firma del técnico / gestor.');show('signatures');return false}
       updateKpis();
-      const zip=new JSZip(),sel=state.selected.length?[...state.selected]:[],rec=state.currentRecord||state.registration||{},errors=[];
+      const zip=new JSZip(),sel=[...state.selected],rec=current||state.registration||{},errors=[];
       if(sel.includes('E1')){
         const ro=String(rec.orden_ro||rec.Orden_RO||rec.ro||appData().e1_no_solicitud||'').trim();
         if(!ro){
@@ -656,7 +665,8 @@
       if(errors.length) zip.file('ERRORES_GENERACION.txt',errors.join('\n'));
       const blob=await zip.generateAsync({type:'blob'}),name=cleanName(appData().cm_nombre||rec.nombres||'GS_Documentos')+'.zip';
       await downloadBlob(blob,name);
-      toast(errors.length?`ZIP generado con ${errors.length} advertencia(s)`:'✅ ZIP generado correctamente');
+      const included=['TD',...sel,...(state.supports?.length?['SOPORTES ('+state.supports.length+')']:[])];
+      toast(errors.length?`ZIP generado con ${errors.length} advertencia(s)`:'✅ ZIP generado: '+included.join(', '),6000);
       return true;
     }catch(e){console.error(e);toast('Error generando: '+e.message);return false}
   };
@@ -749,6 +759,104 @@
     }catch(e){warn('TXT/RO safe',e)}
   }
 
+
+  function gs77EnsureCurrentRecord(){
+    try{
+      if(state.currentRecord?.id_registro)return state.currentRecord;
+      const id=state.registration?.id_registro||state.editingRecordId;
+      if(id){
+        const hit=records().find(r=>r.id_registro===id);
+        if(hit){state.currentRecord={...hit};return state.currentRecord}
+      }
+      const ro=String(state.registration?.orden_ro||'').trim();
+      const idn=String(state.registration?.identificacion||'').trim();
+      const hit=[...records()].reverse().find(r=>(ro&&String(r.orden_ro||'')===ro)||(idn&&String(r.identificacion||'')===idn));
+      if(hit){state.currentRecord={...hit};state.registration={...hit};return state.currentRecord}
+    }catch(e){warn('rehidratar registro',e)}
+    return null;
+  }
+
+  function gs77BindSupports(){
+    const input=document.getElementById('supportInput');
+    if(input && input.dataset.gs77Bound!=='1'){
+      input.dataset.gs77Bound='1';
+      input.onchange=e=>{
+        state.supports=[...(e.target.files||[])];
+        if(typeof renderSupports==='function')renderSupports();
+        if(typeof toast==='function')toast(state.supports.length?('✅ '+state.supports.length+' soporte(s) cargado(s)'):'Sin soportes cargados');
+      };
+    }
+    const card=document.querySelector('#supports .card');
+    if(card && !document.getElementById('gs77ToSignatures')){
+      const actions=card.querySelector('.actions')||card;
+      const b=document.createElement('button');
+      b.id='gs77ToSignatures';b.type='button';b.className='btn';
+      b.textContent='Continuar a firmas →';
+      b.onclick=()=>{gs77EnsureCurrentRecord();show('signatures')};
+      actions.prepend(b);
+    }
+  }
+
+  function gs77BindSignatureFlow(){
+    try{
+      // Permitir corregir/capturar firma del usuario aunque exista una exportación previa.
+      if(typeof signatureLocked==='function')signatureLocked=function(){return false};
+    }catch(_){}
+    if(typeof renderSignatures==='function'){
+      try{renderSignatures()}catch(_){}
+    }
+    const card=document.querySelector('#signatures .card');
+    if(card && !document.getElementById('gs77ToGenerate')){
+      const actions=card.querySelector('.actions')||card;
+      const b=document.createElement('button');
+      b.id='gs77ToGenerate';b.type='button';b.className='btn';
+      b.textContent='Continuar a generar →';
+      b.onclick=()=>{
+        if(!state.signatures?.solicitante){toast('Falta la firma del usuario');return}
+        if(!state.signatures?.tecnico){toast('Falta la firma del técnico / gestor');return}
+        show('generate');
+      };
+      actions.prepend(b);
+    }
+  }
+
+  function gs77BindFormFlow(){
+    // RETIE se renderiza dentro de #formHost, por eso hay que aplicar la lógica DESPUÉS de renderForm().
+    gs77ApplyRetieTech();
+    const direct=document.querySelector('#form .actions [data-go="generate"]');
+    if(direct && direct.dataset.gs77Flow!=='1'){
+      direct.dataset.gs77Flow='1';
+      direct.textContent='Continuar a soportes →';
+      direct.onclick=ev=>{ev.preventDefault();ev.stopImmediatePropagation();gs77EnsureCurrentRecord();show('supports')};
+    }
+  }
+
+  function gs77UpdateNavLocks(){
+    const has=!!gs77EnsureCurrentRecord();
+    document.querySelectorAll('[data-go="supports"],[data-go="signatures"],[data-go="generate"]').forEach(b=>{
+      b.classList.toggle('locked',!has);
+      b.setAttribute('aria-disabled',has?'false':'true');
+    });
+  }
+
+  function gs77PrepareDocumentScreen(id){
+    gs77EnsureCurrentRecord();
+    if(id==='form')gs77BindFormFlow();
+    if(id==='supports')gs77BindSupports();
+    if(id==='signatures')gs77BindSignatureFlow();
+    gs77UpdateNavLocks();
+  }
+
+  try{
+    const gs77OriginalShow=show;
+    show=function(id){
+      if(['home','form','supports','signatures','generate'].includes(id))gs77EnsureCurrentRecord();
+      const out=gs77OriginalShow(id);
+      setTimeout(()=>gs77PrepareDocumentScreen(id),0);
+      return out;
+    };
+  }catch(e){warn('show flow',e)}
+
   function bindFreshButton(id,handler){
     const old=document.querySelector('#'+id);
     if(!old||old.dataset.gsV77Bound==='1') return;
@@ -769,6 +877,15 @@
   }
 
   try{
+    const originalRenderForm=renderForm;
+    renderForm=function(){
+      const r=originalRenderForm.apply(this,arguments);
+      setTimeout(()=>{gs77BindFormFlow();gs77UpdateNavLocks()},0);
+      return r;
+    };
+  }catch(e){warn('renderForm',e)}
+
+  try{
     const originalRenderRegistration=renderRegistration;
     renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();return r};
   }catch(e){warn('renderRegistration',e)}
@@ -777,7 +894,7 @@
     renderRecordsScreen=function(){const r=originalRenderRecords.apply(this,arguments);rebind();return r};
   }catch(e){warn('renderRecords',e)}
 
-  forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();
+  forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();gs77EnsureCurrentRecord();gs77UpdateNavLocks();setTimeout(()=>gs77PrepareDocumentScreen(state.screen||'register'),0);
 
   Promise.allSettled(['E1','AR','E6','RETIE','DJ','TD','EC'].map(loadTemplate)).then(rs=>{
     const bad=rs.filter(x=>x.status==='rejected');
