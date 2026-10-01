@@ -139,8 +139,11 @@
     mat.inputMode='numeric';
     mat.placeholder=ced?'Escribe el serial después del guion':'Primero escribe la cédula';
     state.jornada=state.jornada||{};
+    state.form=state.form||{};
     state.jornada.tecnico_cedula=ced;
     state.jornada.cedula_tecnico=ced;
+    state.form.retie_const_identificacion=ced;
+    state.form.cm_retie_matricula=wanted;
     if(typeof save==='function')save();
   }
 
@@ -562,8 +565,9 @@
       src.direccion=normalizeAddress(src.direccion||'');
       src.contacto=cleanContact(src.contacto||'');
       const all=records();
-      const dup=all.find(x=>String(x.orden_ro||'')===String(src.orden_ro||'')&&x.id_registro!==state.currentRecord?.id_registro);
-      if(dup){alert('⚠️ Orden RO duplicada\n\nLa Orden RO '+src.orden_ro+' ya fue registrada.');state.regStep=0;renderRegistration();return false}
+      const roValue=String(src.orden_ro||'').trim();
+      const dup=roValue?all.find(x=>String(x.orden_ro||'').trim()===roValue&&x.id_registro!==state.currentRecord?.id_registro):null;
+      if(dup){alert('⚠️ Orden RO duplicada\n\nLa Orden RO '+roValue+' ya fue registrada.');state.regStep=0;renderRegistration();return false}
       const r=cloneRecord(src);
       r.id_registro=state.currentRecord?.id_registro||r.id_registro||makeUUID();
       r.fecha_hora_creacion=state.currentRecord?.fecha_hora_creacion||r.fecha_hora_creacion||new Date().toISOString();
@@ -578,6 +582,8 @@
       state.currentRecord=stored;
       state.registration=cloneRecord(stored);
       applyRegistrationToDocs(stored);
+      try{if(typeof updateRoleUI==='function')updateRoleUI()}catch(_){}
+      document.querySelectorAll('.topnav .nav').forEach(b=>{b.classList.remove('locked');b.setAttribute('aria-disabled','false')});
       save();
       const ss=document.querySelector('#savedSummary');
       if(ss) ss.innerHTML=`<strong>${escapeText(stored.nombres)}</strong><br>RO: ${escapeText(stored.orden_ro||'—')}<br>${escapeText(stored.direccion)} · ${escapeText(stored.localidad)} / ${escapeText(stored.sector)}`;
@@ -636,39 +642,114 @@
     try{
       forceApplus();
       const current=gs77EnsureCurrentRecord();
-      if(!current){toast('Primero guarda el registro antes de generar documentos');show('register');return false}
-      if(!state.selected?.length){toast('Selecciona al menos un documento para generar');show('home');return false}
-      if(!validateRequired()){show('form');return false}
-      if(!state.signatures?.solicitante){toast('Falta la firma del usuario. Firma antes de descargar.');show('signatures');return false}
-      if(!state.signatures?.tecnico){toast('Falta la firma del técnico / gestor.');show('signatures');return false}
-      updateKpis();
-      const zip=new JSZip(),sel=[...state.selected],rec=current||state.registration||{},errors=[];
+      if(!current){
+        toast('Primero guarda el registro antes de generar documentos');
+        show('register');
+        return false;
+      }
+      const sel=state.selected?.length?[...state.selected]:[];
+      if(!sel.length){
+        toast('Selecciona al menos un documento para generar');
+        show('home');
+        return false;
+      }
+      if(!validateRequired()){
+        show('form');
+        return false;
+      }
+      if(!state.signatures?.solicitante){
+        toast('Falta la firma del usuario. No se puede descargar documentación sin esta firma');
+        show('signatures');
+        return false;
+      }
+      if(!state.signatures?.tecnico){
+        toast('Falta la firma del técnico / gestor');
+        show('signatures');
+        return false;
+      }
+
+      const rec=current||state.registration||{};
       if(sel.includes('E1')){
         const ro=String(rec.orden_ro||rec.Orden_RO||rec.ro||appData().e1_no_solicitud||'').trim();
         if(!ro){
           toast('El E1 requiere Orden RO. Este dato llena “No de solicitud” en la página 2.');
-          try{show('register')}catch(_){}
-          const roInput=document.querySelector('[data-key="orden_ro"],#orden_ro,input[name="orden_ro"]');
-          roInput?.focus();
+          show('register');
+          setTimeout(()=>document.getElementById('reg_ro')?.focus(),50);
           return false;
         }
       }
-      try{zip.file(typeof tdFileName==='function'?tdFileName(rec):'TD_Constancia_Inspeccion.pdf',await makeTD(rec))}catch(e){errors.push('TD: '+e.message);warn('TD',e)}
+
+      updateKpis();
+      const zip=new JSZip(),generated=[],errors=[];
+
+      // TD is part of every documentary package.
+      try{
+        const tdName=typeof tdFileName==='function'?tdFileName(rec):'TD_Constancia_Inspeccion.pdf';
+        const tdBytes=await makeTD(rec);
+        if(!tdBytes||tdBytes.length<1000)throw new Error('archivo vacío');
+        zip.file(tdName,tdBytes);generated.push('TD');
+      }catch(e){errors.push('TD: '+(e?.message||e));warn('TD',e)}
+
       for(const d of sel){
         try{
-          if(['E1','E6','AR','DJ','RETIE'].includes(d)) zip.file(`${d}.pdf`,await makePDF(d));
-          else if(d==='EC') zip.file('EC_Esquema_constructivo.docx',await makeECv77());
-        }catch(e){errors.push(d+': '+e.message);warn(d,e)}
+          if(['E1','E6','AR','DJ','RETIE'].includes(d)){
+            const bytes=await makePDF(d);
+            if(!bytes||bytes.length<1000)throw new Error('archivo vacío');
+            zip.file(d+'.pdf',bytes);generated.push(d);
+          }else if(d==='EC'){
+            const bytes=await makeECv77();
+            if(!bytes||bytes.length<1000)throw new Error('archivo vacío');
+            zip.file('EC_Esquema_constructivo.docx',bytes);generated.push('EC');
+          }
+        }catch(e){
+          errors.push(d+': '+(e?.message||e));
+          warn(d,e);
+        }
       }
-      if(Object.values(state.materials?.qty||{}).some(q=>Number(q)>0)){try{zip.file('Materiales.xlsx',makeMaterials())}catch(e){errors.push('Materiales: '+e.message)}}
-      if(state.supports?.length){const folder=zip.folder('SOPORTES');for(const f of state.supports){try{folder.file(f.name,await f.arrayBuffer())}catch(e){errors.push('Soporte '+f.name+': '+e.message)}}}
-      if(errors.length) zip.file('ERRORES_GENERACION.txt',errors.join('\n'));
-      const blob=await zip.generateAsync({type:'blob'}),name=cleanName(appData().cm_nombre||rec.nombres||'GS_Documentos')+'.zip';
+
+      // Do NOT give the technician a misleading partial package.
+      const missing=sel.filter(d=>!generated.includes(d));
+      if(!generated.includes('TD'))missing.unshift('TD');
+      if(missing.length){
+        const msg='No se descargó el paquete porque falló la generación de: '+missing.join(', ')+
+          (errors.length?'\n\nDetalle:\n'+errors.join('\n'):'');
+        console.error(msg);
+        alert(msg);
+        toast('No se descargó un ZIP incompleto. Revisa los errores indicados');
+        return false;
+      }
+
+      if(Object.values(state.materials?.qty||{}).some(q=>Number(q)>0)){
+        try{zip.file('Materiales.xlsx',makeMaterials());generated.push('MATERIALES')}catch(e){errors.push('Materiales: '+(e?.message||e))}
+      }
+      if(state.supports?.length){
+        const folder=zip.folder('SOPORTES');
+        for(const f of state.supports){
+          try{folder.file(f.name,await f.arrayBuffer())}catch(e){errors.push('Soporte '+f.name+': '+(e?.message||e))}
+        }
+        generated.push('SOPORTES ('+state.supports.length+')');
+      }
+
+      zip.file('CONTENIDO_PAQUETE.txt',
+        'GS DOCUMENTOS '+VERSION+'\n'+
+        'Usuario: '+String(rec.nombres||'')+'\n'+
+        'RO: '+String(rec.orden_ro||'')+'\n'+
+        'Generados: '+generated.join(', ')+'\n'+
+        'Firma usuario: SI\nFirma técnico/gestor: SI\n'
+      );
+      if(errors.length)zip.file('ADVERTENCIAS_GENERACION.txt',errors.join('\n'));
+
+      const blob=await zip.generateAsync({type:'blob'});
+      const name=cleanName(appData().cm_nombre||rec.nombres||'GS_Documentos')+'.zip';
       await downloadBlob(blob,name);
-      const included=['TD',...sel,...(state.supports?.length?['SOPORTES ('+state.supports.length+')']:[])];
-      toast(errors.length?`ZIP generado con ${errors.length} advertencia(s)`:'✅ ZIP generado: '+included.join(', '),6000);
+      toast('✅ Paquete completo generado: '+generated.join(', '),7000);
       return true;
-    }catch(e){console.error(e);toast('Error generando: '+e.message);return false}
+    }catch(e){
+      console.error(e);
+      alert('Error generando documentos: '+(e?.message||e));
+      toast('Error generando: '+(e?.message||e));
+      return false;
+    }
   };
 
 
@@ -880,7 +961,11 @@
     const originalRenderForm=renderForm;
     renderForm=function(){
       const r=originalRenderForm.apply(this,arguments);
-      setTimeout(()=>{gs77BindFormFlow();gs77UpdateNavLocks()},0);
+      setTimeout(()=>{
+        gs77BindFormFlow();
+        gs77ApplyRetieTech();
+        gs77UpdateNavLocks();
+      },0);
       return r;
     };
   }catch(e){warn('renderForm',e)}
