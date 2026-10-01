@@ -661,6 +661,103 @@
     }catch(e){console.error(e);toast('Error generando: '+e.message);return false}
   };
 
+
+  function gs77FixTxtAndRo(){
+    try{
+      if(typeof parseTxt==='function' && !globalThis.__GS77_TXT_PARSER_FIXED__){
+        globalThis.__GS77_TXT_PARSER_FIXED__=true;
+        parseTxt=function(text){
+          const clean=String(text||'').replace(/^\uFEFF/,'').replace(/\r/g,'');
+          const lines=clean.split('\n').filter(x=>x.trim());
+          if(lines.length<2)return[];
+          const headRaw=splitLine(lines[0],'|'),head=headRaw.map(canonHeader);
+          const required=[
+            ['orden_ro',['ro orden','orden ro','ro','orden']],
+            ['nombres',['nombres','nombre']],
+            ['identificacion',['identificacion']],
+            ['contacto',['contacto']],
+            ['direccion',['direccion']],
+            ['localidad',['localidad']],
+            ['sector',['sector barrio','sector/barrio']],
+            ['tipo_zona',['tipo zona']],
+            ['latitud',['latitud','latitud y']],
+            ['longitud',['longitud','longitud x']]
+          ];
+          if(headRaw.length!==10)throw new Error('El TXT debe tener exactamente 10 columnas separadas por |');
+          const index={};
+          for(const [key,aliases] of required){
+            const i=head.findIndex(h=>aliases.map(canonHeader).includes(h));
+            if(i<0)throw new Error('Falta la columna '+key);
+            index[key]=i;
+          }
+          return lines.slice(1).map((line,n)=>{
+            const cols=splitLine(line,'|');
+            if(cols.length!==10)return null;
+            const r={_txt:n+1};
+            for(const [k,i] of Object.entries(index))r[k]=cols[i]||'';
+            r.orden_ro=String(r.orden_ro||'').replace(/\D/g,'').slice(0,10);
+            r.nombres=titleCaseWords(r.nombres);
+            r.sector=titleCaseWords(r.sector);
+            r.direccion=normalizeAddress(r.direccion);
+            r.contacto=normalizeContact(r.contacto);
+            return r;
+          }).filter(Boolean).filter(r=>Object.entries(r).some(([k,v])=>k!=='_txt'&&String(v||'').trim()));
+        };
+      }
+      if(typeof applyTxtRecord==='function' && !globalThis.__GS77_TXT_APPLY_FIXED__){
+        globalThis.__GS77_TXT_APPLY_FIXED__=true;
+        applyTxtRecord=function(rec){
+          const allowed=['orden_ro','nombres','identificacion','contacto','direccion','localidad','sector','tipo_zona','latitud','longitud'];
+          const keep={fecha_registro:state.registration.fecha_registro||todayISO()},imported={};
+          for(const k of allowed){if(rec[k]!==''&&rec[k]!=null)imported[k]=rec[k]}
+          const next={...state.registration,...imported,...keep};
+          next.orden_ro=String(next.orden_ro||'').replace(/\D/g,'').slice(0,10);
+          next.nombres=titleCaseWords(next.nombres);
+          next.sector=titleCaseWords(next.sector);
+          next.direccion=normalizeAddress(next.direccion);
+          next.contacto=normalizeContact(next.contacto);
+          if(!Array.isArray(next.elementos_externos))next.elementos_externos=[];
+          if(!Array.isArray(next.estado_tecnico))next.estado_tecnico=[];
+          state.registration=next;
+          renderRegistration();
+          save();
+          toast('Datos del TXT cargados. Puedes editarlos');
+        };
+      }
+      if(typeof validateStep==='function' && !globalThis.__GS77_RO_OPTIONAL_FIXED__){
+        globalThis.__GS77_RO_OPTIONAL_FIXED__=true;
+        const originalValidateStep=validateStep;
+        validateStep=function(step){
+          if(step!==0)return originalValidateStep(step);
+          const r=state.registration||{},miss=[];
+          const ro=String(r.orden_ro||'').trim();
+          if(ro&&!/^\d{10}$/.test(ro)){
+            alert('⚠️ Orden RO inválida\n\nSi diligencias la Orden RO, debe contener exactamente 10 dígitos.');
+            return false;
+          }
+          if(ro&&records().some(x=>x.orden_ro===ro&&x.id_registro!==state.currentRecord?.id_registro)){
+            alert('⚠️ Orden RO duplicada\n\nLa Orden RO '+ro+' ya fue registrada en esta jornada.\nVerifique el número antes de continuar.');
+            return false;
+          }
+          if(!r.nombres)miss.push('Nombres');
+          if(!r.identificacion)miss.push('Identificación');
+          if(!r.contacto||countContactDigits(r.contacto)<1)miss.push('Contacto');
+          [['direccion','Dirección'],['municipio','Municipio'],['sector','Sector/Barrio'],['tipo_zona','Tipo Zona'],['tipo_poblacion','Tipo de población'],['documento_propiedad','Documento de propiedad']].forEach(([k,l])=>{if(!String(r[k]||'').trim())miss.push(l)});
+          if(r.municipio==='Bogotá'&&!String(r.localidad||'').trim())miss.push('Localidad');
+          if(miss.length){toast('Faltan: '+miss.slice(0,3).join(', '));return false}
+          return true;
+        };
+      }
+      const ro=document.getElementById('reg_ro');
+      if(ro){
+        ro.placeholder='10 dígitos si aplica';
+        const field=ro.closest('.reg-field');
+        const lab=field?.querySelector('label');
+        if(lab)lab.innerHTML='Orden RO <span style="font-weight:500;color:#6f7f90">(opcional)</span>';
+      }
+    }catch(e){warn('TXT/RO rules',e)}
+  }
+
   function bindFreshButton(id,handler){
     const old=document.querySelector('#'+id);
     if(!old||old.dataset.gsV77Bound==='1') return;
@@ -682,15 +779,15 @@
 
   try{
     const originalRenderRegistration=renderRegistration;
-    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77DecorateJornada();gs77ApplyRetieTech();hideContractor();bindIndependentGarrawall();rebind();return r};
+    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRo();hideContractor();bindIndependentGarrawall();rebind();return r};
   }catch(e){warn('renderRegistration',e)}
   try{
     const originalRenderRecords=renderRecordsScreen;
     renderRecordsScreen=function(){const r=originalRenderRecords.apply(this,arguments);rebind();return r};
   }catch(e){warn('renderRecords',e)}
 
-  hideContractor();bindIndependentGarrawall();rebind();
-  const observer=new MutationObserver(()=>{forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();hideContractor();bindIndependentGarrawall();rebind()});
+  gs77FixTxtAndRo();hideContractor();bindIndependentGarrawall();rebind();
+  const observer=new MutationObserver(()=>{forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRo();hideContractor();bindIndependentGarrawall();rebind()});
   observer.observe(document.body,{subtree:true,childList:true});
 
   Promise.allSettled(['E1','AR','E6','RETIE','DJ','TD','EC'].map(loadTemplate)).then(rs=>{
