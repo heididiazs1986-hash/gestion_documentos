@@ -13,7 +13,8 @@ on:
       - 'capacitor.config.json'
       - 'scripts/**'
       - 'templates/base64/**'
-      - 'v76-fix.js'
+      - 'config/**'
+      - 'v77-fix.js'
       - '.github/workflows/build-apk.yml'
 
 permissions:
@@ -44,7 +45,7 @@ jobs:
 
       - name: Validate GS Documentos runtime and templates
         run: |
-          node --check v76-fix.js
+          node --check v77-fix.js
           node scripts/validate_templates.js
 
       - name: Prepare web assets for APK
@@ -88,12 +89,12 @@ jobs:
       - name: Name APK
         shell: bash
         run: |
-          cp android/app/build/outputs/apk/release/app-release.apk GS_Documentos_v76_RELEASE.apk
+          cp android/app/build/outputs/apk/release/app-release.apk GS_Documentos_v77_RELEASE.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GS-Documentos-v76-APK
-          path: GS_Documentos_v76*.apk
+          name: GS-Documentos-v77-APK
+          path: GS_Documentos_v77*.apk
           if-no-files-found: error
           retention-days: 30

@@ -14,13 +14,17 @@ def prepare_web():
     WWW.mkdir(parents=True)
 
     for name in [
-        "index.html", "manifest.json", "sw.js", "v76-fix.js",
+        "index.html", "manifest.json", "sw.js", "v77-fix.js",
         "gs-docs-icon-192.png", "gs-docs-icon-512.png", "gs-suite-logo.png",
         "icon-180.png", "icon-192.png", "icon-512.png"
     ]:
         src = ROOT / name
         if src.exists():
             shutil.copy2(src, WWW / name)
+
+    config = ROOT / "config"
+    if config.exists():
+        shutil.copytree(config, WWW / "config")
 
     templates = ROOT / "templates"
     if templates.exists():
@@ -65,7 +69,7 @@ def prepare_web():
         raise RuntimeError("No se encontró la llamada esperada a downloadBlob")
     html = html.replace(old_call, new_call, 1)
 
-    hotfix_tag = '<script src="./v76-fix.js?v=gsdoc-v76"></script>'
+    hotfix_tag = '<script src="./v77-fix.js?v=gsdoc-v77"></script>'
     if hotfix_tag not in html:
         html = html.replace("</body>", hotfix_tag + "\n</body>")
 
@@ -78,7 +82,7 @@ def prepare_web():
         sw = sw.replace("const CORE=[", "const CORE=['./vendor/jszip.min.js','./vendor/pdf-lib.min.js','./vendor/xlsx.full.min.js',", 1)
         sw_path.write_text(sw, encoding="utf-8")
 
-    print("Web v76 preparada para Android con dependencias PDF/ZIP/XLSX locales")
+    print("Web v77 preparada para Android con dependencias PDF/ZIP/XLSX locales")
 
 
 def prepare_android():
@@ -216,7 +220,7 @@ public class AndroidDownloader {
         print("Firma release no configurada: se generará APK debug de prueba")
 
     gradle.write_text(g, encoding="utf-8")
-    print("Proyecto Android v76 preparado con permisos GPS y descargas directas")
+    print("Proyecto Android v77 preparado con permisos GPS y descargas directas")
 
 
 if __name__ == "__main__":

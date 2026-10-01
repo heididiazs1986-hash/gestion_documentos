@@ -1,7 +1,7 @@
 {
-  "name": "GS Documentos",
+  "name": "GS Documentos APPLUS",
   "short_name": "GS Docs",
-  "start_url": "/index.html?v=gsdoc-v76-installfix",
+  "start_url": "/index.html?v=gsdoc-v77",
   "display": "standalone",
   "background_color": "#EEF4FA",
   "theme_color": "#0A5BD7",
