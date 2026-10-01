@@ -444,32 +444,39 @@
 
   async function makeECv77(){
     const b64=await loadTemplate('EC');
-    if(typeof JSZip==='undefined') throw new Error('JSZip no disponible para EC');
     const bytes=b64ToUint8?b64ToUint8(b64):base64ToBytes(b64);
-    const zip=await JSZip.loadAsync(bytes);
-    let documentXml=await zip.file('word/document.xml').async('string');
-    const rows=typeof obtenerFilasCuadroCargas==='function'?obtenerFilasCuadroCargas():[];
-    if(typeof crearTablaCargasWordXml==='function'){
-      const tableXml=crearTablaCargasWordXml(rows);
-      const markers=['{{CUADRO_CARGAS}}','«CUADRO_CARGAS_DINAMICO_APP»'];
-      let replaced=false;
-      for(const marker of markers){
-        const idx=documentXml.indexOf(marker);
-        if(idx<0) continue;
-        const pStart=documentXml.lastIndexOf('<w:p',idx);
-        const pEnd=documentXml.indexOf('</w:p>',idx);
-        if(pStart>=0&&pEnd>=0){
-          documentXml=documentXml.slice(0,pStart)+tableXml+documentXml.slice(pEnd+6);
-          replaced=true;
-          break;
-        }
-      }
-      if(!replaced) throw new Error('No se encontró el marcador del cuadro de cargas en EC');
-    }
-    zip.file('word/document.xml',documentXml);
-    return await zip.generateAsync({type:'uint8array'});
-  }
+    const pdf=await PDFDocument.load(bytes,{ignoreEncryption:true,updateMetadata:false});
+    const form=pdf.getForm();
+    const helv=await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+    const vals=appData();
+    const rec=state.currentRecord||state.registration||{};
 
+    const ecMap={
+      ec_fecha: vals.cm_fecha_ddmmaaaa||vals.cm_fecha_solicitud||rec.fecha_registro||'',
+      ec_usuario: vals.cm_nombre||rec.nombres||'',
+      ec_identificacion: vals.cm_num_doc||rec.identificacion||'',
+      ec_direccion: vals.pred_direccion||rec.direccion||vals.cm_dir_radica||'',
+      ec_municipio: vals.cm_mpio||rec.municipio||rec.localidad||'',
+      ec_tecnico: vals.cm_retie_constructor||vals._tecnico_nombre||state.jornada?.tecnico_nombre||'',
+      ec_matricula: vals.cm_retie_matricula||'',
+      ec_tecnico_1: vals.cm_retie_constructor||vals._tecnico_nombre||state.jornada?.tecnico_nombre||'',
+      ec_identificacion_tecnico: vals.retie_const_identificacion||vals._tecnico_cedula||state.jornada?.tecnico_cedula||'',
+      ec_matricula_1: vals.cm_retie_matricula||''
+    };
+    for(const [field,val] of Object.entries(ecMap))setFieldSafe(form,field,val,helv);
+    try{form.updateFieldAppearances(helv)}catch(e){warn('apariencias EC',e)}
+
+    // Firma del técnico en el campo de firma de la página 8.
+    const sig=state.signatures?.tecnico;
+    if(sig){
+      try{
+        const img=await pdf.embedPng(dataUrlToUint8(sig));
+        const page=pdf.getPages()[7];
+        page.drawImage(img,fitImageRect(img,{x:55,y:160,width:268,height:52}));
+      }catch(e){warn('firma EC',e)}
+    }
+    return await pdf.save({useObjectStreams:false,addDefaultPage:false,updateFieldAppearances:false});
+  }
   makeEC=makeECv77;
 
   function setTextAny(form,names,val,helv,size){
@@ -533,7 +540,7 @@
     setTextAny(form,['text_289o8f','firma_usuario_cc'],rec.identificacion,helv);
     setTextAny(form,['text_291t9n','firma_tecnico_nombre'],state.jornada?.tecnico_nombre||'',helv);
     setTextAny(form,['text_301t3m','firma_tecnico_cc'],state.jornada?.tecnico_cedula||'',helv);
-    setTextAny(form,['text_318x6q','fecha_registro'],rec.fecha_registro||todayISO(),helv);
+    setTextAny(form,['text_318x6q','fecha_registro'],rec.fecha_registro||'',helv);
     setTextAny(form,['text_331i7n','id_registro'],String(rec.id_registro||'').slice(0,16),helv);
     try{form.updateFieldAppearances(helv)}catch(e){warn('TD appearances',e)}
 
@@ -582,6 +589,8 @@
       state.currentRecord=stored;
       state.registration=cloneRecord(stored);
       applyRegistrationToDocs(stored);
+      state.form=state.form||{};
+      state.form.cm_fecha_solicitud=stored.fecha_registro||state.form.cm_fecha_solicitud||'';
       try{if(typeof updateRoleUI==='function')updateRoleUI()}catch(_){}
       document.querySelectorAll('.topnav .nav').forEach(b=>{b.classList.remove('locked');b.setAttribute('aria-disabled','false')});
       save();
@@ -699,7 +708,7 @@
           }else if(d==='EC'){
             const bytes=await makeECv77();
             if(!bytes||bytes.length<1000)throw new Error('archivo vacío');
-            zip.file('EC_Esquema_constructivo.docx',bytes);generated.push('EC');
+            zip.file('EC_Esquema_constructivo.pdf',bytes);generated.push('EC');
           }
         }catch(e){
           errors.push(d+': '+(e?.message||e));
@@ -800,7 +809,7 @@
         globalThis.__GS77_TXT_APPLY_SAFE__=true;
         applyTxtRecord=function(rec){
           const allowed=['orden_ro','nombres','identificacion','contacto','direccion','localidad','sector','tipo_zona','latitud','longitud'];
-          const next={...state.registration,fecha_registro:state.registration.fecha_registro||todayISO()};
+          const next={...state.registration,fecha_registro:state.registration.fecha_registro||''};
           for(const k of allowed){if(rec[k]!==undefined&&rec[k]!==null)next[k]=rec[k]}
           if(!Array.isArray(next.elementos_externos))next.elementos_externos=[];
           if(!Array.isArray(next.estado_tecnico))next.estado_tecnico=[];
@@ -819,6 +828,7 @@
           const ro=String(r.orden_ro||'').trim();
           if(ro&&!/^\d{10}$/.test(ro)){alert('⚠️ Orden RO inválida\n\nSi diligencias la Orden RO, debe contener exactamente 10 dígitos.');return false}
           if(ro&&records().some(x=>x.orden_ro===ro&&x.id_registro!==state.currentRecord?.id_registro)){alert('⚠️ Orden RO duplicada\n\nLa Orden RO '+ro+' ya fue registrada en esta jornada.');return false}
+          if(!String(r.fecha_registro||'').trim())miss.push('Fecha de registro');
           if(!r.nombres)miss.push('Nombres');
           if(!r.identificacion)miss.push('Identificación');
           if(!r.contacto||countContactDigits(r.contacto)<1)miss.push('Contacto');
@@ -901,9 +911,112 @@
     }
   }
 
+  function gs77HasEC(){
+    try{
+      if(Array.isArray(state.selected)&&state.selected.includes('EC'))return true;
+      if(Array.isArray(state.docs)&&state.docs.includes('EC'))return true;
+      if(typeof hasDoc==='function'&&hasDoc('EC'))return true;
+    }catch(_){}
+    return false;
+  }
+
+  function gs77RemoveECLoadControls(){
+    if(!gs77HasEC())return;
+    const root=document.getElementById('form')||document;
+    root.querySelectorAll('button').forEach(b=>{
+      if(/diligenciar\s+cuadro\s+de\s+cargas/i.test(b.textContent||''))b.style.display='none';
+    });
+    root.querySelectorAll('.section,.card,.subcard,div').forEach(el=>{
+      const h=el.querySelector(':scope > .section-head h2,:scope > h2,:scope > h3');
+      const title=(h?.textContent||'').trim();
+      if(/^cuadro\s+de\s+cargas$/i.test(title))el.style.display='none';
+    });
+    ['loadListInline','loadSummaryInline','saveLoadsInline','ecCargaResumen','loadList','loadSummary'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.style.display='none';
+    });
+  }
+
+  function gs77EnsureECEditableFields(){
+    if(!gs77HasEC())return;
+    const formRoot=document.getElementById('formHost')||document.getElementById('form')||document;
+    let id=document.getElementById('retie_const_identificacion');
+    const mat=document.getElementById('cm_retie_matricula');
+    if(!id && mat){
+      const matField=mat.closest('.field,.reg-field');
+      const host=matField?.parentElement;
+      if(host){
+        const wrap=document.createElement('div');
+        wrap.className=matField.className||'field';
+        wrap.innerHTML='<label>Identificación del técnico <span class="req">*</span></label><input id="retie_const_identificacion" type="text" inputmode="numeric" placeholder="Cédula del técnico">';
+        host.insertBefore(wrap,matField);
+        id=wrap.querySelector('input');
+      }
+    }
+    if(id){
+      id.value=String(state.form?.retie_const_identificacion||state.jornada?.tecnico_cedula||id.value||'').replace(/\D/g,'').slice(0,20);
+      if(id.dataset.gs77EcId!=='1'){
+        id.dataset.gs77EcId='1';
+        id.addEventListener('input',()=>{
+          id.value=String(id.value||'').replace(/\D/g,'').slice(0,20);
+          state.form=state.form||{};
+          state.form.retie_const_identificacion=id.value;
+          gs77SyncMatricula({keepSerial:true});
+          if(typeof save==='function')save();
+        });
+      }
+    }
+    gs77ApplyRetieTech();
+    gs77RemoveECLoadControls();
+  }
+
+  let gs77RegistrationRef=null;
+  let gs77DateTouched=false;
+  function gs77BindRegistrationDate(){
+    const reg=state.registration||{};
+    if(gs77RegistrationRef!==reg){
+      gs77RegistrationRef=reg;
+      gs77DateTouched=!!state.currentRecord?.id_registro;
+    }
+    const root=document.getElementById('register');
+    if(!root)return;
+    const label=[...root.querySelectorAll('label')].find(x=>/^fecha\s+de\s+registro/i.test((x.textContent||'').trim()));
+    const host=label?.closest('.reg-field,.field')||label?.parentElement;
+    const input=host?.querySelector('input');
+    if(!input)return;
+    input.type='date';
+    input.readOnly=false;
+    input.disabled=false;
+    input.removeAttribute('readonly');
+    input.removeAttribute('disabled');
+    host?.querySelectorAll('button,span,small').forEach(x=>{
+      if(/autom[aá]tica/i.test(x.textContent||''))x.style.display='none';
+    });
+    if(!state.currentRecord?.id_registro && !gs77DateTouched && String(reg.fecha_registro||input.value||'')===todayISO()){
+      reg.fecha_registro='';
+      input.value='';
+      if(typeof save==='function')save();
+    }else if(reg.fecha_registro){
+      input.value=reg.fecha_registro;
+    }
+    if(input.dataset.gs77Date!=='1'){
+      input.dataset.gs77Date='1';
+      const sync=()=>{
+        gs77DateTouched=true;
+        state.registration=state.registration||{};
+        state.registration.fecha_registro=input.value||'';
+        if(typeof save==='function')save();
+      };
+      input.addEventListener('input',sync);
+      input.addEventListener('change',sync);
+    }
+  }
+
   function gs77BindFormFlow(){
     // RETIE se renderiza dentro de #formHost, por eso hay que aplicar la lógica DESPUÉS de renderForm().
     gs77ApplyRetieTech();
+    gs77EnsureECEditableFields();
+    gs77RemoveECLoadControls();
     const direct=document.querySelector('#form .actions [data-go="generate"]');
     if(direct && direct.dataset.gs77Flow!=='1'){
       direct.dataset.gs77Flow='1';
@@ -964,6 +1077,8 @@
       setTimeout(()=>{
         gs77BindFormFlow();
         gs77ApplyRetieTech();
+        gs77EnsureECEditableFields();
+        gs77RemoveECLoadControls();
         gs77UpdateNavLocks();
       },0);
       return r;
@@ -972,14 +1087,14 @@
 
   try{
     const originalRenderRegistration=renderRegistration;
-    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();return r};
+    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();setTimeout(()=>gs77BindRegistrationDate(),0);return r};
   }catch(e){warn('renderRegistration',e)}
   try{
     const originalRenderRecords=renderRecordsScreen;
     renderRecordsScreen=function(){const r=originalRenderRecords.apply(this,arguments);rebind();return r};
   }catch(e){warn('renderRecords',e)}
 
-  forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();gs77EnsureCurrentRecord();gs77UpdateNavLocks();setTimeout(()=>gs77PrepareDocumentScreen(state.screen||'register'),0);
+  forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();gs77EnsureCurrentRecord();gs77UpdateNavLocks();setTimeout(()=>gs77BindRegistrationDate(),0);setTimeout(()=>gs77PrepareDocumentScreen(state.screen||'register'),0);
 
   Promise.allSettled(['E1','AR','E6','RETIE','DJ','TD','EC'].map(loadTemplate)).then(rs=>{
     const bad=rs.filter(x=>x.status==='rejected');
