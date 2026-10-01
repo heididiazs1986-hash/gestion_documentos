@@ -54,7 +54,8 @@ def prepare_web():
     if hotfix_tag not in html:
         html = html.replace("</body>", hotfix_tag + "\n</body>")
 
-    html = html.replace("./sw.js?v=gsdoc-v69", "./sw.js?v=gsdoc-v75")\n    html_path.write_text(html, encoding="utf-8")
+    html = html.replace("./sw.js?v=gsdoc-v69", "./sw.js?v=gsdoc-v75")
+    html_path.write_text(html, encoding="utf-8")
     print("Web v75 preparada para Android")
 
 
