@@ -14,7 +14,7 @@ def prepare_web():
     WWW.mkdir(parents=True)
 
     for name in [
-        "index.html", "manifest.json", "sw.js", "v75-fix.js",
+        "index.html", "manifest.json", "sw.js", "v76-fix.js",
         "gs-docs-icon-192.png", "gs-docs-icon-512.png", "gs-suite-logo.png",
         "icon-180.png", "icon-192.png", "icon-512.png"
     ]:
@@ -26,8 +26,23 @@ def prepare_web():
     if templates.exists():
         shutil.copytree(templates, WWW / "templates")
 
+    vendor = WWW / "vendor"
+    vendor.mkdir(parents=True, exist_ok=True)
+    vendor_sources = {
+        "jszip.min.js": ROOT / "node_modules/jszip/dist/jszip.min.js",
+        "pdf-lib.min.js": ROOT / "node_modules/pdf-lib/dist/pdf-lib.min.js",
+        "xlsx.full.min.js": ROOT / "node_modules/xlsx/dist/xlsx.full.min.js",
+    }
+    for target, src in vendor_sources.items():
+        if not src.exists():
+            raise RuntimeError(f"No se encontró dependencia local: {src}")
+        shutil.copy2(src, vendor / target)
+
     html_path = WWW / "index.html"
     html = html_path.read_text(encoding="utf-8")
+    html = html.replace("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js", "./vendor/jszip.min.js")
+    html = html.replace("https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js", "./vendor/pdf-lib.min.js")
+    html = html.replace("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js", "./vendor/xlsx.full.min.js")
 
     old_download = "function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}"
     new_download = """async function downloadBlob(blob,name){
@@ -50,12 +65,20 @@ def prepare_web():
         raise RuntimeError("No se encontró la llamada esperada a downloadBlob")
     html = html.replace(old_call, new_call, 1)
 
-    hotfix_tag = '<script src="./v75-fix.js?v=gsdoc-v75"></script>'
+    hotfix_tag = '<script src="./v76-fix.js?v=gsdoc-v76"></script>'
     if hotfix_tag not in html:
         html = html.replace("</body>", hotfix_tag + "\n</body>")
 
     html_path.write_text(html, encoding="utf-8")
-    print("Web v75 preparada para Android")
+
+    sw_path = WWW / "sw.js"
+    if sw_path.exists():
+        sw = sw_path.read_text(encoding="utf-8")
+        sw = re.sub(r"const REMOTE=\[[^\n]*\];", "const REMOTE=[];", sw, count=1)
+        sw = sw.replace("const CORE=[", "const CORE=['./vendor/jszip.min.js','./vendor/pdf-lib.min.js','./vendor/xlsx.full.min.js',", 1)
+        sw_path.write_text(sw, encoding="utf-8")
+
+    print("Web v76 preparada para Android con dependencias PDF/ZIP/XLSX locales")
 
 
 def prepare_android():
@@ -173,8 +196,8 @@ public class AndroidDownloader {
 
     gradle = android / "app/build.gradle"
     g = gradle.read_text(encoding="utf-8")
-    g = re.sub(r'versionCode\s+\d+', 'versionCode 75', g, count=1)
-    g = re.sub(r'versionName\s+"[^"]+"', 'versionName "75.0"', g, count=1)
+    g = re.sub(r'versionCode\s+\d+', 'versionCode 76', g, count=1)
+    g = re.sub(r'versionName\s+"[^"]+"', 'versionName "76.0"', g, count=1)
 
     signing_vars = [
         os.getenv("GS_ANDROID_KEYSTORE_PATH"),
@@ -193,7 +216,7 @@ public class AndroidDownloader {
         print("Firma release no configurada: se generará APK debug de prueba")
 
     gradle.write_text(g, encoding="utf-8")
-    print("Proyecto Android v75 preparado con permisos GPS y descargas directas")
+    print("Proyecto Android v76 preparado con permisos GPS y descargas directas")
 
 
 if __name__ == "__main__":
