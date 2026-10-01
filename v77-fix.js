@@ -246,8 +246,16 @@
 
   function hideContractor(){
     try{
+      state.jornada=state.jornada||{};
+      state.jornada.contrato='APPLUS';
+      const direct=document.getElementById('jornada_contrato');
+      if(direct){
+        direct.value='APPLUS';
+        const host=direct.closest('.reg-field,.field,.form-row,.input-group,.card-row')||direct.parentElement;
+        if(host)host.style.display='none';
+      }
       document.querySelectorAll('label,legend,.field-label,.reg-field label').forEach(el=>{
-        if(!/contratista|aliado\s+estrat[eé]gico/i.test(el.textContent||'')) return;
+        if(!/contrato\s*\/\s*aliado|contratista|aliado\s+estrat[eé]gico/i.test(el.textContent||'')) return;
         const host=el.closest('.reg-field,.field,.form-row,.input-group,.card-row')||el.parentElement;
         if(host) host.style.display='none';
       });
@@ -753,7 +761,10 @@
         ro.placeholder='10 dígitos si aplica';
         const field=ro.closest('.reg-field');
         const lab=field?.querySelector('label');
-        if(lab)lab.innerHTML='Orden RO <span style="font-weight:500;color:#6f7f90">(opcional)</span>';
+        if(lab&&lab.dataset.gs77RoOptional!=='1'){
+          lab.dataset.gs77RoOptional='1';
+          lab.innerHTML='Orden RO <span style="font-weight:500;color:#6f7f90">(opcional)</span>';
+        }
       }
     }catch(e){warn('TXT/RO rules',e)}
   }
@@ -786,8 +797,26 @@
     renderRecordsScreen=function(){const r=originalRenderRecords.apply(this,arguments);rebind();return r};
   }catch(e){warn('renderRecords',e)}
 
-  gs77FixTxtAndRo();hideContractor();bindIndependentGarrawall();rebind();
-  const observer=new MutationObserver(()=>{forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRo();hideContractor();bindIndependentGarrawall();rebind()});
+  gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRo();hideContractor();bindIndependentGarrawall();rebind();
+  let gs77Refreshing=false;
+  const observer=new MutationObserver(()=>{
+    if(gs77Refreshing)return;
+    gs77Refreshing=true;
+    observer.disconnect();
+    try{
+      forceApplus();
+      gs77DecorateJornada();
+      gs77ApplyRetieTech();
+      gs77FixTxtAndRo();
+      hideContractor();
+      bindIndependentGarrawall();
+      rebind();
+    }catch(e){warn('refresh UI',e)}
+    finally{
+      gs77Refreshing=false;
+      observer.observe(document.body,{subtree:true,childList:true});
+    }
+  });
   observer.observe(document.body,{subtree:true,childList:true});
 
   Promise.allSettled(['E1','AR','E6','RETIE','DJ','TD','EC'].map(loadTemplate)).then(rs=>{
