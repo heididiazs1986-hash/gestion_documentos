@@ -14,7 +14,7 @@ def prepare_web():
     WWW.mkdir(parents=True)
 
     for name in [
-        "index.html", "manifest.json", "sw.js", "v76-fix.js",
+        "index.html", "manifest.json", "sw.js", "v77-fix.js",
         "gs-docs-icon-192.png", "gs-docs-icon-512.png", "gs-suite-logo.png",
         "icon-180.png", "icon-192.png", "icon-512.png"
     ]:
@@ -65,7 +65,7 @@ def prepare_web():
         raise RuntimeError("No se encontró la llamada esperada a downloadBlob")
     html = html.replace(old_call, new_call, 1)
 
-    hotfix_tag = '<script src="./v76-fix.js?v=gsdoc-v76"></script>'
+    hotfix_tag = '<script src="./v77-fix.js?v=gsdoc-v77"></script>'
     if hotfix_tag not in html:
         html = html.replace("</body>", hotfix_tag + "\n</body>")
 
@@ -78,7 +78,7 @@ def prepare_web():
         sw = sw.replace("const CORE=[", "const CORE=['./vendor/jszip.min.js','./vendor/pdf-lib.min.js','./vendor/xlsx.full.min.js',", 1)
         sw_path.write_text(sw, encoding="utf-8")
 
-    print("Web v76 preparada para Android con dependencias PDF/ZIP/XLSX locales")
+    print("Web v77 preparada para Android con dependencias PDF/ZIP/XLSX locales")
 
 
 def prepare_android():
@@ -196,8 +196,8 @@ public class AndroidDownloader {
 
     gradle = android / "app/build.gradle"
     g = gradle.read_text(encoding="utf-8")
-    g = re.sub(r'versionCode\s+\d+', 'versionCode 76', g, count=1)
-    g = re.sub(r'versionName\s+"[^"]+"', 'versionName "76.0"', g, count=1)
+    g = re.sub(r'versionCode\s+\d+', 'versionCode 77', g, count=1)
+    g = re.sub(r'versionName\s+"[^"]+"', 'versionName "77.0"', g, count=1)
 
     signing_vars = [
         os.getenv("GS_ANDROID_KEYSTORE_PATH"),
