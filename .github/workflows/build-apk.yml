@@ -3,7 +3,7 @@ name: Build GS Documentos APK
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ main, gsdocs-v75-complete ]
     paths:
       - 'index.html'
       - 'manifest.json'
@@ -12,7 +12,7 @@ on:
       - 'package.json'
       - 'capacitor.config.json'
       - 'scripts/**'
-      - 'v74-fix.js'
+      - 'v75-fix.js'\n      - 'templates/**'
       - '.github/workflows/build-apk.yml'
 
 permissions:
@@ -88,15 +88,15 @@ jobs:
         shell: bash
         run: |
           if [ "$GS_HAS_SIGNING" = "true" ]; then
-            cp android/app/build/outputs/apk/release/app-release.apk GS_Documentos_v74_RELEASE.apk
+            cp android/app/build/outputs/apk/release/app-release.apk GS_Documentos_v75_RELEASE.apk
           else
-            cp android/app/build/outputs/apk/debug/app-debug.apk GS_Documentos_v74_TEMP.apk
+            cp android/app/build/outputs/apk/debug/app-debug.apk GS_Documentos_v75_TEMP.apk
           fi
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GS-Documentos-v74-APK
-          path: GS_Documentos_v74*.apk
+          name: GS-Documentos-v75-APK
+          path: GS_Documentos_v75*.apk
           if-no-files-found: error
           retention-days: 30
