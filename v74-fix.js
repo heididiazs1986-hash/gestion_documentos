@@ -26,6 +26,23 @@
     }catch(e){warn('No fue posible fijar APPLUS',e)}
   }
 
+  function bindIndependentGarrawall(){
+    try{
+      document.querySelectorAll('[data-seg]').forEach(seg=>{
+        const key=seg.dataset.seg;
+        if(key!=='garrawall'&&key!=='arriostre')return;
+        seg.querySelectorAll('button').forEach(btn=>{
+          btn.onclick=()=>{
+            state.registration=state.registration||{};
+            state.registration[key]=btn.dataset.value;
+            renderRegistration();
+            save();
+          };
+        });
+      });
+    }catch(e){warn('Independencia Garrawall/arriostre',e)}
+  }
+
   function removeContractorControls(){
     try{
       document.querySelectorAll('label,legend,.field-label,.reg-field label').forEach(el=>{
@@ -335,15 +352,15 @@
 
   try{
     const originalRenderRegistration=renderRegistration;
-    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();removeContractorControls();rebindButtons();return r};
+    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();removeContractorControls();bindIndependentGarrawall();rebindButtons();return r};
   }catch(e){warn('Wrapper registro',e)}
   try{
     const originalRenderRecords=renderRecordsScreen;
     renderRecordsScreen=function(){const r=originalRenderRecords.apply(this,arguments);rebindButtons();return r};
   }catch(e){warn('Wrapper registros',e)}
 
-  removeContractorControls();rebindButtons();
-  const observer=new MutationObserver(()=>{forceApplus();removeContractorControls();rebindButtons()});
+  removeContractorControls();bindIndependentGarrawall();rebindButtons();
+  const observer=new MutationObserver(()=>{forceApplus();removeContractorControls();bindIndependentGarrawall();rebindButtons()});
   observer.observe(document.body,{subtree:true,childList:true});
   log('activo · persistencia, Excel, PDF y APPLUS corregidos');
 })();
