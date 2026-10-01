@@ -246,16 +246,8 @@
 
   function hideContractor(){
     try{
-      state.jornada=state.jornada||{};
-      state.jornada.contrato='APPLUS';
-      const direct=document.getElementById('jornada_contrato');
-      if(direct){
-        direct.value='APPLUS';
-        const host=direct.closest('.reg-field,.field,.form-row,.input-group,.card-row')||direct.parentElement;
-        if(host)host.style.display='none';
-      }
       document.querySelectorAll('label,legend,.field-label,.reg-field label').forEach(el=>{
-        if(!/contrato\s*\/\s*aliado|contratista|aliado\s+estrat[eé]gico/i.test(el.textContent||'')) return;
+        if(!/contratista|aliado\s+estrat[eé]gico/i.test(el.textContent||'')) return;
         const host=el.closest('.reg-field,.field,.form-row,.input-group,.card-row')||el.parentElement;
         if(host) host.style.display='none';
       });
@@ -670,31 +662,32 @@
   };
 
 
-  function gs77FixTxtAndRo(){
+  function gs77FixTxtAndRoSafe(){
     try{
-      if(typeof parseTxt==='function' && !globalThis.__GS77_TXT_PARSER_FIXED__){
-        globalThis.__GS77_TXT_PARSER_FIXED__=true;
+      if(typeof parseTxt==='function' && !globalThis.__GS77_TXT_PARSER_SAFE__){
+        globalThis.__GS77_TXT_PARSER_SAFE__=true;
         parseTxt=function(text){
           const clean=String(text||'').replace(/^\uFEFF/,'').replace(/\r/g,'');
           const lines=clean.split('\n').filter(x=>x.trim());
           if(lines.length<2)return[];
-          const headRaw=splitLine(lines[0],'|'),head=headRaw.map(canonHeader);
-          const required=[
-            ['orden_ro',['ro orden','orden ro','ro','orden']],
+          const headRaw=splitLine(lines[0],'|'), head=headRaw.map(canonHeader);
+          if(headRaw.length!==10)throw new Error('El TXT debe tener exactamente 10 columnas separadas por |');
+          const defs=[
+            ['orden_ro',['ro/orden','ro orden','orden ro','ro','orden']],
             ['nombres',['nombres','nombre']],
             ['identificacion',['identificacion']],
             ['contacto',['contacto']],
             ['direccion',['direccion']],
             ['localidad',['localidad']],
-            ['sector',['sector barrio','sector/barrio']],
+            ['sector',['sector/barrio','sector barrio']],
             ['tipo_zona',['tipo zona']],
             ['latitud',['latitud','latitud y']],
             ['longitud',['longitud','longitud x']]
           ];
-          if(headRaw.length!==10)throw new Error('El TXT debe tener exactamente 10 columnas separadas por |');
           const index={};
-          for(const [key,aliases] of required){
-            const i=head.findIndex(h=>aliases.map(canonHeader).includes(h));
+          for(const [key,aliases] of defs){
+            const norm=aliases.map(canonHeader);
+            const i=head.findIndex(h=>norm.includes(h));
             if(i<0)throw new Error('Falta la columna '+key);
             index[key]=i;
           }
@@ -712,18 +705,12 @@
           }).filter(Boolean).filter(r=>Object.entries(r).some(([k,v])=>k!=='_txt'&&String(v||'').trim()));
         };
       }
-      if(typeof applyTxtRecord==='function' && !globalThis.__GS77_TXT_APPLY_FIXED__){
-        globalThis.__GS77_TXT_APPLY_FIXED__=true;
+      if(typeof applyTxtRecord==='function' && !globalThis.__GS77_TXT_APPLY_SAFE__){
+        globalThis.__GS77_TXT_APPLY_SAFE__=true;
         applyTxtRecord=function(rec){
           const allowed=['orden_ro','nombres','identificacion','contacto','direccion','localidad','sector','tipo_zona','latitud','longitud'];
-          const keep={fecha_registro:state.registration.fecha_registro||todayISO()},imported={};
-          for(const k of allowed){if(rec[k]!==''&&rec[k]!=null)imported[k]=rec[k]}
-          const next={...state.registration,...imported,...keep};
-          next.orden_ro=String(next.orden_ro||'').replace(/\D/g,'').slice(0,10);
-          next.nombres=titleCaseWords(next.nombres);
-          next.sector=titleCaseWords(next.sector);
-          next.direccion=normalizeAddress(next.direccion);
-          next.contacto=normalizeContact(next.contacto);
+          const next={...state.registration,fecha_registro:state.registration.fecha_registro||todayISO()};
+          for(const k of allowed){if(rec[k]!==undefined&&rec[k]!==null)next[k]=rec[k]}
           if(!Array.isArray(next.elementos_externos))next.elementos_externos=[];
           if(!Array.isArray(next.estado_tecnico))next.estado_tecnico=[];
           state.registration=next;
@@ -732,21 +719,15 @@
           toast('Datos del TXT cargados. Puedes editarlos');
         };
       }
-      if(typeof validateStep==='function' && !globalThis.__GS77_RO_OPTIONAL_FIXED__){
-        globalThis.__GS77_RO_OPTIONAL_FIXED__=true;
+      if(typeof validateStep==='function' && !globalThis.__GS77_RO_OPTIONAL_SAFE__){
+        globalThis.__GS77_RO_OPTIONAL_SAFE__=true;
         const originalValidateStep=validateStep;
         validateStep=function(step){
           if(step!==0)return originalValidateStep(step);
           const r=state.registration||{},miss=[];
           const ro=String(r.orden_ro||'').trim();
-          if(ro&&!/^\d{10}$/.test(ro)){
-            alert('⚠️ Orden RO inválida\n\nSi diligencias la Orden RO, debe contener exactamente 10 dígitos.');
-            return false;
-          }
-          if(ro&&records().some(x=>x.orden_ro===ro&&x.id_registro!==state.currentRecord?.id_registro)){
-            alert('⚠️ Orden RO duplicada\n\nLa Orden RO '+ro+' ya fue registrada en esta jornada.\nVerifique el número antes de continuar.');
-            return false;
-          }
+          if(ro&&!/^\d{10}$/.test(ro)){alert('⚠️ Orden RO inválida\n\nSi diligencias la Orden RO, debe contener exactamente 10 dígitos.');return false}
+          if(ro&&records().some(x=>x.orden_ro===ro&&x.id_registro!==state.currentRecord?.id_registro)){alert('⚠️ Orden RO duplicada\n\nLa Orden RO '+ro+' ya fue registrada en esta jornada.');return false}
           if(!r.nombres)miss.push('Nombres');
           if(!r.identificacion)miss.push('Identificación');
           if(!r.contacto||countContactDigits(r.contacto)<1)miss.push('Contacto');
@@ -759,14 +740,13 @@
       const ro=document.getElementById('reg_ro');
       if(ro){
         ro.placeholder='10 dígitos si aplica';
-        const field=ro.closest('.reg-field');
-        const lab=field?.querySelector('label');
+        const lab=ro.closest('.reg-field')?.querySelector('label');
         if(lab&&lab.dataset.gs77RoOptional!=='1'){
           lab.dataset.gs77RoOptional='1';
           lab.innerHTML='Orden RO <span style="font-weight:500;color:#6f7f90">(opcional)</span>';
         }
       }
-    }catch(e){warn('TXT/RO rules',e)}
+    }catch(e){warn('TXT/RO safe',e)}
   }
 
   function bindFreshButton(id,handler){
@@ -790,34 +770,14 @@
 
   try{
     const originalRenderRegistration=renderRegistration;
-    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRo();hideContractor();bindIndependentGarrawall();rebind();return r};
+    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();return r};
   }catch(e){warn('renderRegistration',e)}
   try{
     const originalRenderRecords=renderRecordsScreen;
     renderRecordsScreen=function(){const r=originalRenderRecords.apply(this,arguments);rebind();return r};
   }catch(e){warn('renderRecords',e)}
 
-  gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRo();hideContractor();bindIndependentGarrawall();rebind();
-  let gs77Refreshing=false;
-  const observer=new MutationObserver(()=>{
-    if(gs77Refreshing)return;
-    gs77Refreshing=true;
-    observer.disconnect();
-    try{
-      forceApplus();
-      gs77DecorateJornada();
-      gs77ApplyRetieTech();
-      gs77FixTxtAndRo();
-      hideContractor();
-      bindIndependentGarrawall();
-      rebind();
-    }catch(e){warn('refresh UI',e)}
-    finally{
-      gs77Refreshing=false;
-      observer.observe(document.body,{subtree:true,childList:true});
-    }
-  });
-  observer.observe(document.body,{subtree:true,childList:true});
+  forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();
 
   Promise.allSettled(['E1','AR','E6','RETIE','DJ','TD','EC'].map(loadTemplate)).then(rs=>{
     const bad=rs.filter(x=>x.status==='rejected');
