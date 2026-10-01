@@ -14,7 +14,7 @@ def prepare_web():
     WWW.mkdir(parents=True)
 
     for name in [
-        "index.html", "manifest.json", "sw.js", "v74-fix.js",
+        "index.html", "manifest.json", "sw.js", "v75-fix.js",
         "gs-docs-icon-192.png", "gs-docs-icon-512.png", "gs-suite-logo.png",
         "icon-180.png", "icon-192.png", "icon-512.png"
     ]:
@@ -50,12 +50,12 @@ def prepare_web():
         raise RuntimeError("No se encontró la llamada esperada a downloadBlob")
     html = html.replace(old_call, new_call, 1)
 
-    hotfix_tag = '<script src="./v74-fix.js?v=gsdoc-v74"></script>'
+    hotfix_tag = '<script src="./v75-fix.js?v=gsdoc-v75"></script>'
     if hotfix_tag not in html:
         html = html.replace("</body>", hotfix_tag + "\n</body>")
 
-    html_path.write_text(html, encoding="utf-8")
-    print("Web v74 preparada para Android")
+    html = html.replace("./sw.js?v=gsdoc-v69", "./sw.js?v=gsdoc-v75")\n    html_path.write_text(html, encoding="utf-8")
+    print("Web v75 preparada para Android")
 
 
 def prepare_android():
@@ -173,8 +173,8 @@ public class AndroidDownloader {
 
     gradle = android / "app/build.gradle"
     g = gradle.read_text(encoding="utf-8")
-    g = re.sub(r'versionCode\s+\d+', 'versionCode 74', g, count=1)
-    g = re.sub(r'versionName\s+"[^"]+"', 'versionName "74.0"', g, count=1)
+    g = re.sub(r'versionCode\s+\d+', 'versionCode 75', g, count=1)
+    g = re.sub(r'versionName\s+"[^"]+"', 'versionName "75.0"', g, count=1)
 
     signing_vars = [
         os.getenv("GS_ANDROID_KEYSTORE_PATH"),
@@ -193,7 +193,7 @@ public class AndroidDownloader {
         print("Firma release no configurada: se generará APK debug de prueba")
 
     gradle.write_text(g, encoding="utf-8")
-    print("Proyecto Android v74 preparado con permisos GPS y descargas directas")
+    print("Proyecto Android v75 preparado con permisos GPS y descargas directas")
 
 
 if __name__ == "__main__":
