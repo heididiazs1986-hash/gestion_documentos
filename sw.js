@@ -1,7 +1,7 @@
-const CACHE='gs-docs-v74';
-const CORE=['./','./index.html','./manifest.json','./gs-docs-icon-192.png','./gs-docs-icon-512.png','./templates/Constancia_TD.pdf','./v74-fix.js'];
+const CACHE='gs-docs-v75';
+const CORE=['./','./index.html','./manifest.json','./gs-docs-icon-192.png','./gs-docs-icon-512.png','./templates/Constancia_TD.pdf','./v75-fix.js'];
 const REMOTE=['https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js','https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js','https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
-const HOTFIX='<script src="./v74-fix.js?v=gsdoc-v74"></script>';
+const HOTFIX='<script src="./v75-fix.js?v=gsdoc-v75"></script>';
 
 self.addEventListener('install',e=>e.waitUntil((async()=>{
   const c=await caches.open(CACHE);
@@ -14,12 +14,12 @@ self.addEventListener('activate',e=>e.waitUntil(
   caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())
 ));
 
-async function pageWithV74(request){
+async function pageWithV75(request){
   let response;
   try{response=await fetch(request,{cache:'no-store'});}catch(_){response=await caches.match('./index.html');}
   if(!response)return new Response('Sin conexión',{status:503});
   let html=await response.text();
-  if(!html.includes('v74-fix.js'))html=html.replace('</body>',HOTFIX+'\n</body>');
+  if(!html.includes('v75-fix.js'))html=html.replace('</body>',HOTFIX+'\n</body>');
   const headers=new Headers(response.headers);
   headers.set('content-type','text/html; charset=utf-8');
   headers.set('cache-control','no-store');
@@ -31,7 +31,7 @@ self.addEventListener('fetch',e=>{
   if(e.request.method!=='GET')return;
   const u=new URL(e.request.url);
   const isAppPage=e.request.mode==='navigate'||u.pathname.endsWith('/index.html')||u.pathname.endsWith('/');
-  if(isAppPage){e.respondWith(pageWithV74(e.request));return;}
+  if(isAppPage){e.respondWith(pageWithV75(e.request));return;}
   e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(resp=>{
     const copy=resp.clone();
     caches.open(CACHE).then(c=>c.put(e.request,copy)).catch(()=>{});
