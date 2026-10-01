@@ -1,0 +1,49 @@
+ast('No fue posible exportar: '+e.message);return false}
+  };
+  closeJornada=async function(){
+    const rows=jornadaRows();if(!rows.length)return toast('No hay registros para cerrar');
+    const ok=await exportJornada();if(!ok)return;
+    if(confirm('¿Confirmas que verificaste el Excel y el JSON descargados?\n\nAceptar limpiará los registros operativos del dispositivo.')){
+      localStorage.removeItem(recordsKey);localStorage.removeItem(txtKey);localStorage.removeItem(appKey);toast('Jornada cerrada y datos operativos limpiados');setTimeout(()=>location.reload(),500)
+    }
+  };
+
+  generateZip=async function(){
+    try{
+      forceApplus();
+      if(!validateRequired()){show('form');return false}
+      updateKpis();
+      const zip=new JSZip(),sel=state.selected.length?[...state.selected]:[],rec=state.currentRecord||state.registration||{},errors=[];
+      try{zip.file(typeof tdFileName==='function'?tdFileName(rec):'TD_Constancia_Inspeccion.pdf',await makeTD(rec))}catch(e){errors.push('TD: '+e.message);warn('TD',e)}
+      for(const d of sel){
+        try{
+          if(V75_PDF_FIELDS[d])zip.file(`${d}.pdf`,await makePDF(d));
+          else if(d==='EC')zip.file('EC_Esquema_constructivo.docx',await makeEC());
+        }catch(e){errors.push(d+': '+e.message);warn('Documento '+d,e)}
+      }
+      if(Object.values(state.materials?.qty||{}).some(q=>Number(q)>0)){try{zip.file('Materiales.xlsx',makeMaterials())}catch(e){errors.push('Materiales: '+e.message)}}
+      if(state.supports?.length){const folder=zip.folder('SOPORTES');for(const f of state.supports){try{folder.file(f.name,await f.arrayBuffer())}catch(e){errors.push('Soporte '+f.name+': '+e.message)}}}
+      if(errors.length)zip.file('ERRORES_GENERACION.txt',errors.join('\n'));
+      const blob=await zip.generateAsync({type:'blob'}),name=cleanName(v75Data().cm_nombre||rec.nombres||'GS_Documentos')+'.zip';
+      await downloadBlob(blob,name);if(typeof markTDIndividual==='function')try{markTDIndividual()}catch(_){}
+      toast(errors.length?`ZIP generado con ${errors.length} advertencia(s)`:'✅ ZIP generado correctamente');return true;
+    }catch(e){console.error(e);toast('Error generando: '+e.message);return false}
+  };
+
+  function rebindButtons(){
+    const js=document.querySelector('#jornadaStart');if(js)js.onclick=startJornada;
+    const s=document.querySelector('#saveRegister');if(s)s.onclick=saveRegistration;
+    const e=document.querySelector('#exportJornada');if(e)e.onclick=exportJornada;
+    const c=document.querySelector('#closeJornada');if(c)c.onclick=closeJornada;
+    const g=document.querySelector('#genZip');if(g)g.onclick=generateZip;
+  }
+
+  try{const originalRenderJornada=renderJornada;renderJornada=function(){const r=originalRenderJornada.apply(this,arguments);forceApplus();removeContractorControls();rebindButtons();return r}}catch(e){warn('Wrapper jornada',e)}
+  try{const originalRenderRegistration=renderRegistration;renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();removeContractorControls();bindIndependentGarrawall();rebindButtons();return r}}catch(e){warn('Wrapper registro',e)}
+  try{const originalRenderRecords=renderRecordsScreen;renderRecordsScreen=function(){const r=originalRenderRecords.apply(this,arguments);rebindButtons();return r}}catch(e){warn('Wrapper registros',e)}
+
+  forceApplus();removeContractorControls();bindIndependentGarrawall();rebindButtons();
+  const observer=new MutationObserver(()=>{forceApplus();removeContractorControls();bindIndependentGarrawall();rebindButtons()});
+  observer.observe(document.body,{subtree:true,childList:true});
+  log('activo · plantillas aprobadas, persistencia, Excel, documentos y APPLUS corregidos');
+})();

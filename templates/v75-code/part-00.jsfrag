@@ -1,0 +1,95 @@
+/* GS Documentos v75 - corrección integral de plantillas, generación, persistencia y exportación.
+   Base oficial: v74/main. APPLUS NORCONTROL COLOMBIA LTDA es el único aliado. */
+(()=>{
+  'use strict';
+  if(globalThis.__GS_DOCS_V75_FIX__) return;
+  globalThis.__GS_DOCS_V75_FIX__=true;
+
+  const VERSION='v75';
+  const APPLUS='APPLUS NORCONTROL COLOMBIA LTDA';
+  const TEMPLATE_VERSION='2026-10-01';
+  const E1_PARTS=35;
+  const binaryTemplateCache=new Map();
+
+  function log(...a){console.info('GS Documentos',VERSION,...a)}
+  function warn(...a){console.warn('GS Documentos',VERSION,...a)}
+
+  function forceApplus(){
+    try{
+      state.jornada=state.jornada||{};
+      state.registration=state.registration||{};
+      state.jornada.contrato='APPLUS';
+      state.jornada.contratista=APPLUS;
+      state.registration.contrato='APPLUS';
+      state.registration.contratista=APPLUS;
+      if(state.currentRecord){
+        state.currentRecord.contrato='APPLUS';
+        state.currentRecord.contratista=APPLUS;
+      }
+      const ct=document.querySelector('#jornada_contrato');
+      if(ct){ct.value='APPLUS';ct.disabled=true;const host=ct.closest('.reg-field,.field,.form-row,.input-group')||ct.parentElement;if(host)host.style.display='none'}
+    }catch(e){warn('No fue posible fijar APPLUS',e)}
+  }
+
+  function removeContractorControls(){
+    forceApplus();
+    try{
+      document.querySelectorAll('label,legend,.field-label,.reg-field label').forEach(el=>{
+        if(!/contrato\s*\/\s*aliado|contratista|aliado\s+estrat[eé]gico/i.test(el.textContent||''))return;
+        const host=el.closest('.reg-field,.field,.form-row,.input-group,.card-row')||el.parentElement;
+        if(host)host.style.display='none';
+      });
+      document.querySelectorAll('[id],[name]').forEach(el=>{
+        const key=((el.id||'')+' '+(el.getAttribute('name')||'')).toLowerCase();
+        if(/jornada_contrato|contratista|selector.*aliado|aliado.*selector/.test(key)){
+          const host=el.closest('.reg-field,.field,.form-row,.input-group')||el;
+          host.style.display='none';
+        }
+      });
+    }catch(e){warn('Ocultar control de contratista',e)}
+  }
+
+  function bindIndependentGarrawall(){
+    try{
+      document.querySelectorAll('[data-seg]').forEach(seg=>{
+        const key=seg.dataset.seg;
+        if(key!=='garrawall'&&key!=='arriostre')return;
+        seg.querySelectorAll('button').forEach(btn=>{
+          btn.onclick=()=>{
+            state.registration=state.registration||{};
+            state.registration[key]=btn.dataset.value;
+            renderRegistration();
+            save();
+          };
+        });
+      });
+    }catch(e){warn('Independencia Garrawall/arriostre',e)}
+  }
+
+  startJornada=function(){
+    forceApplus();
+    const nombre=String(document.querySelector('#jornada_nombre')?.value||'').trim();
+    const ced=String(document.querySelector('#jornada_cedula')?.value||'').replace(/\D/g,'');
+    if(records().length){alert('Hay una jornada anterior pendiente de exportar. Debes cerrarla antes de iniciar una nueva.');show('records');return false}
+    if(!nombre||!ced){toast('Completa nombre y cédula del técnico');return false}
+    if(!state.signatures?.tecnico){toast('Falta la firma del técnico');return false}
+    state.jornada={active:true,contrato:'APPLUS',contratista:APPLUS,tecnico_nombre:titleCaseWords(nombre),tecnico_cedula:ced,inicio:new Date().toISOString()};
+    save();show('register');toast('Jornada iniciada · APPLUS');return true;
+  };
+
+  async function fetchBytes(url){
+    const r=await fetch(url,{cache:'no-store'});
+    if(!r.ok)throw new Error(`No se pudo cargar ${url} (${r.status})`);
+    return new Uint8Array(await r.arrayBuffer());
+  }
+  async function fetchText(url){
+    const r=await fetch(url,{cache:'no-store'});
+    if(!r.ok)throw new Error(`No se pudo cargar ${url} (${r.status})`);
+    return await r.text();
+  }
+  async function loadTemplateBytes(doc){
+    if(binaryTemplateCache.has(doc))return binaryTemplateCache.get(doc).slice();
+    let bytes;
+    if(doc==='E1'){
+      const parts=[];
+      for(let i=1;i<=E1_PA

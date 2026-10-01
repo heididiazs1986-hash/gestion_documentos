@@ -1,0 +1,79 @@
+ cercana')return /^n/i.test(s)?'No':'Si';
+    return s;
+  }
+  function setPdfField(form,name,value,font){
+    try{
+      const f=form.getField(name), raw=normalizeChoice(name,value);
+      if(typeof f.setText==='function'){
+        f.setText(raw);
+        try{if(font&&typeof f.defaultUpdateAppearances==='function')f.defaultUpdateAppearances(font)}catch(_){}
+        return true;
+      }
+      if(typeof f.select==='function'){
+        if(raw)try{f.select(raw)}catch(_){try{f.select(sanitizePdfText(value??''))}catch(__){}}
+        return true;
+      }
+      if(typeof f.check==='function'){
+        if(/^(sí|si|yes|true|1)$/i.test(raw))f.check();
+        else if(/^(no|false|0)$/i.test(raw))f.uncheck();
+        return true;
+      }
+      return false;
+    }catch(e){warn('Campo PDF omitido',name,e?.message||e);return false}
+  }
+
+  makePDF=async function(doc){
+    if(!V75_PDF_FIELDS[doc])throw new Error('Documento PDF no configurado: '+doc);
+    const pdf=await PDFDocument.load(await loadTemplateBytes(doc),{ignoreEncryption:true,updateMetadata:false});
+    const form=pdf.getForm();
+    const helv=await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+    const values=v75Data();
+    for(const [pdfName,id] of Object.entries(V75_PDF_FIELDS[doc])){
+      const val=values[id];
+      if(val===undefined||val===null)continue;
+      setPdfField(form,pdfName,val,helv);
+    }
+    try{form.updateFieldAppearances(helv)}catch(e){warn('Apariencias',doc,e)}
+    await insertPdfSignatures(pdf,doc);
+    return await pdf.save({useObjectStreams:false,addDefaultPage:false,updateFieldAppearances:false});
+  };
+
+  function setTextAny(form,names,val,helv,size){
+    for(const name of names){
+      try{
+        const f=form.getTextField(name);
+        try{f.acroField.dict.delete(PDFLib.PDFName.of('MaxLen'))}catch(_){}
+        f.setText(sanitizePdfText(val??''));
+        if(size)try{f.setFontSize(size)}catch(_){}
+        try{f.defaultUpdateAppearances(helv)}catch(_){}
+        return true;
+      }catch(_){}
+    }
+    return false;
+  }
+  function setCheckAny(form,names,on){for(const name of names){try{const f=form.getCheckBox(name);on?f.check():f.uncheck();return true}catch(_){}}return false}
+  function fitImageRect(img,box){const ir=img.width/img.height,br=box.width/box.height;let width=box.width,height=box.height;if(ir>br)height=width/ir;else width=height*ir;return{x:box.x+(box.width-width)/2,y:box.y+(box.height-height)/2,width,height}}
+
+  makeTD=async function(recArg){
+    const rec=recArg||state.currentRecord||state.registration||{};
+    const pdf=await PDFDocument.load(await loadTemplateBytes('TD'),{ignoreEncryption:true,updateMetadata:false});
+    const form=pdf.getForm(),helv=await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+    const hall=typeof tdHallazgos==='function'?tdHallazgos(rec):(rec.estado_tecnico||[]).join(' | ');
+    setTextAny(form,['orden_ro'],rec.orden_ro,helv);
+    setTextAny(form,['localidad'],rec.localidad,helv);
+    setTextAny(form,['sector'],rec.sector,helv);
+    setTextAny(form,['usuario','nombre'],rec.nombres,helv);
+    setTextAny(form,['cedula','identificacion'],rec.identificacion,helv);
+    setTextAny(form,['direccion'],rec.direccion,helv);
+    setTextAny(form,['contacto'],rec.contacto,helv);
+    setTextAny(form,['observaciones','hallazgos'],hall,helv,hall.length>420?7.5:(hall.length>260?8.5:10));
+    const docs=Array.isArray(rec.documentos_pendientes)?rec.documentos_pendientes:[];
+    const nonePending=docs.includes('Todos los documentos fueron entregados');
+    const docMap=[
+      [['checkbox_132o3x','docL0'],'Cédula del propietario'],[['checkbox_145n8r','docL1'],'Formato de solicitud (E1)'],
+      [['checkbox_153e0d','docL2'],'Recibo técnico (E6)'],[['checkbox_163z1w','docL3'],'Doc. Electricista'],
+      [['checkbox_176v2v','docM0'],'Aceptación de requisitos'],[['checkbox_189y7k','docM1'],'Declaración juramentada'],
+      [['checkbox_190h1k','docM2'],'Esquema eléctrico'],[['checkbox_208g6g','docM3'],'RETIE']
+    ];
+    for(const [names,label] of docMap)setCheckAny(form,names,!nonePending&&docs.includes(label));
+    set

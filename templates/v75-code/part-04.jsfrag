@@ -1,0 +1,35 @@
+ng>${escapeText(persisted.nombres)}</strong><br>RO: ${escapeText(persisted.orden_ro||'—')}<br>${escapeText(persisted.direccion)} · ${escapeText(persisted.localidad)} / ${escapeText(persisted.sector)}`;
+      show('saved');toast('✅ Registro guardado correctamente');return true;
+    }catch(e){console.error(e);toast('Error guardando registro: '+e.message);return false}
+  };
+
+  jornadaRows=function(){return [...records()].sort((a,b)=>String(a.fecha_hora_creacion||a.fecha_registro||'').localeCompare(String(b.fecha_hora_creacion||b.fecha_registro||'')))};
+  const V75_EXPORT_COLUMNS=[
+    ['id_registro','ID registro'],['orden_ro','Orden RO'],['fecha_registro','Fecha de registro'],['fecha_hora_creacion','Fecha/hora creación'],['fecha_hora_actualizacion','Fecha/hora actualización'],
+    ['nombres','Nombres'],['identificacion','Identificación'],['contacto','Contacto'],['direccion','Dirección'],['municipio','Municipio'],['localidad','Localidad'],['sector','Sector/Barrio'],
+    ['tipo_zona','Tipo zona'],['tipo_poblacion','Tipo de población'],['documento_propiedad','Documento de propiedad'],['documentos_pendientes','Documentos pendientes'],
+    ['condiciones_seguridad','Condiciones de seguridad'],['esquema_particular','Esquema particular'],['esquema_contrato','Esquema contrato'],['requiere_redes','Requiere de redes'],
+    ['tipo_material','Tipo material predio'],['plantas','Plantas'],['requiere_muro','Requiere muro/Pilar'],['garrawall','Requiere uso de Garrawall'],['arriostre','Requiere uso de arriostre'],
+    ['requiere_interna','Requiere instalación interna'],['requiere_externa','Requiere instalación externa'],['elementos_externos','Elementos requeridos de instalación externa'],
+    ['estado_tecnico','Estado técnico'],['observaciones','Observaciones'],['latitud','Latitud (Y)'],['longitud','Longitud (X)'],['precision','Precisión (m)'],['rol','Rol'],['estado_sync','Estado sync']
+  ];
+  buildExcelBytes=function(rows){
+    const known=new Set(V75_EXPORT_COLUMNS.map(x=>x[0])),extra=[];
+    for(const r of rows)for(const k of Object.keys(r||{}))if(!known.has(k)&&!['contrato','contratista'].includes(k)&&!extra.includes(k))extra.push(k);
+    const cols=[...V75_EXPORT_COLUMNS,...extra.map(k=>[k,k])];
+    const flat=rows.map(r=>Object.fromEntries(cols.map(([k,label])=>[label,Array.isArray(r[k])?r[k].join(' | '):(r[k]??'')])));
+    const headers=cols.map(x=>x[1]),ws=XLSX.utils.json_to_sheet(flat,{header:headers});
+    ws['!cols']=cols.map(([k,label])=>({wch:Math.min(55,Math.max(12,label.length+2,['observaciones','estado_tecnico','condiciones_seguridad','documentos_pendientes','elementos_externos'].includes(k)?42:18))}));
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Registros');return XLSX.write(wb,{bookType:'xlsx',type:'array'});
+  };
+  exportJornada=async function(){
+    const rows=jornadaRows();if(!rows.length){toast('No hay registros para exportar');return false}
+    const dup=duplicateROs(rows);if(dup.length){alert('⚠️ Orden RO duplicada\n\nCorrige antes de exportar:\n'+dup.join('\n'));return false}
+    try{
+      const sectors=rows.map(r=>r.sector).filter(Boolean),sectorName=sectors.length&&sectors.every(x=>x===sectors[0])?sectors[0]:'Varios_sectores';
+      const safe=safeFilePart(sectorName),date=todayISO(),excelName=`Recibo_tecnico_${safe}_${date}.xlsx`,jsonName=`GS_Registro_${safe}_${date}.json`;
+      const payload={app:'GS Documentos',version:VERSION,generated_at:new Date().toISOString(),sharepoint_list:'Registro_Recibos técnicos',total:rows.length,registros:rows.map(r=>typeof jsonRecord==='function'?jsonRecord(r):r)};
+      await downloadBlob(new Blob([buildExcelBytes(rows)],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),excelName);
+      await downloadBlob(new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'}),jsonName);
+      localStorage.setItem('GS_DOCS_LAST_EXPORT_V1',new Date().toISOString());toast(`✅ Jornada exportada completa: ${rows.length} registros`);renderRecordsScreen();return true;
+    }catch(e){console.error(e);to

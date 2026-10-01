@@ -1,0 +1,111 @@
+RTS;i++){
+        const name=String(i).padStart(2,'0');
+        parts.push((await fetchText(`./templates/E1/part-${name}.b64?v=${VERSION}-${TEMPLATE_VERSION}`)).replace(/\s+/g,''));
+      }
+      bytes=b64ToUint8(parts.join(''));
+    }else{
+      const files={E6:'E6.pdf',AR:'AR.pdf',DJ:'DJ.pdf',RETIE:'RETIE.pdf',TD:'Constancia_TD.pdf'};
+      const file=files[doc];
+      if(!file)throw new Error('Plantilla no configurada: '+doc);
+      bytes=await fetchBytes(`./templates/${file}?v=${VERSION}-${TEMPLATE_VERSION}`);
+    }
+    if(!bytes?.length)throw new Error('Plantilla vaía: '+doc);
+    binaryTemplateCache.set(doc,bytes.slice());
+    return bytes.slice();
+  }
+
+  const V75_PDF_FIELDS={
+    E1:{
+      '1 Nombre o Razón Social':'cm_nombre',
+      '3 Tipo documento':'cm_tipo_doc',
+      '4 Número de Documento':'cm_num_doc',
+      '5 Dirección de quien radica':'cm_dir_radica',
+      '6 MunicipioLocalidad':'cm_mpio',
+      '7 departamento':'cm_depto',
+      '8 Celular':'cm_celular',
+      '10 Correo electrónico':'sol_correo',
+      '3 Localidad':'cm_localidad',
+      '4 Municipio':'cm_mpio',
+      '5 departamento':'cm_depto',
+      '6 Dirección del predio':'cm_dir_radica',
+      'Coordenada X':'e1_coord_x',
+      'Coordenada Y':'e1_coord_y',
+      '8 Indicaciones de acceso al predio':'e1_indicaciones',
+      '2 Distancia actual del predio a la red más cercana metros':'e1_distancia_red',
+      '3 Número de transformador poste o elemento de la red eléctrica más cercano':'e1_num_transformador',
+      '1 Nombre del proyecto':'cm_nombre_proyecto',
+      'No de solicitud':'e1_no_solicitud',
+      '2 Fecha de solicitud de servicio':'cm_fecha_solicitud_fmt',
+      '2 tipo persona':'e1_tipo_persona',
+      '1 zona':'e1_zona',
+      'Tipo de uso':'e1_tipo_uso',
+      'Estrato':'e1_estrato',
+      'Red electrica cercana':'e1_red_cercana'
+    },
+    E6:{
+      'text_1xogj':'cm_nombre_proyecto',
+      'text_2gqcv':'cm_dir_radica',
+      'text_18ovuf':'cm_fecha_solicitud_fmt',
+      'text_27bpxy':'cm_nombre',
+      'text_30sznp':'cm_retie_constructor',
+      'text_329o6m':'cm_celular'
+    },
+    AR:{
+      'text_1lojj':'cm_localidad',
+      'text_2tgsw':'cm_mpio',
+      'text_3kjbx':'cm_mpio',
+      'text_4mqvb':'cm_dir_radica',
+      'text_5yied':'cm_localidad',
+      'text_6prgm':'cm_nombre',
+      'text_7jdiv':'cm_num_doc',
+      'text_8ptdj':'_today_day',
+      'text_9ujpp':'_today_month',
+      'text_10ipyf':'_today_year'
+    },
+    DJ:{
+      'Nombre solicitante':'cm_nombre',
+      'Identificacion':'cm_tipo_doc',
+      'NumIdentificacion':'cm_num_doc',
+      'Domicilio':'dj_ciudad_dom',
+      'Direccion':'cm_dir_radica',
+      'Descripcion':'dj_descripcion',
+      'Fechapropiedad':'dj_fecha_pose',
+      'LugarDom':'dj_ciudad_dom',
+      'Posesion':'dj_posesion',
+      'LugarFirma':'cm_mpio',
+      'FechaFirma':'_today_fmt',
+      'Solicitante Firma':'cm_nombre'
+    },
+    RETIE:{
+      'text_4vafa':'retie_decl_num',
+      'retie_constructor':'cm_retie_constructor',
+      'retie_const_identificacion':'retie_const_identificacion',
+      'retie_prof_constructor':'retie_prof_constructor',
+      'retie_matricula_const':'cm_retie_matricula',
+      'retie_consejo':'retie_consejo',
+      'retie_direccion':'retie_dir_constructor',
+      'retie_municipio':'cm_mpio',
+      'retie_departamento':'cm_depto',
+      'retie_fecha_construccion':'retie_fecha_construccion_fmt',
+      'retie_solicitante':'cm_nombre',
+      'retie_identificacion':'cm_num_doc',
+      'retie_dia':'_today_day',
+     'retie_mes':'_today_month',
+      'retie_año':'_today_year',
+      'retie_ciudad':'cm_mpio'
+    }
+  };
+
+  function v75Data(){
+    const v={...(typeof data==='function'?data():{})};
+    v._empresa_inmel=APPLUS;v._empresa_applus=APPLUS;v._empresa=APPLUS;v._aliado=APPLUS;
+    return v;
+  }
+  function normalizeChoice(name,val){
+    let s=sanitizePdfText(val??'').trim();
+    if(!s)return s;
+    if(name==='2 tipo persona')return /^jur/i.test(s)?'jurídica':'natural';
+    if(name==='1 zona')return /^rur/i.test(s)?'rural':'urbana';
+    if(name==='Red electrica cercana')return /^n/i.test(s)?'No':'Si';
+    return s;
+  }

@@ -1,0 +1,54 @@
+CheckAny(form,['checkbox_216j8r','ec_particular'],rec.esquema_particular==='Sí');
+    setCheckAny(form,['checkbox_222y0c','ec_contrato'],rec.esquema_particular!=='Sí');
+    setTextAny(form,['text_232y0c','aut_nombre'],rec.nombres,helv);
+    setTextAny(form,['text_245p3i','aut_identificacion'],rec.identificacion,helv);
+    setTextAny(form,['text_275h9f','firma_usuario_nombre'],rec.nombres,helv);
+    setTextAny(form,['text_289o8f','firma_usuario_cc'],rec.identificacion,helv);
+    setTextAny(form,['text_291t9n','firma_tecnico_nombre'],state.jornada?.tecnico_nombre||'',helv);
+    setTextAny(form,['text_301t3m','firma_tecnico_cc'],state.jornada?.tecnico_cedula||'',helv);
+    setTextAny(form,['text_318x6q','fecha_registro'],rec.fecha_registro||todayISO(),helv);
+    setTextAny(form,['text_331i7n','id_registro'],String(rec.id_registro||'').slice(0,16),helv);
+    try{form.updateFieldAppearances(helv)}catch(e){warn('Apariencias TD',e)}
+    const page=pdf.getPages()[0];
+    for(const [kind,box] of Object.entries({solicitante:{x:29,y:91,width:238,height:63},tecnico:{x:304,y:92,width:239,height:63}})){
+      const src=state.signatures?.[kind];if(!src)continue;
+      try{const img=await pdf.embedPng(dataUrlToUint8(src));page.drawImage(img,fitImageRect(img,box))}catch(e){warn('Firma TD',kind,e)}
+    }
+    return await pdf.save({useObjectStreams:false,addDefaultPage:false,updateFieldAppearances:false});
+  };
+
+  makeEC=async function(){
+    const bytes=await fetchBytes(`./templates/EC_APPLUS.docx?v=${VERSION}-${TEMPLATE_VERSION}`);
+    const zip=await JSZip.loadAsync(bytes);
+    let xml=await zip.file('word/document.xml').async('string');
+    const d=v75Data();
+    const rep={'{{FECHA}}':d.cm_fecha_solicitud_fmt||'','{{PROPIETARIO}}':d.cm_nombre||'','{{IDENTIFICACION}}':d.cm_num_doc||'','{{DIRECCION}}':d.cm_dir_radica||'','{{MUNICIPIO}}':d.cm_mpio||'','{{ELECTRICISTA}}':d.cm_retie_constructor||'','{{MATRICULA}}':d.cm_retie_matricula||''};
+    Object.entries(rep).forEach(([k,v])=>{xml=xml.split(k).join(escXml(sanitizePdfText(v)))});
+    xml=xml.replace(/<w:p[^>]*>(?:(?!<\/w:p>).)*\{\{CUADRO_CARGAS\}\}(?:(?!<\/w:p>).)*<\/w:p>/s,tableXml());
+    xml=await addFirmaTecnicoToDocx(zip,xml);
+    zip.file('word/document.xml',xml);
+    return await zip.generateAsync({type:'uint8array'});
+  };
+
+  function cloneRecord(r){return{...r,elementos_externos:[...(r.elementos_externos||[])],estado_tecnico:[...(r.estado_tecnico||[])],documentos_pendientes:[...(r.documentos_pendientes||[])],condiciones_seguridad:[...(r.condiciones_seguridad||[])],contrato:'APPLUS',contratista:APPLUS}}
+
+  saveRegistration=function(){
+    try{
+      forceApplus();
+      if(!validateRegistration())return false;
+      const src=state.registration||{};
+      src.nombres=titleCaseWords(src.nombres||'');src.sector=titleCaseWords(src.sector||'');src.direccion=normalizeAddress(src.direccion||'');src.contacto=cleanContact(src.contacto||'');
+      const all=records();
+      const dup=all.find(x=>String(x.orden_ro||'')===String(src.orden_ro||'')&&x.id_registro!==state.currentRecord?.id_registro);
+      if(dup){alert('⚠️ Orden RO duplicada\n\nLa Orden RO '+src.orden_ro+' ya fue registrada.');state.regStep=0;renderRegistration();return false}
+      const r=cloneRecord(src);
+      r.id_registro=state.currentRecord?.id_registro||r.id_registro||makeUUID();
+      r.fecha_hora_creacion=state.currentRecord?.fecha_hora_creacion||r.fecha_hora_creacion||new Date().toISOString();
+      r.fecha_hora_actualizacion=new Date().toISOString();r.rol=state.role;r.estado_sync='PENDIENTE';
+      const ix=all.findIndex(x=>x.id_registro===r.id_registro);if(ix>=0)all[ix]=r;else all.push(r);
+      saveRecords(all);
+      const verify=records();
+      const persisted=verify.find(x=>x.id_registro===r.id_registro);
+      if(!persisted)throw new Error('No fue posible verificar el registro guardado');
+      state.currentRecord=cloneRecord(persisted);state.registration=cloneRecord(persisted);applyRegistrationToDocs(persisted);save();
+      const ss=document.querySelector('#savedSummary');if(ss)ss.innerHTML=`<stro
