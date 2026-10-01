@@ -1,6 +1,6 @@
 {
   "name": "gs-documentos-android",
-  "version": "74.0.0",
+  "version": "75.0.0",
   "private": true,
   "description": "Empaquetado Android de GS Documentos",
   "build": "github-actions",
