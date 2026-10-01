@@ -26,8 +26,23 @@ def prepare_web():
     if templates.exists():
         shutil.copytree(templates, WWW / "templates")
 
+    vendor = WWW / "vendor"
+    vendor.mkdir(parents=True, exist_ok=True)
+    vendor_files = {
+        ROOT / "node_modules/jszip/dist/jszip.min.js": vendor / "jszip.min.js",
+        ROOT / "node_modules/pdf-lib/dist/pdf-lib.min.js": vendor / "pdf-lib.min.js",
+        ROOT / "node_modules/xlsx/dist/xlsx.full.min.js": vendor / "xlsx.full.min.js",
+    }
+    for src, dst in vendor_files.items():
+        if not src.exists():
+            raise RuntimeError(f"Falta dependencia offline: {src}")
+        shutil.copy2(src, dst)
+
     html_path = WWW / "index.html"
     html = html_path.read_text(encoding="utf-8")
+    html = html.replace("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js", "./vendor/jszip.min.js")
+    html = html.replace("https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js", "./vendor/pdf-lib.min.js")
+    html = html.replace("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js", "./vendor/xlsx.full.min.js")
 
     old_download = "function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}"
     new_download = """async function downloadBlob(blob,name){
