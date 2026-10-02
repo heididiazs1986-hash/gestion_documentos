@@ -106,10 +106,6 @@
       nameEl?.focus();
       return;
     }
-    if(!state.signatures?.tecnico){
-      if(typeof toast==='function')toast('Falta la firma del técnico');
-      return;
-    }
     state.jornada=state.jornada||{};
     state.jornada.active=true;
     state.jornada.tecnico_nombre=gs77TitleCase(nombre);
@@ -164,36 +160,56 @@
     );
   }
 
-  function gs77SerialFromMatricula(value,ced,prefix){
-    let cur=String(value||'').trim();
-    if(prefix && cur.startsWith(prefix))cur=cur.slice(prefix.length);
-    else if(cur.includes('-'))cur=cur.slice(cur.lastIndexOf('-')+1);
-    let digits=cur.replace(/\\D/g,'');
-    if(ced && digits.startsWith(ced))digits=digits.slice(ced.length);
+
+  function gs78Profession(){
+    return String(
+      document.getElementById('retie_prof_constructor')?.value ||
+      state.form?.retie_prof_constructor ||
+      ''
+    ).trim();
+  }
+
+  function gs77SerialFromMatricula(value,ced){
+    let digits=String(value||'').replace(/\D/g,'');
+    ced=String(ced||'').replace(/\D/g,'');
+    if(ced){
+      const ix=digits.indexOf(ced);
+      if(ix>=0)digits=digits.slice(0,ix)+digits.slice(ix+ced.length);
+    }
     return digits.slice(0,30);
+  }
+
+  function gs78FormatMatricula(serial,ced,prof){
+    serial=String(serial||'').replace(/\D/g,'');
+    ced=String(ced||'').replace(/\D/g,'');
+    if(!ced)return serial;
+    if(prof==='Tecnólogo electricista')return (serial?serial:'')+'-'+ced;
+    return ced+'-'+(serial?serial:'');
   }
 
   function gs77SyncMatricula({keepSerial=true}={}){
     const id=document.getElementById('retie_const_identificacion');
     const mat=document.getElementById('cm_retie_matricula');
     if(!id||!mat)return;
-    const ced=String(id.value||'').replace(/\\D/g,'').slice(0,20);
+    const ced=String(id.value||'').replace(/\D/g,'').slice(0,20);
     if(id.value!==ced)id.value=ced;
-    const oldPrefix=mat.dataset.gs77Prefix||'';
-    const serial=keepSerial?gs77SerialFromMatricula(mat.value,ced,oldPrefix):'';
-    const prefix=ced?ced+'-':'';
-    mat.dataset.gs77Prefix=prefix;
-    const wanted=prefix+(ced?serial:'');
+    const prof=gs78Profession();
+    const serial=keepSerial?gs77SerialFromMatricula(mat.value,ced):'';
+    const wanted=gs78FormatMatricula(serial,ced,prof);
     if(mat.value!==wanted)mat.value=wanted;
     mat.readOnly=false;
     mat.inputMode='numeric';
-    mat.placeholder=ced?'Escribe el serial después del guion':'Primero escribe la cédula';
+    mat.placeholder=prof==='Tecnólogo electricista'?'SERIE - CÉDULA':'CÉDULA - SERIE';
     state.jornada=state.jornada||{};
     state.form=state.form||{};
     state.jornada.tecnico_cedula=ced;
     state.jornada.cedula_tecnico=ced;
     state.form.retie_const_identificacion=ced;
     state.form.cm_retie_matricula=wanted;
+    if(prof==='Técnico electricista')state.form.retie_consejo='CONTE';
+    else if(prof==='Tecnólogo electricista')state.form.retie_consejo='CONALTEL';
+    const consejo=document.getElementById('retie_consejo');
+    if(consejo){consejo.value=state.form.retie_consejo||'';consejo.readOnly=true}
     if(typeof save==='function')save();
   }
 
@@ -203,55 +219,50 @@
     if(name){
       name.value=techName;
       name.readOnly=true;
-      name.placeholder='Tomado del inicio de jornada';
       const lab=name.closest('.field,.reg-field')?.querySelector('label');
-      if(lab)lab.textContent='Nombre del técnico (desde inicio de jornada) *';
+      if(lab)lab.textContent='Nombre del técnico / gestor *';
     }
+
     const id=document.getElementById('retie_const_identificacion');
     if(id){
       id.readOnly=false;
       id.inputMode='numeric';
       id.placeholder='Cédula del técnico';
       const lab=id.closest('.field,.reg-field')?.querySelector('label');
-      if(lab)lab.textContent='Identificación del técnico (cédula) *';
-      if(id.dataset.gs77Bound!=='1'){
-        id.dataset.gs77Bound='1';
+      if(lab)lab.textContent='Cédula del técnico *';
+      if(id.dataset.gs78Bound!=='1'){
+        id.dataset.gs78Bound='1';
         id.addEventListener('input',()=>{
-          const before=String(id.value||'');
-          id.value=before.replace(/\\D/g,'').slice(0,20);
+          id.value=String(id.value||'').replace(/\D/g,'').slice(0,20);
           gs77SyncMatricula({keepSerial:true});
         });
       }
     }
+
+    const prof=document.getElementById('retie_prof_constructor');
+    if(prof && prof.dataset.gs78Bound!=='1'){
+      prof.dataset.gs78Bound='1';
+      prof.addEventListener('change',()=>{
+        state.form=state.form||{};
+        state.form.retie_prof_constructor=prof.value;
+        try{if(typeof updateRetie==='function')updateRetie()}catch(_){}
+        gs77SyncMatricula({keepSerial:true});
+      });
+    }
+
     const mat=document.getElementById('cm_retie_matricula');
     if(mat){
       const lab=mat.closest('.field,.reg-field')?.querySelector('label');
-      if(lab)lab.textContent='Matrícula profesional (cédula - serial) *';
-      if(mat.dataset.gs77Bound!=='1'){
-        mat.dataset.gs77Bound='1';
-        mat.addEventListener('focus',()=>{gs77SyncMatricula({keepSerial:true});try{mat.setSelectionRange(mat.value.length,mat.value.length)}catch(_){ }});
-        mat.addEventListener('click',()=>{const p=mat.dataset.gs77Prefix||'';try{if((mat.selectionStart||0)<p.length)mat.setSelectionRange(mat.value.length,mat.value.length)}catch(_){ }});
-        mat.addEventListener('keydown',ev=>{
-          const p=mat.dataset.gs77Prefix||'';
-          const pos=mat.selectionStart||0;
-          if((ev.key==='Backspace'||ev.key==='Delete')&&pos<=p.length){ev.preventDefault();try{mat.setSelectionRange(mat.value.length,mat.value.length)}catch(_){ }}
-        });
+      if(lab)lab.textContent='Matrícula profesional *';
+      if(mat.dataset.gs78Bound!=='1'){
+        mat.dataset.gs78Bound='1';
+        mat.addEventListener('focus',()=>{gs77SyncMatricula({keepSerial:true});try{mat.setSelectionRange(mat.value.length,mat.value.length)}catch(_){}});
         mat.addEventListener('input',()=>{
-          const ced=String(document.getElementById('retie_const_identificacion')?.value||'').replace(/\\D/g,'');
-          const prefix=ced?ced+'-':'';
-          let serial=gs77SerialFromMatricula(mat.value,ced,prefix);
-          mat.dataset.gs77Prefix=prefix;
-          mat.value=prefix+(ced?serial:'');
+          gs77SyncMatricula({keepSerial:true});
           try{mat.setSelectionRange(mat.value.length,mat.value.length)}catch(_){}
-          if(typeof save==='function')save();
         });
       }
-      if(!mat.parentElement?.querySelector('.gs77-mat-help')){
-        const help=document.createElement('small');
-        help.className='gs77-mat-help';
-        help.textContent='La app agrega automáticamente la cédula y el guion. Ejemplo: 1012431790-89873.';
-        mat.insertAdjacentElement('afterend',help);
-      }
+      mat.parentElement?.querySelector('.gs77-mat-help')?.remove();
     }
     gs77SyncMatricula({keepSerial:true});
   }
@@ -273,13 +284,7 @@
         #cm_retie_constructor[readonly]{background:#f3f3f4!important;color:#35495e}
       `;document.head.appendChild(st);
     }
-    if(!card.querySelector('.gs77-start-banner')){
-      const h=card.querySelector('h2'),p=card.querySelector('p.help');
-      if(h)h.style.display='none';if(p)p.style.display='none';
-      const banner=document.createElement('div');banner.className='gs77-start-banner';
-      banner.innerHTML='<div class="gs77-start-icon">📄</div><div><b>Inicio de jornada</b><span>Escribe tu nombre completo y captura la firma. La cédula se solicitará únicamente al diligenciar RETIE.</span></div>';
-      card.insertBefore(banner,card.firstChild);
-    }
+
   }
 
   function forceApplus(){
@@ -439,12 +444,15 @@
     const techName=gs77TechName();
     const retieId=String(document.getElementById('retie_const_identificacion')?.value||v.retie_const_identificacion||state.jornada?.tecnico_cedula||'').replace(/\\D/g,'');
     let mat=String(document.getElementById('cm_retie_matricula')?.value||v.cm_retie_matricula||'').trim();
+    const prof=String(document.getElementById('retie_prof_constructor')?.value||v.retie_prof_constructor||state.form?.retie_prof_constructor||'').trim();
     if(retieId){
-      const serial=gs77SerialFromMatricula(mat,retieId,retieId+'-');
-      mat=retieId+'-'+serial;
+      const serial=gs77SerialFromMatricula(mat,retieId);
+      mat=gs78FormatMatricula(serial,retieId,prof);
     }
     v.cm_retie_constructor=techName||v.cm_retie_constructor||'';
     v.retie_const_identificacion=retieId;
+    v.retie_prof_constructor=prof;
+    v.retie_consejo=prof==='Tecnólogo electricista'?'CONALTEL':(prof==='Técnico electricista'?'CONTE':(v.retie_consejo||''));
     v.cm_retie_matricula=mat;
     state.form=state.form||{};
     state.form.cm_retie_constructor=v.cm_retie_constructor;
@@ -723,12 +731,14 @@
       }
       if(!state.signatures?.solicitante){
         toast('Falta la firma del usuario. No se puede descargar documentación sin esta firma');
-        show('signatures');
+        show('form');
+        setTimeout(()=>document.getElementById('gs78Signatures')?.scrollIntoView({behavior:'smooth',block:'center'}),100);
         return false;
       }
       if(!state.signatures?.tecnico){
         toast('Falta la firma del técnico / gestor');
-        show('signatures');
+        show('form');
+        setTimeout(()=>document.getElementById('gs78Signatures')?.scrollIntoView({behavior:'smooth',block:'center'}),100);
         return false;
       }
 
@@ -1115,12 +1125,163 @@
   try{
     const gs77OriginalShow=show;
     show=function(id){
-      if(['home','form','supports','signatures','generate'].includes(id))gs77EnsureCurrentRecord();
+      if(id==='signatures')id='form';
+      if(['home','form','supports','generate'].includes(id))gs77EnsureCurrentRecord();
       const out=gs77OriginalShow(id);
-      setTimeout(()=>gs77PrepareDocumentScreen(id),0);
+      setTimeout(()=>{gs77PrepareDocumentScreen(id);gs78ApplyVisuals();if(id==='generate')gs78DecorateGenerate()},0);
       return out;
     };
   }catch(e){warn('show flow',e)}
+
+
+  const GS78_DOCS=[
+    ['E1','Formato de solicitud de servicio'],
+    ['E6','Formato de recibo técnico'],
+    ['AR','Acta de aceptación de requisitos y condiciones para la normalización del servicio'],
+    ['DJ','Declaración juramentada simple'],
+    ['RETIE','Declaración de cumplimiento de la construcción RES. 40117 de 02/04/2024'],
+    ['EC','Diseño eléctrico simplificado'],
+    ['TD','Formato de aceptación de tratamiento de datos conforme a legislación colombiana']
+  ];
+
+  function gs78InjectStyles(){
+    if(document.getElementById('gs78-ui'))return;
+    const st=document.createElement('style');st.id='gs78-ui';
+    st.textContent=`
+      :root{--gs-orange:#ff6600;--gs-orange-soft:#fff1e8;--gs-blue:#0e396d;--gs-blue-2:#347fca;--gs-sky:#eef7ff;--gs-line:#d8e6f4;--gs-text:#18324f;--gs-muted:#6c8096;--gs-white:#fff;--gs-shadow:0 12px 30px rgba(31,74,125,.09)}
+      body{background:linear-gradient(180deg,#f3f9ff 0,#f9fbfd 45%,#f6f8fb 100%)!important;color:var(--gs-text)!important}
+      .top{background:rgba(255,255,255,.94)!important;border-bottom:1px solid #e3edf7!important;backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(26,67,112,.06)!important}
+      .head{max-width:1040px!important}.title{color:var(--gs-blue)!important;font-weight:800!important;letter-spacing:-.02em}.sub{color:var(--gs-muted)!important}
+      .topnav{max-width:1040px!important;gap:4px!important}.topnav .nav{border-radius:12px!important;color:#7890aa!important;padding:10px 13px!important;font-weight:650!important}.topnav .nav.active{color:var(--gs-blue)!important;background:#f1f7fd!important}.topnav .nav.active:after{background:var(--gs-orange)!important}
+      .topnav .nav[data-go="signatures"]{display:none!important}
+      #app{max-width:1040px!important;margin:0 auto!important;padding:16px!important}
+      .screen>.card,.registration-card,.decision-card{border:1px solid var(--gs-line)!important;border-radius:24px!important;background:rgba(255,255,255,.97)!important;box-shadow:var(--gs-shadow)!important;padding:20px!important}
+      h2,.reg-step-title,.section-title{color:var(--gs-blue)!important;font-weight:800!important;letter-spacing:-.02em}
+      .help{color:var(--gs-muted)!important}
+      .reg-progressbar{height:5px!important;background:#edf2f7!important;border-radius:999px!important;overflow:hidden}.reg-progressbar span{background:linear-gradient(90deg,var(--gs-blue-2),var(--gs-orange))!important}
+      .reg-field label,.field label{color:#496783!important;font-weight:650!important;font-size:13px!important}
+      input,select,textarea,.auto-value,.multi-trigger{border:1px solid #cfdeed!important;border-radius:14px!important;background:#fbfdff!important;color:#18324f!important;min-height:48px!important;box-shadow:none!important}
+      input:focus,select:focus,textarea:focus,.multi-trigger:focus{border-color:var(--gs-orange)!important;box-shadow:0 0 0 3px rgba(255,102,0,.11)!important;outline:none!important}
+      textarea{min-height:110px!important}
+      .btn{border-radius:16px!important;min-height:48px!important;font-weight:750!important}.btn:not(.secondary):not(.ghost):not(.outline){background:linear-gradient(135deg,#ff7b24,#ff5c00)!important;border-color:#ff6600!important;color:#fff!important;box-shadow:0 9px 20px rgba(255,102,0,.18)!important}
+      .btn.secondary,.btn.ghost,.btn.outline{background:#fff!important;border:1px solid #d3e0ec!important;color:var(--gs-blue)!important;box-shadow:none!important}
+      .seg{background:#f0f5fa!important;border:1px solid #d5e2ef!important;border-radius:15px!important;padding:3px!important}.seg button{border-radius:12px!important}.seg button.active{background:#fff1e7!important;color:#a94b00!important;border-color:#ffc79f!important;box-shadow:none!important}
+      .multi-menu{border-radius:18px!important;border-color:#d6e3ef!important;box-shadow:0 18px 45px rgba(25,65,110,.16)!important}.tech-option,.multi-option{border-radius:12px!important}
+      #home>.card{max-width:700px;margin:0 auto}
+      #docGrid.gs78-doc-grid{display:grid!important;gap:11px!important}
+      .gs78-doc{width:100%;display:grid;grid-template-columns:46px minmax(0,1fr) 54px;align-items:center;gap:13px;text-align:left;border:1px solid #e0ebf5;background:#fff;border-radius:18px;padding:13px 14px;cursor:pointer;transition:.18s ease;box-shadow:0 5px 16px rgba(32,73,119,.045)}
+      .gs78-doc:hover{transform:translateY(-1px);border-color:#ffc69f}.gs78-doc .gs78-doc-icon{width:46px;height:46px;border-radius:14px;background:var(--gs-orange-soft);display:grid;place-items:center;color:var(--gs-orange);font-size:23px}.gs78-doc strong{display:block;color:var(--gs-blue);font-size:16px;margin-bottom:3px}.gs78-doc small{display:block;color:#5e7690;font-size:12.5px;line-height:1.32}.gs78-doc.required{cursor:default}
+      .gs78-switch{width:50px;height:29px;border-radius:999px;background:#c9d6e3;padding:3px;display:flex;align-items:center;justify-content:flex-start;transition:.18s}.gs78-switch:after{content:"";width:23px;height:23px;border-radius:50%;background:#fff;box-shadow:0 2px 7px rgba(0,0,0,.15)}.gs78-doc.on .gs78-switch{background:var(--gs-orange);justify-content:flex-end}
+      #jornada{padding-top:2px}.gs78-start{max-width:520px;margin:0 auto;overflow:hidden;padding:0!important}.gs78-hero{position:relative;height:220px;overflow:hidden;background:#eaf5ff}.gs78-hero img{width:100%;height:100%;object-fit:cover;object-position:center 44%}.gs78-brand{position:absolute;left:20px;bottom:17px;background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:18px;padding:12px 16px;box-shadow:0 10px 30px rgba(30,72,116,.14)}.gs78-brand b{font-size:23px;color:var(--gs-blue)}.gs78-brand span{display:block;color:#71869c;font-size:12px;margin-top:2px}.gs78-start-body{padding:21px}.gs78-start-body h2{margin:0 0 16px}.gs78-start-body .reg-grid{display:block!important}.gs78-start-body .reg-field{margin-bottom:13px}.gs78-start-body .actions{margin-top:10px}.gs78-start-body #jornadaStart{width:100%}
+      #jornada .gs77-start-banner,#jornada .gs77-mini,#jornadaFirma,#jornadaFirmaStatus{display:none!important}
+      #form>.card,#supports>.card,#generate>.card{max-width:780px;margin:0 auto}
+      .gs78-signatures{margin-top:18px;border-top:1px solid #e5edf5;padding-top:18px}.gs78-signatures h3{margin:0 0 12px;color:var(--gs-blue)}.gs78-sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.gs78-sign-card{border:1px solid #dce8f3;border-radius:18px;background:#fff;padding:14px}.gs78-sign-card b{display:block;color:var(--gs-blue);margin-bottom:9px}.gs78-sign-preview{height:88px;border:1px dashed #cbd9e6;border-radius:13px;background:#f9fbfd;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#8395a9;font-size:12px}.gs78-sign-preview img{max-width:100%;max-height:100%;object-fit:contain}.gs78-sign-card .btn{width:100%;margin-top:9px;min-height:42px!important}
+      .gs78-review{display:grid;gap:12px;margin:15px 0}.gs78-review-box{border:1px solid #dce8f3;border-radius:18px;padding:15px;background:#fff}.gs78-review-box h3{margin:0 0 9px;color:var(--gs-blue);font-size:15px}.gs78-review-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.gs78-ok{color:#12854a;font-weight:700}.gs78-pending{color:#bd5d00;font-weight:700}
+      #generate .help{display:none!important}#genZip{font-size:16px!important}
+      .preview img{border-radius:14px!important}
+      body.dark{background:#111820!important}.dark .screen>.card,.dark .registration-card,.dark .decision-card,.dark .gs78-doc,.dark .gs78-sign-card,.dark .gs78-review-box{background:#1b232d!important;border-color:#2e3a48!important}.dark input,.dark select,.dark textarea,.dark .auto-value,.dark .multi-trigger{background:#151c24!important;border-color:#344252!important;color:#f3f7fb!important}.dark h2,.dark .reg-step-title,.dark .section-title,.dark .gs78-doc strong,.dark .gs78-sign-card b,.dark .gs78-review-box h3{color:#f4f8fc!important}
+      @media(max-width:700px){#app{padding:10px!important}.screen>.card,.registration-card{border-radius:20px!important;padding:14px!important}.gs78-hero{height:195px}.gs78-sign-grid{grid-template-columns:1fr}.gs78-review-list{grid-template-columns:1fr}.topnav{overflow-x:auto;white-space:nowrap}.topnav .nav{flex:0 0 auto}.reg-grid{grid-template-columns:1fr!important}.gs78-doc{grid-template-columns:42px minmax(0,1fr) 50px;padding:12px}.gs78-doc .gs78-doc-icon{width:42px;height:42px}}
+    `;
+    document.head.appendChild(st);
+  }
+
+  function gs78DecorateStart(){
+    const card=document.querySelector('#jornada .registration-card');
+    if(!card)return;
+    gs77BindStart();
+    card.classList.add('gs78-start');
+    let shell=card.querySelector('.gs78-start-shell');
+    if(!shell){
+      const regGrid=card.querySelector('.reg-grid');
+      const actions=card.querySelector('.actions');
+      const oldH=card.querySelector(':scope > h2');
+      const oldP=card.querySelector(':scope > p.help');
+      if(oldH)oldH.style.display='none';if(oldP)oldP.style.display='none';
+      shell=document.createElement('div');shell.className='gs78-start-shell';
+      const hero=document.createElement('div');hero.className='gs78-hero';
+      hero.innerHTML='<img src="./gs-docs-field-hero.webp" alt=""><div class="gs78-brand"><b>GS Documentos</b><span>Documentación técnica en campo</span></div>';
+      const body=document.createElement('div');body.className='gs78-start-body';
+      body.innerHTML='<h2>Bienvenido</h2>';
+      if(regGrid)body.appendChild(regGrid);
+      if(actions)body.appendChild(actions);
+      shell.append(hero,body);
+      card.appendChild(shell);
+    }
+    const ced=document.getElementById('jornada_cedula');
+    if(ced){const host=ced.closest('.reg-field')||ced.parentElement;if(host)host.style.display='none';ced.required=false}
+    const sigStatus=document.getElementById('jornadaFirmaStatus');
+    if(sigStatus){const host=sigStatus.closest('.reg-field')||sigStatus.parentElement;if(host)host.style.display='none'}
+    document.getElementById('jornadaFirma')?.style.setProperty('display','none','important');
+    const n=document.getElementById('jornada_nombre');
+    if(n){n.placeholder='Nombre completo';const l=n.closest('.reg-field')?.querySelector('label');if(l)l.innerHTML='Nombre del técnico / gestor <span class="req">*</span>'}
+    const b=document.getElementById('jornadaStart');if(b)b.textContent='Iniciar  →';
+  }
+
+  function gs78RenderDocs(){
+    const g=document.getElementById('docGrid');if(!g)return;
+    g.className='docgrid gs78-doc-grid';g.innerHTML='';
+    GS78_DOCS.forEach(([id,label])=>{
+      const required=id==='TD';
+      const on=required||state.selected?.includes(id);
+      const b=document.createElement('button');
+      b.type='button';b.className='gs78-doc '+(on?'on ':'')+(required?'required':'');b.dataset.doc=id;
+      b.innerHTML='<span class="gs78-doc-icon">▤</span><span><strong>'+escapeText(id)+'</strong><small>'+escapeText(label)+'</small></span><span class="gs78-switch" aria-hidden="true"></span>';
+      if(!required)b.onclick=()=>{
+        state.selected=Array.isArray(state.selected)?state.selected:[];
+        state.selected=state.selected.includes(id)?state.selected.filter(x=>x!==id):[...state.selected,id];
+        if(typeof save==='function')save();
+        gs78RenderDocs();
+        try{renderForm()}catch(_){}
+      };
+      g.appendChild(b);
+    });
+  }
+
+  function gs78HideRedundantNav(){
+    document.querySelectorAll('.topnav .nav').forEach(n=>{
+      if(n.dataset.go==='signatures'||/firmas/i.test(n.textContent||''))n.style.display='none';
+    });
+  }
+
+  function gs78SignatureCard(kind,title){
+    const has=!!state.signatures?.[kind];
+    const wrap=document.createElement('div');wrap.className='gs78-sign-card';
+    wrap.innerHTML='<b>'+escapeText(title)+'</b><div class="gs78-sign-preview">'+(has?'<img alt="Firma">':'Pendiente')+'</div><button type="button" class="btn '+(has?'secondary':'')+'">'+(has?'Actualizar firma':'Firmar')+'</button>';
+    if(has)wrap.querySelector('img').src=state.signatures[kind];
+    wrap.querySelector('button').onclick=()=>{try{openSignatureModal(kind)}catch(e){console.error(e)}};
+    return wrap;
+  }
+
+  function gs78IntegrateSignatures(){
+    const card=document.querySelector('#form>.card');const host=document.getElementById('formHost');
+    if(!card||!host)return;
+    let panel=document.getElementById('gs78Signatures');
+    if(panel)panel.remove();
+    panel=document.createElement('div');panel.id='gs78Signatures';panel.className='gs78-signatures';
+    panel.innerHTML='<h3>Firmas</h3><div class="gs78-sign-grid"></div>';
+    const grid=panel.querySelector('.gs78-sign-grid');
+    grid.append(gs78SignatureCard('solicitante','Firma del usuario'),gs78SignatureCard('tecnico','Firma del técnico / gestor'));
+    host.insertAdjacentElement('afterend',panel);
+  }
+
+  function gs78DecorateGenerate(){
+    const card=document.querySelector('#generate>.card');if(!card)return;
+    const help=card.querySelector('.help');if(help)help.style.display='none';
+    let r=document.getElementById('gs78Review');if(r)r.remove();
+    r=document.createElement('div');r.id='gs78Review';r.className='gs78-review';
+    const docs=GS78_DOCS.filter(([id])=>id==='TD'||state.selected?.includes(id)).map(([id])=>id);
+    r.innerHTML='<div class="gs78-review-box"><h3>Documentos a generar</h3><div class="gs78-review-list">'+docs.map(d=>'<span class="gs78-ok">✓ '+escapeText(d)+'</span>').join('')+'</div></div>'+
+      '<div class="gs78-review-box"><h3>Validación final</h3><div class="gs78-review-list"><span class="'+(state.signatures?.solicitante?'gs78-ok':'gs78-pending')+'">'+(state.signatures?.solicitante?'✓':'○')+' Firma del usuario</span><span class="'+(state.signatures?.tecnico?'gs78-ok':'gs78-pending')+'">'+(state.signatures?.tecnico?'✓':'○')+' Firma del técnico</span><span class="gs78-ok">✓ '+((state.supports?.length)||0)+' soporte(s)</span></div></div>';
+    const actions=card.querySelector('.actions');card.insertBefore(r,actions||null);
+    const gen=document.getElementById('genZip');if(gen)gen.textContent='Generar paquete  →';
+  }
+
+  function gs78ApplyVisuals(){
+    gs78InjectStyles();gs78HideRedundantNav();gs78DecorateStart();
+    if(document.getElementById('home')?.classList.contains('active'))gs78RenderDocs();
+    if(document.getElementById('form')?.classList.contains('active'))gs78IntegrateSignatures();
+    if(document.getElementById('generate')?.classList.contains('active'))gs78DecorateGenerate();
+  }
 
   function bindFreshButton(id,handler){
     const old=document.querySelector('#'+id);
@@ -1141,6 +1302,7 @@
     bindFreshButton('genZip',generateZip);
   }
 
+  try{renderDocs=gs78RenderDocs}catch(e){warn('renderDocs visual',e)}
   try{
     const originalRenderForm=renderForm;
     renderForm=function(){
@@ -1151,6 +1313,8 @@
         gs77EnsureECEditableFields();
         gs77RemoveECLoadControls();
         gs77UpdateNavLocks();
+        gs78IntegrateSignatures();
+        gs78ApplyVisuals();
       },0);
       return r;
     };
@@ -1158,14 +1322,18 @@
 
   try{
     const originalRenderRegistration=renderRegistration;
-    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();setTimeout(()=>{gs77BindRegistrationDate();gs77BindAddressRule()},0);return r};
+    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();setTimeout(()=>{gs77BindRegistrationDate();gs77BindAddressRule();gs78ApplyVisuals()},0);return r};
   }catch(e){warn('renderRegistration',e)}
+  try{
+    const gs78OriginalRenderSignatures=renderSignatures;
+    renderSignatures=function(){const r=gs78OriginalRenderSignatures.apply(this,arguments);setTimeout(()=>{gs78IntegrateSignatures();gs78ApplyVisuals()},0);return r};
+  }catch(e){warn('renderSignatures visual',e)}
   try{
     const originalRenderRecords=renderRecordsScreen;
     renderRecordsScreen=function(){const r=originalRenderRecords.apply(this,arguments);rebind();return r};
   }catch(e){warn('renderRecords',e)}
 
-  forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();gs77EnsureCurrentRecord();gs77UpdateNavLocks();setTimeout(()=>{gs77BindRegistrationDate();gs77BindAddressRule()},0);setTimeout(()=>gs77PrepareDocumentScreen(state.screen||'register'),0);
+  forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();gs77EnsureCurrentRecord();gs77UpdateNavLocks();gs78InjectStyles();gs78RenderDocs();setTimeout(()=>{gs77BindRegistrationDate();gs77BindAddressRule();gs78ApplyVisuals()},0);setTimeout(()=>{gs77PrepareDocumentScreen(state.screen||'register');gs78ApplyVisuals()},0);
 
   Promise.allSettled(['E1','AR','E6','RETIE','DJ','TD','EC'].map(loadTemplate)).then(rs=>{
     const bad=rs.filter(x=>x.status==='rejected');
