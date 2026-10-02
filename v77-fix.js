@@ -719,12 +719,7 @@
         show('register');
         return false;
       }
-      const sel=state.selected?.length?[...state.selected]:[];
-      if(!sel.length){
-        toast('Selecciona al menos un documento para generar');
-        show('home');
-        return false;
-      }
+      const sel=(state.selected?.length?[...state.selected]:[]).filter(d=>d!=='TD');
       if(!validateRequired()){
         show('form');
         return false;
@@ -1284,6 +1279,11 @@
       .tech-option,.multi-option{border-radius:13px!important}
       #home>.card{max-width:760px;margin:0 auto}
       #docGrid.gs78-doc-grid{display:grid!important;gap:12px!important}
+      .gs80-doc-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 14px}
+      .gs80-doc-note{font-size:12.5px;color:#7c8997;line-height:1.35}
+      .gs80-all-docs{min-height:40px!important;border-radius:14px!important;padding:0 16px!important;white-space:nowrap}
+      .gs80-mandatory{justify-self:end;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#e9f7ef;color:#23764f;font-size:11px;font-weight:850;letter-spacing:.02em;border:1px solid #cfe9d9}
+      .gs80-mandatory:before{content:"✓";font-size:12px}
       .gs78-doc{
         width:100%;display:grid;
         grid-template-columns:50px minmax(0,1fr) 52px;
@@ -1400,6 +1400,8 @@
         .reg-grid{grid-template-columns:1fr!important}
         .gs78-doc{grid-template-columns:44px minmax(0,1fr) 50px;padding:12px}
         .gs78-doc .gs78-doc-icon{width:44px;height:44px;border-radius:15px}
+        .gs80-doc-toolbar{align-items:stretch;flex-direction:column}
+        .gs80-all-docs{width:100%}
         h2{font-size:21px!important}
       }
     `;
@@ -1439,14 +1441,30 @@
   function gs78RenderDocs(){
     const g=document.getElementById('docGrid');if(!g)return;
     g.className='docgrid gs78-doc-grid';g.innerHTML='';
+
+    let toolbar=document.getElementById('gs80DocToolbar');
+    if(toolbar)toolbar.remove();
+    toolbar=document.createElement('div');
+    toolbar.id='gs80DocToolbar';
+    toolbar.className='gs80-doc-toolbar';
+    toolbar.innerHTML='<div class="gs80-doc-note"><b>TD se genera siempre.</b> Selecciona únicamente los documentos adicionales que necesites.</div><button type="button" class="btn secondary gs80-all-docs">Todos los documentos</button>';
+    g.parentElement?.insertBefore(toolbar,g);
+
+    toolbar.querySelector('.gs80-all-docs').onclick=()=>{
+      state.selected=GS78_DOCS.filter(([id])=>id!=='TD').map(([id])=>id);
+      if(typeof save==='function')save();
+      gs78RenderDocs();
+      try{renderForm()}catch(_){}
+    };
+
     GS78_DOCS.forEach(([id,label])=>{
       const required=id==='TD';
       const on=required||state.selected?.includes(id);
       const b=document.createElement('button');
       b.type='button';b.className='gs78-doc '+(on?'on ':'')+(required?'required':'');b.dataset.doc=id;
-      b.innerHTML='<span class="gs78-doc-icon">▤</span><span><strong>'+escapeText(id)+'</strong><small>'+escapeText(label)+'</small></span><span class="gs78-switch" aria-hidden="true"></span>';
+      b.innerHTML='<span class="gs78-doc-icon">▤</span><span><strong>'+escapeText(id)+'</strong><small>'+escapeText(label)+(required?' · Generación automática':'')+'</small></span>'+(required?'<span class="gs80-mandatory">AUTOMÁTICO</span>':'<span class="gs78-switch" aria-hidden="true"></span>');
       if(!required)b.onclick=()=>{
-        state.selected=Array.isArray(state.selected)?state.selected:[];
+        state.selected=Array.isArray(state.selected)?state.selected.filter(x=>x!=='TD'):[];
         state.selected=state.selected.includes(id)?state.selected.filter(x=>x!==id):[...state.selected,id];
         if(typeof save==='function')save();
         gs78RenderDocs();
@@ -1455,7 +1473,6 @@
       g.appendChild(b);
     });
   }
-
   function gs78HideRedundantNav(){
     document.querySelectorAll('.topnav .nav').forEach(n=>{
       if(n.dataset.go==='signatures'||/firmas/i.test(n.textContent||''))n.style.display='none';
