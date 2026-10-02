@@ -1,0 +1,79 @@
+name: Package GS Documentos clean web
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/package-clean-web.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  package-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current web release
+        uses: actions/checkout@v4
+
+      - name: Build clean upload package
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf clean-web
+          mkdir -p clean-web
+
+          cp index.html clean-web/
+          cp v77-fix.js clean-web/
+          cp sw.js clean-web/
+          cp manifest.json clean-web/
+          cp manifest-install.json clean-web/
+          cp instalar.html clean-web/
+          cp recuperar.html clean-web/
+          cp gs-docs-field-hero.webp clean-web/
+          cp gs-docs-icon-192.png clean-web/
+          cp gs-docs-icon-512.png clean-web/
+          cp gs-suite-logo.png clean-web/
+          cp -R templates clean-web/
+
+          cat > clean-web/LEEME_PRIMERO.txt <<'EOF'
+GS DOCUMENTOS - PAQUETE WEB LIMPIO
+
+Este paquete está preparado para reemplazar el contenido del repositorio web que despliega Vercel.
+
+INSTRUCCIONES:
+1. Limpia los archivos actuales del repositorio.
+2. Conserva la rama main.
+3. Sube EL CONTENIDO de este ZIP directamente a la raíz del repositorio.
+4. No subas una carpeta contenedora adicional.
+5. Vercel debe detectar el push a main y desplegar la aplicación web.
+
+Este paquete NO contiene:
+- APK ni proyecto Android.
+- Workflows de compilación APK.
+- Scripts de Capacitor.
+- Versiones antiguas v60/v73/v74/v75/v76.
+- Notas de releases antiguas.
+
+Incluye la versión web vigente:
+- Interfaz Field Utility Precision.
+- TD automático y obligatorio.
+- Botón Todos los documentos.
+- RETIE/EC y lógica actual.
+- PWA, instalador y recuperación.
+- Plantillas documentales necesarias.
+EOF
+
+          cd clean-web
+          zip -r ../GS_Documentos_WEB_LIMPIO.zip .
+          cd ..
+          unzip -l GS_Documentos_WEB_LIMPIO.zip
+
+      - name: Upload clean web ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: GS-Documentos-WEB-LIMPIO
+          path: GS_Documentos_WEB_LIMPIO.zip
+          if-no-files-found: error
+          retention-days: 7
