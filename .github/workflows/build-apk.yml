@@ -2,19 +2,6 @@ name: Build GS Documentos APK
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
-    paths:
-      - 'index.html'
-      - 'manifest.json'
-      - 'sw.js'
-      - 'icon-512.png'
-      - 'package.json'
-      - 'capacitor.config.json'
-      - 'scripts/**'
-      - 'templates/base64/**'
-      - 'v77-fix.js'
-      - '.github/workflows/build-apk.yml'
 
 permissions:
   contents: read
