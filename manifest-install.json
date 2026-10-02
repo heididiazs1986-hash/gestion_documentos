@@ -2,7 +2,7 @@
   "name": "GS Documentos APPLUS",
   "short_name": "GS Documentos",
   "id": "/gs-documentos-applus",
-  "start_url": "/index.html?v=gsdoc-v76",
+  "start_url": "/index.html?v=gsdoc-v81-field-utility",
   "scope": "/",
   "display": "standalone",
   "background_color": "#EEF4FA",
