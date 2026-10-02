@@ -38,6 +38,56 @@
   }
 
 
+
+  function gs77NormalizeAddress(raw){
+    let s=String(raw||'').trim().toLocaleUpperCase('es-CO');
+    if(!s)return '';
+
+    // Uniformar signos usados como "número".
+    s=s.replace(/N\s*[°º]\s*/g,' # ');
+    s=s.replace(/\bNÚMERO\b\.?/g,' # ');
+    s=s.replace(/\bNUMERO\b\.?/g,' # ');
+    s=s.replace(/\bNRO\b\.?/g,' # ');
+    s=s.replace(/\bNUM\b\.?/g,' # ');
+    s=s.replace(/\bNO\.?\s*(?=\d)/g,' # ');
+
+    const rules=[
+      [/\b(CARRERA|CARR|CRA|KRA|KR)\b\.?/g,' KRA '],
+      [/\b(CALLE|CLL|CL)\b\.?/g,' CL '],
+      [/\b(MANZANA|MANZ|MZA|MZ)\b\.?/g,' MANZ '],
+      [/\b(LOTE|LT)\b\.?/g,' LOTE '],
+      [/\b(PISO|PIS|PSO)\b\.?/g,' PISO '],
+      [/\b(CASA|CAS|CS)\b\.?/g,' CS '],
+      [/\b(TRANSVERSAL|TRANSV|TVR|TRV|TV)\b\.?/g,' TRV '],
+      [/\b(AVENIDA|AVDA|AVE|AV)\b\.?/g,' AV '],
+      [/\b(VEREDA|VER|VDA)\b\.?/g,' VDA '],
+      [/\b(BARRIO|BARR|BRR|BR)\b\.?/g,' BRR '],
+      [/\b(SECTOR|SECT|SEC|STOR)\b\.?/g,' STOR '],
+      [/\b(CIUDADELA|CDLA)\b\.?/g,' CDLA '],
+      [/\b(UNIDAD|UNID|UND)\b\.?/g,' UND '],
+      [/\b(APARTAMENTO|APART|APTO|APT|AP)\b\.?/g,' APTO ']
+    ];
+    for(const [re,to] of rules)s=s.replace(re,to);
+
+    // Quitar separadores ambiguos y espaciar signos de nomenclatura.
+    s=s.replace(/[;,]+/g,' ');
+    s=s.replace(/\s*#\s*/g,' # ');
+    s=s.replace(/\s*-\s*/g,' - ');
+    s=s.replace(/\s*\/\s*/g,' / ');
+
+    // Separar letras y números: 87P -> 87 P / A80 -> A 80.
+    s=s.replace(/([A-ZÁÉÍÓÚÜÑ])(\d)/g,'$1 $2');
+    s=s.replace(/(\d)([A-ZÁÉÍÓÚÜÑ])/g,'$1 $2');
+
+    // Eliminar puntos residuales de abreviaturas y compactar espacios.
+    s=s.replace(/\.\s*/g,' ');
+    s=s.replace(/\s+/g,' ').trim();
+    return s;
+  }
+
+  // Mantener compatibilidad con las funciones de la base.
+  try{globalThis.normalizeAddress=gs77NormalizeAddress}catch(_){}
+
   function gs77TitleCase(s){
     try{return typeof titleCaseWords==='function'?titleCaseWords(s):String(s||'').trim().toLowerCase().replace(/(^|\\s)\\S/g,m=>m.toUpperCase())}
     catch(_){return String(s||'').trim()}
@@ -294,7 +344,7 @@
       "1 Nombre o Razón Social":"cm_nombre",
       "3 Tipo documento":"cm_tipo_doc",
       "4 Número de Documento":"cm_num_doc",
-      "5 Dirección de quien radica":"cm_dir_radica",
+      "5 Dirección de quien radica":"_direccion_sector",
       "6 MunicipioLocalidad":"cm_mpio",
       "7 departamento":"cm_depto",
       "8 Celular":"cm_celular",
@@ -302,7 +352,7 @@
       "3 Localidad":"cm_localidad",
       "4 Municipio":"cm_mpio",
       "5 departamento":"cm_depto",
-      "6 Dirección del predio":"pred_direccion",
+      "6 Dirección del predio":"_direccion_sector",
       "Coordenada X":"e1_coord_x",
       "Coordenada Y":"e1_coord_y",
       "8 Indicaciones de acceso al predio":"e1_indicaciones",
@@ -317,7 +367,7 @@
     },
     E6:{
       "text_1xogj":"cm_nombre_proyecto",
-      "text_2gqcv":"pred_direccion",
+      "text_2gqcv":"_direccion_sector",
       "text_18ovuf":"cm_fecha_ddmmaaaa",
       "text_27bpxy":"cm_nombre",
       "text_30sznp":"_tecnico_nombre",
@@ -328,7 +378,7 @@
       "text_1lojj":"ar_sector_pdf",
       "text_2tgsw":"ar_localidad_pdf",
       "text_3kjbx":"ar_alcaldia_pdf",
-      "text_4mqvb":"pred_direccion",
+      "text_4mqvb":"_direccion_sola",
       "text_6prgm":"cm_nombre",
       "text_7jdiv":"cm_num_doc",
       "text_8ptdj":"cm_fecha_dia",
@@ -340,7 +390,7 @@
       "Identificacion":"cm_tipo_doc",
       "NumIdentificacion":"cm_num_doc",
       "Domicilio":"dj_ciudad_dom",
-      "Direccion":"pred_direccion",
+      "Direccion":"_direccion_sector",
       "Descripcion":"dj_descripcion",
       "Fechapropiedad":"dj_fecha_pose_ddmmaaaa",
       "LugarDom":"dj_ciudad_dom",
@@ -356,7 +406,7 @@
       "retie_prof_constructor":"retie_prof_constructor",
       "retie_matricula_const":"cm_retie_matricula",
       "retie_consejo":"retie_consejo",
-      "retie_direccion":"cm_dir_radica",
+      "retie_direccion":"_direccion_sola",
       "retie_municipio":"pred_mpio",
       "retie_departamento":"pred_depto",
       "retie_fecha_construccion":"retie_fecha_construccion_ddmmaaaa",
@@ -376,7 +426,12 @@
     const v={...(typeof data==='function'?data():(typeof recogerDatos==='function'?recogerDatos():{}))};
     const rec=state.currentRecord||state.registration||{};
     v._empresa=APPLUS; v._aliado=APPLUS; v._empresa_applus=APPLUS; v._empresa_inmel=APPLUS;
-    v.pred_direccion=v.pred_direccion||rec.direccion||v.cm_dir_radica||'';
+    const _dirSolo=gs77NormalizeAddress(rec.direccion||v.pred_direccion||v.cm_dir_radica||'');
+    const _sector=String(rec.sector||v.cm_sector||'').trim().toLocaleUpperCase('es-CO');
+    const _dirSector=[_dirSolo,_sector].filter(Boolean).join(' ');
+    v._direccion_sola=_dirSolo;
+    v._direccion_sector=_dirSector;
+    v.pred_direccion=_dirSolo;
     v.ar_sector_pdf=v.ar_sector_pdf||rec.sector||v.cm_sector||'';
     v.ar_localidad_pdf=v.ar_localidad_pdf||rec.localidad||v.cm_localidad||'';
     v.ar_alcaldia_pdf=v.ar_alcaldia_pdf||v.cm_mpio||rec.municipio||rec.localidad||'';
@@ -455,7 +510,7 @@
       ec_fecha: vals.cm_fecha_ddmmaaaa||vals.cm_fecha_solicitud||rec.fecha_registro||'',
       ec_usuario: vals.cm_nombre||rec.nombres||'',
       ec_identificacion: vals.cm_num_doc||rec.identificacion||'',
-      ec_direccion: vals.pred_direccion||rec.direccion||vals.cm_dir_radica||'',
+      ec_direccion: vals._direccion_sector||vals.pred_direccion||rec.direccion||vals.cm_dir_radica||'',
       ec_municipio: vals.cm_mpio||rec.municipio||rec.localidad||'',
       ec_tecnico: vals.cm_retie_constructor||vals._tecnico_nombre||state.jornada?.tecnico_nombre||'',
       ec_matricula: vals.cm_retie_matricula||'',
@@ -569,7 +624,7 @@
       const src=state.registration||{};
       src.nombres=titleCaseWords(src.nombres||'');
       src.sector=titleCaseWords(src.sector||'');
-      src.direccion=normalizeAddress(src.direccion||'');
+      src.direccion=gs77NormalizeAddress(src.direccion||'');
       src.contacto=cleanContact(src.contacto||'');
       const all=records();
       const roValue=String(src.orden_ro||'').trim();
@@ -799,7 +854,7 @@
             r.orden_ro=String(r.orden_ro||'').replace(/\D/g,'').slice(0,10);
             r.nombres=titleCaseWords(r.nombres);
             r.sector=titleCaseWords(r.sector);
-            r.direccion=normalizeAddress(r.direccion);
+            r.direccion=gs77NormalizeAddress(r.direccion);
             r.contacto=normalizeContact(r.contacto);
             return r;
           }).filter(Boolean).filter(r=>Object.entries(r).some(([k,v])=>k!=='_txt'&&String(v||'').trim()));
@@ -972,6 +1027,22 @@
 
   let gs77RegistrationRef=null;
   let gs77DateTouched=false;
+
+  function gs77BindAddressRule(){
+    const el=document.getElementById('reg_direccion');
+    if(!el||el.dataset.gs77AddressRule==='1')return;
+    el.dataset.gs77AddressRule='1';
+    const apply=()=>{
+      const v=gs77NormalizeAddress(el.value);
+      el.value=v;
+      state.registration=state.registration||{};
+      state.registration.direccion=v;
+      if(typeof save==='function')save();
+    };
+    el.addEventListener('blur',apply);
+    el.addEventListener('change',apply);
+  }
+
   function gs77BindRegistrationDate(){
     const reg=state.registration||{};
     if(gs77RegistrationRef!==reg){
@@ -1087,14 +1158,14 @@
 
   try{
     const originalRenderRegistration=renderRegistration;
-    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();setTimeout(()=>gs77BindRegistrationDate(),0);return r};
+    renderRegistration=function(){const r=originalRenderRegistration.apply(this,arguments);forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();setTimeout(()=>{gs77BindRegistrationDate();gs77BindAddressRule()},0);return r};
   }catch(e){warn('renderRegistration',e)}
   try{
     const originalRenderRecords=renderRecordsScreen;
     renderRecordsScreen=function(){const r=originalRenderRecords.apply(this,arguments);rebind();return r};
   }catch(e){warn('renderRecords',e)}
 
-  forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();gs77EnsureCurrentRecord();gs77UpdateNavLocks();setTimeout(()=>gs77BindRegistrationDate(),0);setTimeout(()=>gs77PrepareDocumentScreen(state.screen||'register'),0);
+  forceApplus();gs77DecorateJornada();gs77ApplyRetieTech();gs77FixTxtAndRoSafe();hideContractor();bindIndependentGarrawall();rebind();gs77EnsureCurrentRecord();gs77UpdateNavLocks();setTimeout(()=>{gs77BindRegistrationDate();gs77BindAddressRule()},0);setTimeout(()=>gs77PrepareDocumentScreen(state.screen||'register'),0);
 
   Promise.allSettled(['E1','AR','E6','RETIE','DJ','TD','EC'].map(loadTemplate)).then(rs=>{
     const bad=rs.filter(x=>x.status==='rejected');
