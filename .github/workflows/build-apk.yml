@@ -32,6 +32,7 @@ jobs:
       - name: Validate GS Documentos runtime and templates
         run: |
           node --check v77-fix.js
+          node --check v78-storage-fix.js
           node scripts/validate_templates.js
 
       - name: Prepare web assets for APK

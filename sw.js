@@ -1,7 +1,8 @@
-const CACHE='gs-docs-v81-field-utility1';
-const CORE=['./','./index.html','./manifest.json','./gs-docs-icon-192.png','./gs-docs-icon-512.png','./v77-fix.js','./gs-docs-field-hero.webp','./templates/base64/AR.txt','./templates/base64/DJ.txt','./templates/base64/E6.txt','./templates/base64/EC_APPLUS.txt','./templates/base64/RETIE.txt','./templates/base64/TD.txt','./templates/base64/E1.part01.txt','./templates/base64/E1.part02.txt','./templates/base64/E1.part03.txt','./templates/base64/E1.part04.txt','./templates/base64/E1.part05.txt','./templates/base64/E1.part06.txt','./templates/base64/E1.part07.txt','./templates/base64/E1.part08.txt','./templates/base64/E1.part09.txt','./templates/base64/E1.part10.txt','./templates/base64/E1.part11.txt','./templates/base64/E1.part12.txt','./templates/base64/E1.part13.txt'];
+const CACHE='gs-docs-v82-memoria1';
+const CORE=['./','./index.html','./manifest.json','./gs-docs-icon-192.png','./gs-docs-icon-512.png','./v77-fix.js','./v78-storage-fix.js','./gs-docs-field-hero.webp','./templates/base64/AR.txt','./templates/base64/DJ.txt','./templates/base64/E6.txt','./templates/base64/EC_APPLUS.txt','./templates/base64/RETIE.txt','./templates/base64/TD.txt','./templates/base64/E1.part01.txt','./templates/base64/E1.part02.txt','./templates/base64/E1.part03.txt','./templates/base64/E1.part04.txt','./templates/base64/E1.part05.txt','./templates/base64/E1.part06.txt','./templates/base64/E1.part07.txt','./templates/base64/E1.part08.txt','./templates/base64/E1.part09.txt','./templates/base64/E1.part10.txt','./templates/base64/E1.part11.txt','./templates/base64/E1.part12.txt','./templates/base64/E1.part13.txt'];
 const REMOTE=['https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js','https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js','https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
 const HOTFIX='<script src="./v77-fix.js?v=gsdoc-v81-field-utility1"></script>';
+const HOTFIX78='<script src="./v78-storage-fix.js?v=gsdoc-v82-memoria1"></script>';
 
 self.addEventListener('install',e=>e.waitUntil((async()=>{
   const c=await caches.open(CACHE);
@@ -20,6 +21,7 @@ async function pageWithV77(request){
   if(!response)return new Response('Sin conexión',{status:503});
   let html=await response.text();
   if(!html.includes('v77-fix.js'))html=html.replace('</body>',HOTFIX+'\n</body>');
+  if(!html.includes('v78-storage-fix.js'))html=html.replace('</body>',HOTFIX78+'\n</body>');
   const headers=new Headers(response.headers);
   headers.set('content-type','text/html; charset=utf-8');
   headers.set('cache-control','no-store');

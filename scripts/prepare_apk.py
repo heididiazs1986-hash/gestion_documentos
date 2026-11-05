@@ -14,7 +14,7 @@ def prepare_web():
     WWW.mkdir(parents=True)
 
     for name in [
-        "index.html", "manifest.json", "sw.js", "v77-fix.js",
+        "index.html", "manifest.json", "sw.js", "v77-fix.js", "v78-storage-fix.js",
         "gs-docs-icon-192.png", "gs-docs-icon-512.png", "gs-suite-logo.png",
         "icon-180.png", "icon-192.png", "icon-512.png"
     ]:
@@ -68,6 +68,9 @@ def prepare_web():
     hotfix_tag = '<script src="./v77-fix.js?v=gsdoc-v77"></script>'
     if hotfix_tag not in html:
         html = html.replace("</body>", hotfix_tag + "\n</body>")
+    hotfix78_tag = '<script src="./v78-storage-fix.js?v=gsdoc-v82"></script>'
+    if hotfix78_tag not in html:
+        html = html.replace("</body>", hotfix78_tag + "\n</body>")
 
     html_path.write_text(html, encoding="utf-8")
 

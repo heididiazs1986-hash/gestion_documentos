@@ -26,6 +26,7 @@ jobs:
 
           cp index.html clean-web/
           cp v77-fix.js clean-web/
+          cp v78-storage-fix.js clean-web/
           cp sw.js clean-web/
           cp manifest.json clean-web/
           cp manifest-install.json clean-web/
